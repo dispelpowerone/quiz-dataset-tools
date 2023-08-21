@@ -1,3 +1,10 @@
+# App data
+cache/
+DriveTest.db
+paraphrase.out.json
+*/data/
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

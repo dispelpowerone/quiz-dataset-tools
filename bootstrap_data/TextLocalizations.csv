@@ -1,0 +1,516 @@
+TextLocaliazationId,TextId,LanguageId,Content
+1,1,1,My native language
+2,1,2,My native language
+3,1,3,My native language
+4,1,4,My native language
+5,1,5,My native language
+6,1,6,My native language
+7,2,1,"In Canada, you can take G1 in your native language."
+8,2,2,"Au Canada, vous pouvez passer le G1 dans votre langue maternelle."
+9,2,3,"在加拿大, 您可以用您的母语参加 G1。"
+10,2,4,"En Canadá, puede tomar G1 en su idioma nativo."
+11,2,5,В Канаде вы можете сдать G1 на своем родном языке.
+12,2,6,در کانادا، می توانید G1 را به زبان مادری خود دریافت کنید.
+13,3,1,Start
+14,3,2,Start
+15,3,3,Start
+16,3,4,Start
+17,3,5,Start
+18,3,6,Start
+19,4,1,Next question
+20,4,2,Question suivante
+21,4,3,下一个问题
+22,4,4,Próxima pregunta
+23,4,5,Следующий вопрос
+24,4,6,سوال بعدی
+25,5,1,Question
+26,5,2,Question
+27,5,3,问题
+28,5,4,Pregunta
+29,5,5,Вопрос
+30,5,6,سوال
+31,6,1,Added to bookmarks
+32,6,2,Ajouté aux favoris
+33,6,3,添加到书签
+34,6,4,Añadido a los marcadores
+35,6,5,Добавлен в закладки
+36,6,6,به بوک مارک ها اضافه شد
+37,7,1,Great job!
+38,7,2,Bon travail!
+39,7,3,很好！
+40,7,4,¡Gran trabajo!
+41,7,5,Отличная работа!
+42,7,6,کارت عالی بود!
+43,8,1,You can do better
+44,8,2,Tu peux faire mieux
+45,8,3,你可以做得更好
+46,8,4,Puedes hacerlo mejor
+47,8,5,Ты можешь лучше
+48,8,6,تو می توانی بهتر از اینها انجام دهی
+49,9,1,Restart
+50,9,2,Redémarrer
+51,9,3,重新开始
+52,9,4,Reiniciar
+53,9,5,Повторить
+54,9,6,راه اندازی مجدد
+55,10,1,Review
+56,10,2,Examen
+57,10,3,审查
+58,10,4,Revisar
+59,10,5,Обзор
+60,10,6,مرور
+61,11,1,Next test
+62,11,2,Prochain essai
+63,11,3,下一个测试
+64,11,4,Próxima prueba
+65,11,5,Следующий тест
+66,11,6,تست بعدی
+67,12,1,Tests
+68,12,2,Essais
+69,12,3,测试
+70,12,4,Pruebas
+71,12,5,Тесты
+72,12,6,تست ها
+73,13,1,Bookmarks
+74,13,2,Signets
+75,13,3,书签
+76,13,4,Marcadores
+77,13,5,Избранное
+78,13,6,نشانک ها
+79,14,1,My mistakes
+80,14,2,Mes erreurs
+81,14,3,我的错
+82,14,4,Mis errores
+83,14,5,Мои ошибки
+84,14,6,اشتباهات من
+85,15,1,Deleting the current question
+86,15,2,Suppression de la question en cours
+87,15,3,删除当前问题
+88,15,4,Eliminar la pregunta actual
+89,15,5,Удаление текущего вопроса
+90,15,6,حذف سوال فعلی
+91,16,1,Delete this question
+92,16,2,Supprimer cette question
+93,16,3,删除此问题
+94,16,4,Eliminar esta pregunta
+95,16,5,Удалить этот вопрос
+96,16,6,این سوال را حذف کنید
+97,17,1,Delete all questions
+98,17,2,Supprimer toutes les questions
+99,17,3,删除所有问题
+100,17,4,Eliminar todas las preguntas
+101,17,5,Удалить все вопросы
+102,17,6,تمام سوالات را حذف کنید
+103,18,1,
+104,18,2,Examen G1 dans votre langue maternelle
+105,18,3,以您的母语进行的 G1 考试
+106,18,4,Examen G1 en idioma español nativo
+107,18,5,Экзамен G1 на родном языке
+108,18,6,آزمون G1 زبان مادری فارسی
+109,19,1,
+110,19,2,"Très bien! Vous pouvez passer l'examen ""test écrit"" canadien G1 dans votre langue maternelle. Avant de payer l'examen, l'examinateur vous demandera dans quelle langue vous souhaitez passer l'examen. En conséquence, vous obtiendrez 2 langues à l'écran (maternelle et anglais). Ils peuvent être commutés."
+111,19,3,好的！ 您可以用您的母语参加加拿大 G1“笔试”考试。 在支付考试费用之前，考官会询问您要以哪种语言参加考试。结果，您将在屏幕上看到 2 种语言（母语和英语）。 它们可以切换。
+112,19,4,"¡Está bien! Puede realizar el examen escrito canadiense G1 en su idioma español nativo. Antes de pagar el examen, el examinador le preguntará en qué idioma desea realizar el examen. Como resultado, obtendrá 2 idiomas en la pantalla (español e inglés). Se pueden cambiar."
+113,19,5,"Все верно! Вы можете сдать канадский письменный экзамен G1 на своем родном русском языке. Перед оплатой экзамена экзаменатор спросит вас, на каком языке вы хотите сдавать экзамен. В результате вы получите 2 языка на экране (русский и английский). Их можно переключать."
+114,19,6,خیلی خوب! شما می توانید در آزمون کتبی G1 کانادا به زبان فارسی مادری خود شرکت کنید. قبل از پرداخت هزینه امتحان، ممتحن از شما می پرسد که به کدام زبان می خواهید در آزمون شرکت کنید. در نتیجه 2 زبان (فارسی و انگلیسی) روی صفحه نمایش داده می شود. می توان آنها را تغییر داد.
+115,20,1,G1 Exam Process:
+116,20,2,Processus d'examen G1:
+117,20,3,G1考试流程：
+118,20,4,Proceso de examen G1:
+119,20,5,Как проходит G1 экзамен?:
+120,20,6,روند آزمون G1:
+121,21,1,"You receive a test. You will be assigned a queue number.
+The DriveTest employee:
+1) asks for a passport and old driving license from your country (if any)
+3) asks in what language do you want the exam?
+4) takes an eye exam from you
+5) takes a picture of you
+6) charges for the above.
+Then skip the queue to take the exam to the computer.
+The examiner asks you to set the phone to silent mode."
+122,21,2,"Vous recevez un billet. Un numéro de file d'attente vous sera attribué.
+L'employé du Test au Volant:
+1) vous demande un passeport et un ancien permis de conduire de votre pays (le cas échéant).
+2) vous demande dans quelle langue vous souhaitez passer l'examen.
+3) vous fait passer un examen de la vue (répétez l'alphabet et les chiffres en anglais)
+4) prend une photo de vous.
+5) facture les frais ci-dessus
+Passez ensuite la file d'attente pour passer l'examen à l'ordinateur, qui sera en 2 langues (sélectionné et anglais). Il est possible de les changer.
+L'examinateur vous demande de mettre le téléphone en mode silencieux"
+123,21,3,"你收到一张票。 您将被分配一个队列号。
+中心员工：
+1) 向您的国家索取护照和旧驾照（如果有）
+3）会问你想用什么语言考试？
+4) 将接受您的眼科检查（用英语重复字母和数字）
+5）给你拍照
+6）将收取上述费用
+然后跳过队列将考试带到计算机上，这将是 2 种语言（选定和英语）。 它们可以切换。 考官会要求您将手机设置为静音模式。"
+124,21,4,"Recibes un boleto. Se le asignará un número de cola.
+Empleado del centro:
+1) le pedirá un pasaporte y una licencia de conducir antigua de su país (si corresponde)
+3) te preguntará en que idioma quieres el examen?
+4) le hará un examen de la vista
+5) tomará una foto de ti
+6) cobrará por lo anterior.
+Luego salte la cola para llevar el examen a la computadora.
+El examinador le pedirá que configure el teléfono en modo silencioso."
+125,21,5,"Вы получаете билет. Вам будет присвоен номер очереди.
+Сотрудник центра:
+1) попросит паспорт и старые водительские права из вашей страны (если есть)
+3) спросит на каком языке вы хотите экзамен?
+4) возьмет у вас проверку зрения (повторите алфавит и цифры на английском языке)
+5) сфотографирует вас
+6) возьмет плату за вышеуказанное
+Затем проходите без очереди на сдачу экзамена к компьютеру, на котором будет 2 языка (русский и английский). Их можно будет переключать.
+Экзаменатор попросит вас перевести телефон в беззвучный режим."
+126,21,6,"شما یک آزمون دریافت می کنید. به شما یک شماره صف اختصاص داده می شود.
+کارمند DriveTest:
+1) درخواست پاسپورت و گواهینامه رانندگی قدیمی از کشور شما (در صورت وجود)
+3) می پرسد به چه زبانی امتحان می خواهید؟
+4) از شما معاینه چشم می گیرد
+5) از شما عکس می گیرد
+6) هزینه برای موارد فوق
+سپس از صف برای شرکت در امتحان به کامپیوتر بگذرید.
+ممتحن از شما می خواهد که گوشی را روی حالت بی صدا قرار دهید."
+127,22,1,How many mistakes can you make?
+128,22,2,Combien d'erreurs pouvez-vous faire?
+129,22,3,你能犯多少错误？
+130,22,4,¿Cuántos errores puedes cometer?
+131,22,5,Сколько ошибок могу я сделать?
+132,22,6,چقدر می توانید اشتباه کنید؟
+133,23,1,Out of 40 questions 4 mistakes can be made.
+134,23,2,"Sur 40 questions, 4 erreurs peuvent être commises."
+135,23,3,在 40 个问题中，可能会犯 4 个错误。
+136,23,4,"De 40 preguntas, se pueden cometer 4 errores."
+137,23,5,Из 40 вопросов можно сделать 4 ошибки.
+138,23,6,از 40 سوال، 4 اشتباه قابل انجام است.
+139,24,1,How much time do I have for 40 questions?
+140,24,2,Combien de temps aurai-je pour 40 questions?
+141,24,3,我有 40 个问题需要多长时间？
+142,24,4,How long will I have for 40 questions?
+143,24,5,Сколько времени у меня будет на 40 вопросов?
+144,24,6,برای 40 سوال چقدر وقت دارم؟
+145,25,1,Unlimited
+146,25,2,Illimité
+147,25,3,Unlimited
+148,25,4,Unlimited
+149,25,5,Неограниченное время
+150,25,6,نامحدود
+151,26,1,Exam Documents
+152,26,2,Documents d'examen
+153,26,3,考试文件
+154,26,4,Documentos de examen
+155,26,5,Какие документы нужны для экзамена?
+156,26,6,مدارک امتحانی
+157,27,1,"Passport
+Eye exam may be taken at the DriveTest
+Money (cards only)"
+158,27,2,"Passeport
+L'examen de la vue peut être passé au centre
+Argent (seules les cartes sont acceptées pendant la pandémie)"
+159,27,3,"护照
+中心可进行眼科检查
+钱（大流行期间只接受卡）"
+160,27,4,"Pasaporte
+El examen de la vista se puede tomar en el centro.
+Dinero (solo se aceptan tarjetas durante la pandemia)"
+161,27,5,"Паспорт
+Проверку зрения можно сдать там же.
+Деньги (принимаются только карты во время пандемии)"
+162,27,6,"گذرنامه
+معاینه چشم ممکن است در DriveTest انجام شود
+پول (فقط کارت)"
+163,28,1,Do not park:
+164,28,2,Ne pas stationner:
+165,28,3,請勿停車：
+166,28,4,No aparcar:
+167,28,5,Запрещено парковаться
+168,28,6,پارک نکنید:
+169,29,1,"- within 3 metres of a fire hydrant
+- within 9 metres of an uncontrolled intersection
+- within 15 metres if it is controlled by traffic lights
+- within 15 metres of the nearest rail of a level railway crossing
+- on a curve, hill or anywhere you do not have a clear view for at least 125 metres in both directions"
+170,29,2,"- à moins de 3 mètres d'une bouche d'incendie
+- à moins de 9 mètres d'une intersection non contrôlée
+- à moins de 15 mètres s'il est contrôlé par des feux de circulation
+- à moins de 15 mètres du rail le plus proche d'un passage à niveau
+- dans une courbe, une colline ou n'importe où vous n'avez pas une vue dégagée sur au moins 125 mètres dans les deux sens"
+171,29,3,"- 距離消防栓3米以內
+- 在不受控制的十字路口 9 米範圍內
+- 15米以內，如果有紅綠燈控制
+- 距離最近的水平鐵路道口軌道 15 米以內
+- 在彎道、山丘或任何您在兩個方向至少 125 米內都看不到清晰視野的地方"
+172,29,4,"- a menos de 3 metros de una boca de incendios
+- dentro de los 9 metros de una intersección no controlada
+- dentro de 15 metros si está controlado por semáforos
+- dentro de los 15 metros de la vía más cercana de un paso a nivel
+- en una curva, colina o en cualquier lugar donde no tenga una visión clara de al menos 125 metros en ambas direcciones"
+173,29,5,"- в пределах 3 метров от пожарного крана
+- в пределах 9 метров от нерегулируемого перекрестка
+- в пределах 15 метров, если он контролируется светофором
+- в пределах 15 метров от ближайшего рельса наземного железнодорожного переезда
+- на повороте, холме или в любом другом месте у вас нет четкого обзора не менее 125 метров в обоих направлениях"
+174,29,6,"- در فاصله 3 متری شیر آتش نشانی
+- در فاصله 9 متری از یک تقاطع کنترل نشده
+- در فاصله 15 متری اگر توسط چراغ راهنمایی کنترل شود
+- در فاصله 15 متری نزدیکترین راه آهن یک گذرگاه راه آهن هموار
+- روی یک منحنی، تپه یا هر جایی که دید واضحی برای حداقل 125 متر در هر دو جهت ندارید."
+175,30,1,7 Demerit points you can get for:
+176,30,2,7 points d'inaptitude que vous pouvez obtenir pour :
+177,30,3,您可以獲得 7 個扣分：
+178,30,4,7 puntos de demérito que puedes obtener por:
+179,30,5,7 штрафных баллов выдаются за:
+180,30,6,7 امتیاز منفی که می توانید برای آنها کسب کنید:
+181,31,1,"- failing to remain at the scene of a collision
+- failing to stop when signaled or asked by a police officer"
+182,31,2,"- défaut de rester sur les lieux d'une collision
+- ne pas s'arrêter au signal ou à la demande d'un policier"
+183,31,3,"- 未能留在碰撞現場
+- 在警官示意或要求時未能停車"
+184,31,4,"- no permanecer en la escena de una colisión
+- no detenerse cuando un oficial de policía se lo indica o lo solicita"
+185,31,5,"- не остались на месте столкновения
+- не остановились по сигналу или просьбе сотрудника полиции"
+186,31,6,"- عدم ماندن در صحنه برخورد
+- عدم توقف در هنگام علامت یا درخواست توسط افسر پلیس"
+187,32,1,6 Demerit points you can get for:
+188,32,2,6 points d'inaptitude que vous pouvez obtenir pour :
+189,32,3,您可以獲得 6 個扣分：
+190,32,4,6 puntos de demérito que puedes obtener por:
+191,32,5,6 штрафных баллов выдаются за:
+192,32,6,6 امتیاز منفی که می توانید برای آنها کسب کنید:
+193,33,1,"- failing to stop for a school bus
+- careless driving
+- racing
+- exceeding the speed limit by 50 km/h or more"
+194,33,2,"- ne pas s'arrêter pour un autobus scolaire
+- conduite dangeureuse
+- course
+- dépassement de la limite de vitesse de 50 km/h ou plus"
+195,33,3,"- 沒有停下來等校車
+- 粗心駕駛
+- 賽車
+- 超過限速 50 公里/小時或更多"
+196,33,4,"- no detenerse para un autobús escolar
+- conducción descuidada
+- carreras
+- exceder el límite de velocidad en 50 km/h o más"
+197,33,5,"- не останавился перед школьным автобусом
+- опасное вождение
+- гонки
+- превышение скоростного режима на 50 км/ч и более"
+198,33,6,"- عدم توقف برای اتوبوس مدرسه
+- رانندگی بی احتیاط
+- مسابقه
+- بیش از حد مجاز سرعت 50 کیلومتر در ساعت یا بیشتر"
+199,34,1,4 Demerit points you can get for:
+200,34,2,4 points d'inaptitude que vous pouvez obtenir pour :
+201,34,3,您可以獲得 4 個扣分：
+202,34,4,4 puntos de demérito que puedes obtener por:
+203,34,5,4 штрафных балла можно получить за:
+204,34,6,4 امتیاز منفی که می توانید برای آنها کسب کنید:
+205,35,1,"- exceeding the speed limit by 30 to 49 km/h
+- following too closely
+- failing to stop at a pedestrian crossover"
+206,35,2,"- dépassement de la limite de vitesse de 30 à 49 km/h
+- suivre de trop près
+- ne pas s'arrêter à un passage pour piétons"
+207,35,3,"- 超過限速 30 至 49 公里/小時
+- 跟得太緊
+- 未能在人行天橋處停車"
+208,35,4,"- exceder el límite de velocidad de 30 a 49 km/h
+- siguiendo demasiado de cerca
+- no detenerse en un paso de peatones"
+209,35,5,"- превышение скоростного режима от 30 до 49 км/ч
+- слишком внимательно следить
+- не остановившись перед пешеходным переходом"
+210,35,6,"- تجاوز از حد مجاز سرعت 30 تا 49 کیلومتر در ساعت
+- از نزدیک دنبال کردن
+- عدم توقف در تقاطع عابر پیاده"
+211,36,1,3 Demerit points you can get for:
+212,36,2,3 points d'inaptitude que vous pouvez obtenir pour :
+213,36,3,您可以獲得的 3 個扣分：
+214,36,4,3 puntos de demérito que puedes obtener por:
+215,36,5,3 штрафных балла можно получить за:
+216,36,6,3 امتیاز منفی که می توانید برای آنها کسب کنید:
+217,37,1,"- driving while holding or using a hand-held wireless communications or entertainment device
+- driving through, around or under a railway crossing barrier
+- exceeding the speed limit by 16 to 29 km/h
+- going the wrong way on a one-way road
+- driving a vehicle equipped with a radar detector
+- improper use of a high-occupancy vehicle (HOV) lane
+- failing to yield the right-of-way"
+218,37,2,"- conduire en tenant ou en utilisant un appareil portatif de communication ou de divertissement sans fil
+- traverser, contourner ou passer sous une barrière de passage à niveau
+- dépassement de la limite de vitesse de 16 à 29 km/h
+- faire fausse route sur une route à sens unique
+- conduite d'un véhicule équipé d'un détecteur de radar
+- utilisation inappropriée d'une voie réservée aux véhicules à occupation multiple (VMO)
+- ne pas céder le droit de passage"
+219,37,3,"- 駕駛時手持或使用手持無線通信或娛樂設備
+- 駛過、繞過或在鐵路道口護欄下行駛
+- 超過限速 16 至 29 公里/小時
+- 在單行道上走錯路
+- 駕駛裝有雷達探測器的車輛
+- 不當使用高承載車輛 (HOV) 車道
+- 未能讓出先行權"
+220,37,4,"- conducir mientras se sostiene o se usa un dispositivo portátil de comunicaciones inalámbricas o de entretenimiento
+- conducir a través, alrededor o debajo de una barrera de cruce de ferrocarril
+- exceder el límite de velocidad de 16 a 29 km/h
+- ir en sentido contrario en una carretera de un solo sentido
+- conducir un vehículo equipado con un detector de radar
+- uso inapropiado de un carril para vehículos de alta ocupación (HOV)
+- no ceder el derecho de paso"
+221,37,5,"- управлять автомобилем, держа в руках или используя портативное устройство беспроводной связи или развлекательное устройство
+- проезд через, вокруг или под шлагбаумом железнодорожного переезда
+- превышение скоростного режима от 16 до 29 км/ч
+- идти не в ту сторону по дороге с односторонним движением
+- вождение автомобиля, оснащенного радар-детектором
+- неправильное использование полосы движения для транспортных средств с высокой вместимостью (HOV)
+- не уступить дорогу"
+222,37,6,"- رانندگی با در دست گرفتن یا استفاده از یک وسیله ارتباطی بی سیم یا سرگرمی دستی
+- رانندگی از طریق، اطراف یا زیر یک مانع عبور راه آهن
+- تجاوز از حد مجاز سرعت 16 تا 29 کیلومتر در ساعت
+- رفتن به مسیر اشتباه در جاده یک طرفه
+- رانندگی با وسیله نقلیه مجهز به آشکارساز رادار
+- استفاده نادرست از خط خودروهای پرشمار (HOV).
+- عدم تسلیم حق تقدم"
+223,38,1,2 Demerit points you can get for:
+224,38,2,2 points d'inaptitude que vous pouvez obtenir pour :
+225,38,3,2 您可以獲得的扣分：
+226,38,4,2 puntos de demérito que puedes obtener por:
+227,38,5,2 штрафных балла за:
+228,38,6,2 امتیاز منفی که می توانید برای آنها کسب کنید:
+229,39,1,"- improper opening of a vehicle door
+- unnecessary slow driving
+- backing on highway
+- failing to stop at a pedestrian crossing
+- driver failing to wear a seat belt
+- driver failing to ensure infant/ child passenger is properly secured in an appropriate child restraint system or booster seat
+- failing to leave one metre while passing bicycle"
+230,39,2,"- mauvaise ouverture d'une porte de véhicule
+- conduite lente inutile
+- marche arrière sur autoroute
+- ne pas s'arrêter à un passage pour piétons
+- conducteur ne portant pas sa ceinture de sécurité
+- le conducteur ne s'assure pas que le passager bébé/enfant est correctement attaché dans un système de retenue pour enfant ou un siège d'appoint approprié
+- ne pas s'éloigner d'un mètre en passant vélo"
+231,39,3,"- 車門打開不當
+- 不必要的慢速駕駛
+- 在高速公路上倒車
+- 未能在人行橫道處停車
+- 司機沒有係安全帶
+- 司機未能確保將嬰兒/兒童乘客妥善固定在適當的兒童約束系統或增高座椅中
+- 超自行車時不離開一米"
+232,39,4,"- apertura incorrecta de la puerta de un vehículo
+- conducción lenta innecesaria
+- marcha atrás en carretera
+- no detenerse en un paso de peatones
+- el conductor no usa el cinturón de seguridad
+- el conductor no se asegura de que el bebé/niño pasajero esté debidamente asegurado en un sistema de sujeción para niños o asiento elevado adecuado
+- no dejar un metro al pasar la bicicleta"
+233,39,5,"- неправильное открывание двери автомобиля
+- ненужная медленная езда
+- задним ходом на шоссе
+- не остановившись на пешеходном переходе
+- водитель не пристегнут ремнем безопасности
+- водитель не обеспечивает надлежащую фиксацию младенца/детского пассажира в соответствующей детской удерживающей системе или в детском кресле-бустере
+- не перестроиться на один метр при обгоне велосипеда"
+234,39,6,"- باز کردن نامناسب درب خودرو
+- رانندگی آهسته غیر ضروری
+- پشتیبان در بزرگراه
+- عدم توقف در گذرگاه عابر پیاده
+- نبستن کمربند ایمنی راننده
+- راننده نمی تواند اطمینان حاصل کند که سرنشین نوزاد/کودک به درستی در سیستم نگهدارنده کودک مناسب یا صندلی کمکی ایمن شده است.
+- ترک نکردن یک متر هنگام عبور از دوچرخه"
+235,40,1,Penalties for demerit points: full G licenced driver
+236,40,2,Pénalités pour points d'inaptitude : permis de conduire G complet
+237,40,3,扣分處罰：full G license driver
+238,40,4,Sanciones por puntos de demérito: conductor con licencia G completa
+239,40,5,Наказание за штрафные баллы: водитель с полной лицензией G
+240,40,6,جریمه برای امتیازات بی ارزش: راننده گواهینامه G کامل
+241,41,1,"- 6 to 8 points: you will be sent a warning letter.
+- 9 to 14 points: you will be sent a second warning letter encouraging you to improve your driving behaviour.
+- 15+ points: your licence will be suspended for 30 days."
+242,41,2,"- 6 à 8 points : vous recevrez une lettre d'avertissement.
+- 9 à 14 points : vous recevrez une deuxième lettre d'avertissement vous incitant à améliorer votre comportement au volant.
+- 15+ points : votre permis sera suspendu pendant 30 jours."
+243,41,3,"- 6 至 8 分：您將收到一封警告信。
+- 9 至 14 分：您將收到第二封警告信，鼓勵您改善駕駛行為。
+- 15+ 分：您的執照將被暫停 30 天。"
+244,41,4,"- 6 a 8 puntos: se le enviará una carta de advertencia.
+- 9 a 14 puntos: se le enviará una segunda carta de advertencia animándole a mejorar su comportamiento al volante.
+- 15+ puntos: su licencia será suspendida por 30 días."
+245,41,5,"- от 6 до 8 баллов: вам будет отправлено письмо с предупреждением.
+- от 9 до 14 баллов: вам будет отправлено второе письмо с предупреждением, призывающее вас улучшить свое поведение за рулем.
+- 15+ баллов: ваша лицензия будет приостановлена на 30 дней."
+246,41,6,"- امتیاز 6 تا 8: برای شما اخطار نامه ارسال می شود.
+- 9 تا 14 امتیاز: یک نامه هشدار دوم برای شما ارسال می شود که شما را تشویق به بهبود رفتار رانندگی می کند.
+- 15+ امتیاز: مجوز شما به مدت 30 روز تعلیق می شود."
+247,42,1,"Penalties for demerit points: G1, G2 licenced driver"
+248,42,2,"Pénalités pour points d'inaptitude : permis de conduire G1, G2"
+249,42,3,扣分處罰：G1、G2駕照駕駛員
+250,42,4,"Sanciones por puntos de demérito: licencia de conducir G1, G2"
+251,42,5,"Наказание за штрафные баллы: водительские права G1, G2."
+252,42,6,جریمه برای امتیازات منفی: G1، G2 گواهینامه راننده
+253,43,1,"- 2 to 5 points: you will be sent a warning letter.
+- 6 to 8 points: you will be sent a second warning letter encouraging you to improve your driving behaviour.
+- 9 or more points: your licence will be suspended for 60 days."
+254,43,2,"- 2 à 5 points : vous recevrez une lettre d'avertissement.
+- 6 à 8 points : vous recevrez une deuxième lettre d'avertissement vous incitant à améliorer votre comportement au volant.
+- 9 points ou plus : votre permis sera suspendu pendant 60 jours."
+255,43,3,"- 2 至 5 分：您將收到一封警告信。
+- 6 至 8 分：您將收到第二封警告信，鼓勵您改善駕駛行為。
+- 9 分或更多分：您的執照將被暫停 60 天。"
+256,43,4,"- 2 a 5 puntos: se le enviará una carta de advertencia.
+- 6 a 8 puntos: se le enviará una segunda carta de advertencia animándole a mejorar su comportamiento al volante.
+- 9 o más puntos: su licencia será suspendida por 60 días."
+257,43,5,"- от 2 до 5 баллов: вам будет отправлено письмо с предупреждением.
+- от 6 до 8 баллов: вам будет отправлено второе письмо с предупреждением, призывающее вас улучшить свое поведение за рулем.
+- 9 и более баллов: ваша лицензия будет приостановлена на 60 дней."
+258,43,6,"- 2 تا 5 امتیاز: برای شما اخطار نامه ارسال می شود.
+- 6 تا 8 امتیاز: نامه هشدار دومی برای شما ارسال می شود که شما را تشویق به بهبود رفتار رانندگی می کند.
+- 9 امتیاز یا بیشتر: مجوز شما به مدت 60 روز تعلیق خواهد شد."
+259,44,1,If you change your address you must update
+260,44,2,"Si vous changez d'adresse, vous devez mettre à jour"
+261,44,3,如果您更改地址，則必須更新
+262,44,4,Si cambias de dirección debes actualizar
+263,44,5,"Если вы измените свой адрес, вы должны обновить"
+264,44,6,اگر آدرس خود را تغییر دهید، باید به روز رسانی کنید
+265,45,1,- your driver’s licence and vehicle permit within 6 days
+266,45,2,- votre permis de conduire et permis de véhicule dans les 6 jours
+267,45,3,- 6 天內的駕駛執照和車輛許可證
+268,45,4,- su licencia de conducir y permiso de vehículo dentro de los 6 días
+269,45,5,- ваши водительские права и разрешение на транспортное средство в течение 6 дней
+270,45,6,- گواهینامه رانندگی و مجوز وسیله نقلیه شما در مدت 6 روز
+271,46,1,"If you find some mistakes in our application or you have some questions or you would offer new ideas,
+write to us by mail letstalk24ru@gmail.com
+
+Thanks for your kindness 🙌
+We feel it 💜"
+272,46,2,"Si vous trouvez des erreurs dans notre application ou si vous avez des questions ou si vous proposez de nouvelles idées,
+écrivez-nous par mail letstalk24ru@gmail.com
+
+Merci pour votre gentillesse 🙌
+On le sent💜"
+273,46,3,"如果您在我们的申请中发现错误，或者您有一些问题，或者您想提出新的想法，
+请通过邮件 letstalk24ru@gmail.com 写信给我们。
+
+谢谢你的好心 🙌
+我们感觉到了 💜"
+274,46,4,"Si encuentra errores en nuestra aplicación o tiene algunas preguntas o ofrece nuevas ideas,
+escríbanos por correo electrónico letstalk24ru@gmail.com
+
+Gracias por su amabilidad 🙌
+La sentimos 💜"
+275,46,5,"Если вы нашли ошибки в нашем приложении, или у вас есть вопросы, или вы хотите предложить новые идеи,
+напишите, пожалуйста, нам на почту letstalk24ru@gmail.com
+
+Спасибо за вашу доброту 🙌
+Мы чувствуем это 💜"
+276,46,6,"اگر اشتباهاتی در برنامه ما پیدا کردید یا سؤالاتی دارید یا ایده های جدیدی ارائه می دهید،
+از طریق پست برای ما بنویسید letstalk24ru@gmail.com
+
+تشکر از لطف شما 🙌
+ما آن را احساس می کنیم💜"
