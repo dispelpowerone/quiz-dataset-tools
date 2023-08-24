@@ -1,5 +1,6 @@
 import csv
 import os
+from typing import Dict
 
 
 class Transformer:
@@ -11,9 +12,9 @@ class Transformer:
     def __init__(self, domain: str, name: str):
         self.domain = domain
         self.name = name
-        self.cache = {}
+        self.cache: Dict[str, str] = {}
         self.cache_updates = 0
-        self.overrides = {}
+        self.overrides: Dict[str, str] = {}
 
     def get(self, src_text: str):
         if not src_text:

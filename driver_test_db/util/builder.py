@@ -1,9 +1,9 @@
-from util.dbase import DriverTestDBase
-from util.images import Images
-from util.translation import Translator
-from util.paraphrase import Paraphrase
-from util.loader import Loader
-from util.language import Language
+from .dbase import DriverTestDBase
+from .images import Images
+from .translation import Translator
+from .paraphrase import Paraphrase
+from .loader import Loader
+from .language import Language
 
 
 class DBBuilder:
@@ -36,10 +36,11 @@ class DBBuilder:
         dbase = DriverTestDBase()
         dbase.bootstrap()
 
-        fix_missed_localizations(dbase, self.translator, self.languages)
-
         canonical_lang = self.loader.get_canonical_language()
         canonical_tests = None
+
+        fix_missed_localizations(dbase, self.translator, self.languages, canonical_lang)
+
         tests_data = self.loader.get_tests()
         for language, tests in tests_data.items():
             if self.paraphrase:
@@ -95,7 +96,10 @@ def pack_language_data(
 
 
 def fix_missed_localizations(
-    dbase: DriverTestDBase, translator: Translator, languages: list
+    dbase: DriverTestDBase,
+    translator: Translator,
+    languages: list,
+    canonical_lang: Language,
 ):
     expected_localizations_map = dict(
         [(lang.value.language_id, lang) for lang in languages]
@@ -105,15 +109,15 @@ def fix_missed_localizations(
     for text in dbase.get_texts():
         localizations = dbase.get_text_localizations(text.text_id)
         localizations_set = set()
-        localization_en = None
         for localization in localizations:
             localizations_set.add(localization.language_id)
-            if localization.language_id == Language.EN.value.language_id:
-                localization_en = localization
-        if not localization_en:
-            print(f"Missed English localization: {text}")
+        canonical_localization = dbase.get_text_localization(
+            text.text_id, canonical_lang.value.language_id
+        )
+        if not canonical_localization:
+            raise Exception(f"Missed canonical localization: {text}")
         missed_localizations = expected_localizations_set.difference(localizations_set)
         for localization_id in missed_localizations:
             lang = expected_localizations_map[localization_id]
-            content = translator.get(lang, localization_en.content)
+            content = translator.get(lang, canonical_localization.content)
             dbase.add_text_localization(text.text_id, lang.value.language_id, content)

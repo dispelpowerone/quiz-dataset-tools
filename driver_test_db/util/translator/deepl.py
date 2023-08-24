@@ -1,11 +1,11 @@
-import deepl
+import deepl  # type: ignore
 from tenacity import (
     retry,
     stop_after_attempt,
     wait_random_exponential,
     retry_if_exception_type,
 )
-from util.language import Language
+from driver_test_db.util.language import Language
 
 auth_key = "77fe6289-3e09-813a-abec-691c4ad32462:fx"
 

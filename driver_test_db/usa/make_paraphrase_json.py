@@ -3,10 +3,10 @@
 import dataclasses
 import json
 
-from util.paraphrase import Paraphrase
-from util.language import Language
-from util.data import Question
-from usa.loader import USALoader
+from driver_test_db.util.paraphrase import Paraphrase
+from driver_test_db.util.language import Language
+from driver_test_db.util.data import Question
+from driver_test_db.usa.loader import USALoader
 
 
 @dataclasses.dataclass

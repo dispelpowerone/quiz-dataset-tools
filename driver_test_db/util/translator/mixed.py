@@ -1,6 +1,6 @@
-from util.language import Language
-from util.translator.deepl import DeepLTranslator
-from util.translator.google import GoogleTranslator
+from driver_test_db.util.language import Language
+from .deepl import DeepLTranslator
+from .google import GoogleTranslator
 
 
 class MixedTranslator:

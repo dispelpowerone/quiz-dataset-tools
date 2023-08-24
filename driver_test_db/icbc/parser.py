@@ -1,5 +1,6 @@
 import json
-from util.data import Test, Question, Answer
+from typing import Any, List
+from driver_test_db.util.data import Test, Question, Answer
 
 TEST_SIZE = 15
 
@@ -8,7 +9,7 @@ def load_tests(language: str):
     data = None
     with open(f"icbc/data/{language}.json") as file:
         data = json.load(file)
-    tests = []
+    tests: List[Test] = []
     current_test = None
     for question_data in data:
         if not current_test:
@@ -20,12 +21,12 @@ def load_tests(language: str):
         if len(current_test.questions) >= TEST_SIZE:
             tests.append(current_test)
             current_test = None
-    if len(current_test.questions) > 4:
+    if current_test and len(current_test.questions) > 4:
         tests.append(current_test)
     return tests
 
 
-def parse_question(data: any):
+def parse_question(data: Any):
     question = Question(
         text=data["title"],
         image=data["image"],

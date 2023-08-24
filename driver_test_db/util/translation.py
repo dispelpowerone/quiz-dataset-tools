@@ -1,15 +1,16 @@
 import csv
 import os
-from util.data import Test
-from util.language import Language
-from util.translator.deepl import DeepLTranslator
-from util.translator.google import GoogleTranslator
-from util.translator.mixed import MixedTranslator
-from util.transformer import Transformer
+from typing import Any, Dict
+from .data import Test
+from .language import Language
+from .translator.deepl import DeepLTranslator
+from .translator.google import GoogleTranslator
+from .translator.mixed import MixedTranslator
+from .transformer import Transformer
 
 
 class CachedTranslator(Transformer):
-    def __init__(self, domain: str, dest_lang: Language, impl: any):
+    def __init__(self, domain: str, dest_lang: Language, impl: Any):
         super().__init__(domain, f"translation.{dest_lang.name}")
         self.dest_lang = dest_lang
         self.impl = impl
@@ -22,7 +23,7 @@ class Translator:
     def __init__(self, domain: str):
         self.domain = domain
         self.impl = MixedTranslator()
-        self.translators = {}
+        self.translators: Dict[Language, Any] = {}
 
     def get(self, dest_lang: Language, src_text: str):
         translator = self.translators.get(dest_lang)

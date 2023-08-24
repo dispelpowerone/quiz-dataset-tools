@@ -1,8 +1,11 @@
-all: fmt
+all: mypy fmt
+
+mypy:
+	python3 -m mypy driver_test_db
 
 fmt:
-	python -m black .
+	python3 -m black driver_test_db
 
 doctor:
-	python -m pip check
-	pip list --outdated
+	python3 -m pip check
+	python3 -m pip list --outdated

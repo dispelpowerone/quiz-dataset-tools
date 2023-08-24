@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-from util.dbase import DriverTestDBase
-from util.images import Images
-from util.translation import Translator
-from util.language import Language
-from util.paraphrase import Paraphrase
-from util.builder import DBBuilder
-from icbc.loader import ICBCLoader
+from driver_test_db.util.dbase import DriverTestDBase
+from driver_test_db.util.images import Images
+from driver_test_db.util.translation import Translator
+from driver_test_db.util.language import Language
+from driver_test_db.util.paraphrase import Paraphrase
+from driver_test_db.util.builder import DBBuilder
+from driver_test_db.icbc.loader import ICBCLoader
 
 
 def main():

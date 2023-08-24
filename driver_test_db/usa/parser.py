@@ -1,6 +1,6 @@
 import sqlite3
 from dataclasses import dataclass
-from util.data import Question, Answer, Test
+from driver_test_db.util.data import Question, Answer, Test
 
 
 @dataclass

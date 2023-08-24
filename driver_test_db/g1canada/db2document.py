@@ -2,8 +2,8 @@
 
 import json
 
-from dbase import DriverTestDBase
-from images import Images
+from driver_test_db.util.dbase import DriverTestDBase
+from driver_test_db.util.images import Images
 
 
 def load_tests(dbase):

@@ -358,7 +358,7 @@ class DriverTestDBase:
     def get_questions(self):
         return self.dbase.select(QuestionDBO)
 
-    def get_questions(self, test_id):
+    def get_test_questions(self, test_id):
         return self.dbase.select(QuestionDBO, f"TestId = {test_id}")
 
     def get_question(self, question_id):
@@ -378,6 +378,11 @@ class DriverTestDBase:
 
     def get_text_localizations(self, text_id):
         return self.dbase.select(TextLocalizationDBO, f"TextId = {text_id}")
+
+    def get_text_localization(self, text_id, language_id):
+        return self.dbase.select(
+            TextLocalizationDBO, f"TextId = {text_id} and LanguageId = {language_id}"
+        )
 
     def get_language(self, language_id):
         return self.dbase.get(LanguageDBO, language_id)

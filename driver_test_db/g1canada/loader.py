@@ -1,8 +1,8 @@
 import sqlite3
-from util.dbase import DriverTestDBase
-from util.loader import Loader
-from util.language import Language
-from util.data import Test, Question, Answer
+from driver_test_db.util.dbase import DriverTestDBase
+from driver_test_db.util.loader import Loader
+from driver_test_db.util.language import Language
+from driver_test_db.util.data import Test, Question, Answer
 
 
 class G1Loader(Loader):

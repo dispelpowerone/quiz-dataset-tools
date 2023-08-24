@@ -1,4 +1,4 @@
-from util.language import Language
+from driver_test_db.util.language import Language
 
 
 class Loader:

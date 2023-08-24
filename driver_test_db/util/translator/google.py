@@ -1,5 +1,5 @@
 from google.cloud import translate
-from util.language import Language
+from driver_test_db.util.language import Language
 
 project_id = "driving-test-394702"
 api_key = "AIzaSyBWxwhKYTRz2xy55bGTxyymTL64Dg6P1BI"

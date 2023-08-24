@@ -1,6 +1,6 @@
-from util.loader import Loader
-from util.language import Language
-from icbc.parser import load_tests
+from driver_test_db.util.loader import Loader
+from driver_test_db.util.language import Language
+from .parser import load_tests
 
 
 class ICBCLoader(Loader):

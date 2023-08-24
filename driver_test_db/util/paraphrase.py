@@ -5,7 +5,7 @@ from tenacity import (
     wait_random_exponential,
     retry_if_exception_type,
 )
-from util.transformer import Transformer
+from driver_test_db.util.transformer import Transformer
 
 
 class Paraphrase(Transformer):
