@@ -1,4 +1,3 @@
-from typing import Optional
 from .dbase import DriverTestDBase
 from .images import Images
 from .translation import Translator
@@ -9,10 +8,10 @@ from .language import Language
 
 class DBBuilder:
     def __init__(self) -> None:
-        self.paraphrase: Optional[Paraphrase] = None
-        self.images: Optional[Images] = None
-        self.translator: Optional[Translator] = None
-        self.loader: Optional[Loader] = None
+        self.paraphrase: Paraphrase | None = None
+        self.images: Images | None = None
+        self.translator: Translator | None = None
+        self.loader: Loader | None = None
         self.shuffle_answers: bool = False
         self.languages: list[Language] = []
 
