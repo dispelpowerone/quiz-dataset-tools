@@ -2,28 +2,41 @@ import sqlite3
 import os
 import csv
 from dataclasses import dataclass
+from typing import Any
 
 
 class BaseDBO:
+    __table__ = ""
+    __key__ = ""
+    __fields__: list[str] = []
+    __create_table__ = ""
+
     @classmethod
-    def get_table(cls):
+    def get_table(cls) -> str:
         return cls.__table__
 
     @classmethod
-    def get_key(cls):
+    def get_key(cls) -> str:
         return cls.__key__
 
     @classmethod
-    def get_fields(cls):
+    def get_fields(cls) -> str:
         return ", ".join(cls.__fields__)
 
     @classmethod
-    def get_field_placeholders(cls):
+    def get_field_placeholders(cls) -> str:
         return ", ".join("?" * len(cls.__fields__))
 
     @classmethod
-    def get_create_table(cls):
+    def get_create_table(cls) -> str:
         return cls.__create_table__
+
+    def get_field_values(self) -> tuple:
+        return ()
+
+    @staticmethod
+    def make(row: list[str]) -> "BaseDBO":
+        return BaseDBO()
 
 
 @dataclass
@@ -36,20 +49,20 @@ class TestDBO(BaseDBO):
     __fields__ = ["TestId", "TextId"]
     __create_table__ = """
 CREATE TABLE "Tests" (
-	"TestId"	INTEGER NOT NULL UNIQUE,
-	"TextId"	INTEGER,
-	PRIMARY KEY("TestId" AUTOINCREMENT)
+    "TestId"    INTEGER NOT NULL UNIQUE,
+    "TextId"    INTEGER,
+    PRIMARY KEY("TestId" AUTOINCREMENT)
 )
     """
 
     @staticmethod
-    def make(row):
-        return TestDBO(test_id=row[0], text_id=row[1])
+    def make(row: list[str]) -> "TestDBO":
+        return TestDBO(test_id=int(row[0]), text_id=int(row[1]))
 
-    def get_key_values(self):
+    def get_key_values(self) -> tuple[int]:
         return (self.test_id,)
 
-    def get_field_values(self):
+    def get_field_values(self) -> tuple[int, int]:
         return (self.test_id, self.text_id)
 
 
@@ -65,27 +78,27 @@ class QuestionDBO(BaseDBO):
     __fields__ = ["QuestionId", "TestId", "TextId", "Image"]
     __create_table__ = """
 CREATE TABLE "Questions" (
-	"QuestionId"	INTEGER NOT NULL UNIQUE,
-	"TestId"	INTEGER,
-	"TextId"	INTEGER,
-	"Image"	TEXT,
-	PRIMARY KEY("QuestionId" AUTOINCREMENT)
+    "QuestionId"    INTEGER NOT NULL UNIQUE,
+    "TestId"    INTEGER,
+    "TextId"    INTEGER,
+    "Image"    TEXT,
+    PRIMARY KEY("QuestionId" AUTOINCREMENT)
 )
     """
 
     @staticmethod
-    def make(row):
+    def make(row: list[str]) -> "QuestionDBO":
         return QuestionDBO(
-            question_id=row[0],
-            test_id=row[1],
-            text_id=row[2],
+            question_id=int(row[0]),
+            test_id=int(row[1]),
+            text_id=int(row[2]),
             image=row[3],
         )
 
-    def get_key_values(self):
+    def get_key_values(self) -> tuple[int]:
         return (self.question_id,)
 
-    def get_field_values(self):
+    def get_field_values(self) -> tuple[int, int, int, str]:
         return (self.question_id, self.test_id, self.text_id, self.image)
 
 
@@ -101,24 +114,27 @@ class AnswerDBO(BaseDBO):
     __fields__ = ["AnswerId", "QuestionId", "TextId", "IsCorrect"]
     __create_table__ = """
 CREATE TABLE "Answers" (
-	"AnswerId"	INTEGER NOT NULL UNIQUE,
-	"QuestionId"	INTEGER,
-	"TextId"	INTEGER,
-	"IsCorrect"	INTEGER,
-	PRIMARY KEY("AnswerId" AUTOINCREMENT)
+    "AnswerId"    INTEGER NOT NULL UNIQUE,
+    "QuestionId"    INTEGER,
+    "TextId"    INTEGER,
+    "IsCorrect"    INTEGER,
+    PRIMARY KEY("AnswerId" AUTOINCREMENT)
 )
     """
 
     @staticmethod
-    def make(row):
+    def make(row: list[str]) -> "AnswerDBO":
         return AnswerDBO(
-            answer_id=row[0], question_id=row[1], text_id=row[2], is_correct=row[3]
+            answer_id=int(row[0]),
+            question_id=int(row[1]),
+            text_id=int(row[2]),
+            is_correct=int(row[3]),
         )
 
-    def get_key_values(self):
-        return (self.question_id,)
+    def get_key_values(self) -> tuple[int]:
+        return (self.answer_id,)
 
-    def get_field_values(self):
+    def get_field_values(self) -> tuple[int, int, int, int]:
         return (self.answer_id, self.question_id, self.text_id, self.is_correct)
 
 
@@ -132,20 +148,20 @@ class TextDBO(BaseDBO):
     __fields__ = ["TextId", "Description"]
     __create_table__ = """
 CREATE TABLE "Texts" (
-	"TextId"	INTEGER NOT NULL UNIQUE,
-	"Description"	TEXT,
-	PRIMARY KEY("TextId" AUTOINCREMENT)
+    "TextId"    INTEGER NOT NULL UNIQUE,
+    "Description"    TEXT,
+    PRIMARY KEY("TextId" AUTOINCREMENT)
 )
     """
 
     @staticmethod
-    def make(row):
-        return TextDBO(text_id=row[0], description=row[1])
+    def make(row: list[str]) -> "TextDBO":
+        return TextDBO(text_id=int(row[0]), description=row[1])
 
-    def get_key_values(self):
+    def get_key_values(self) -> tuple[int]:
         return (self.text_id,)
 
-    def get_field_values(self):
+    def get_field_values(self) -> tuple[int, str]:
         return (self.text_id, self.description)
 
 
@@ -161,27 +177,27 @@ class TextLocalizationDBO(BaseDBO):
     __fields__ = ["TextLocalizationId", "TextId", "LanguageId", "Content"]
     __create_table__ = """
 CREATE TABLE "TextLocalizations" (
-	"TextLocalizationId"	INTEGER NOT NULL UNIQUE,
-	"TextId"	INTEGER,
-	"LanguageId"	INTEGER NOT NULL,
-	"Content"	TEXT,
-	PRIMARY KEY("TextLocalizationId" AUTOINCREMENT)
+    "TextLocalizationId"    INTEGER NOT NULL UNIQUE,
+    "TextId"    INTEGER,
+    "LanguageId"    INTEGER NOT NULL,
+    "Content"    TEXT,
+    PRIMARY KEY("TextLocalizationId" AUTOINCREMENT)
 )
     """
 
     @staticmethod
-    def make(row):
+    def make(row: list[str]) -> "TextLocalizationDBO":
         return TextLocalizationDBO(
-            text_localization_id=row[0],
-            text_id=row[1],
-            language_id=row[2],
+            text_localization_id=int(row[0]),
+            text_id=int(row[1]),
+            language_id=int(row[2]),
             content=row[3],
         )
 
-    def get_key_values(self):
+    def get_key_values(self) -> tuple[int]:
         return (self.text_localization_id,)
 
-    def get_field_values(self):
+    def get_field_values(self) -> tuple[int, int, int, str]:
         return (self.text_localization_id, self.text_id, self.language_id, self.content)
 
 
@@ -195,28 +211,28 @@ class LanguageDBO(BaseDBO):
     __fields__ = ["LanguageId", "LanguageName"]
     __create_table__ = """
 CREATE TABLE "Languages" (
-	"LanguageId"	INTEGER NOT NULL UNIQUE,
-	"LanguageName"	TEXT,
-	PRIMARY KEY("LanguageId" AUTOINCREMENT)
+    "LanguageId"    INTEGER NOT NULL UNIQUE,
+    "LanguageName"    TEXT,
+    PRIMARY KEY("LanguageId" AUTOINCREMENT)
 )
     """
 
     @staticmethod
-    def make(row):
+    def make(row: list[str]) -> "LanguageDBO":
         return LanguageDBO(
-            language_id=row[0],
+            language_id=int(row[0]),
             language_name=row[1],
         )
 
-    def get_key_values(self):
+    def get_key_values(self) -> tuple[int]:
         return (self.language_id,)
 
-    def get_field_values(self):
+    def get_field_values(self) -> tuple[int, str]:
         return (self.language_id, self.language_name)
 
 
 class DBase:
-    def __init__(self, dbase_path):
+    def __init__(self, dbase_path: str):
         self.dbase_path = dbase_path
 
     def drop(self):
@@ -227,17 +243,17 @@ class DBase:
         self.cursor = sqlite3.connect(self.dbase_path)
         self.cursor.execute("pragma encoding=UTF8")
 
-    def create_table(self, dbo_type):
+    def create_table(self, dbo_type: BaseDBO):
         self.cursor.execute(f"{dbo_type.get_create_table()}")
 
-    def import_csv(self, dbo_type, file_name):
+    def import_csv(self, dbo_type: BaseDBO, file_name: str):
         with open(file_name) as csvfile:
             reader = csv.reader(csvfile)
             next(reader, None)
             for row in reader:
                 self.add(dbo_type.make(row))
 
-    def get(self, dbo_type, key):
+    def get(self, dbo_type: BaseDBO, key: Any) -> BaseDBO | None:
         res = self.cursor.execute(
             f"SELECT {dbo_type.get_fields()} from {dbo_type.get_table()} where {dbo_type.get_key()} = ?",
             (key,),
@@ -247,18 +263,18 @@ class DBase:
             return None
         return dbo_type.make(row)
 
-    def add(self, dbo):
+    def add(self, dbo: BaseDBO) -> int:
         res = self.cursor.execute(
             f"INSERT INTO {dbo.get_table()}({dbo.get_fields()}) VALUES ({dbo.get_field_placeholders()})",
             dbo.get_field_values(),
         )
         return res.lastrowid
 
-    def select(self, dbo_type, condition="1"):
+    def select(self, dbo_type: BaseDBO, condition: str = "1") -> list[BaseDBO]:
         res = self.cursor.execute(
             f"SELECT {dbo_type.get_fields()} from {dbo_type.get_table()} where {condition}"
         )
-        results = list()
+        results = []
         for row in res.fetchall():
             results.append(dbo_type.make(row))
         return results
