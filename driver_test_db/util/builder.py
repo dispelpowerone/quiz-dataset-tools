@@ -1,3 +1,4 @@
+from typing import Optional
 from .dbase import DriverTestDBase
 from .images import Images
 from .translation import Translator
@@ -7,32 +8,38 @@ from .language import Language
 
 
 class DBBuilder:
-    def __init__(self):
-        self.paraphrase = None
-        self.images = None
-        self.translator = None
-        self.loader = None
-        self.shuffle_answers = False
+    def __init__(self) -> None:
+        self.paraphrase: Optional[Paraphrase] = None
+        self.images: Optional[Images] = None
+        self.translator: Optional[Translator] = None
+        self.loader: Optional[Loader] = None
+        self.shuffle_answers: bool = False
+        self.languages: list[Language] = []
 
-    def set_images(self, images: Images):
+    def set_images(self, images: Images) -> None:
         self.images = images
 
-    def set_translator(self, translator: Translator):
+    def set_translator(self, translator: Translator) -> None:
         self.translator = translator
 
-    def set_paraphrase(self, paraphrase: Paraphrase):
+    def set_paraphrase(self, paraphrase: Paraphrase) -> None:
         self.paraphrase = paraphrase
 
-    def set_loader(self, loader: Loader):
+    def set_loader(self, loader: Loader) -> None:
         self.loader = loader
 
-    def set_languages(self, languages: list):
+    def set_languages(self, languages: list[Language]) -> None:
         self.languages = languages
 
-    def set_shuffle_answers(self, value: bool):
+    def set_shuffle_answers(self, value: bool) -> None:
         self.shuffle_answers = value
 
-    def build(self):
+    def build(self) -> None:
+        # Prerequisites
+        assert self.loader
+        assert self.translator
+        assert self.images
+
         dbase = DriverTestDBase()
         dbase.bootstrap()
 
@@ -50,6 +57,8 @@ class DBBuilder:
                 canonical_tests = tests
             pack_language_data(dbase, self.images, language.value.language_id, tests)
 
+        assert canonical_tests, "Missed canonical tests data"
+
         for language in self.languages:
             if language in tests_data:
                 continue
@@ -62,7 +71,7 @@ class DBBuilder:
 
 def pack_language_data(
     dbase: DriverTestDBase, images: Images, language_id: int, tests: list
-):
+) -> None:
     for test_index, test in enumerate(tests):
         test_id = test_index + 1
         test_dbo = dbase.add_test_if_not_exists(test_id)
@@ -87,20 +96,14 @@ def pack_language_data(
                 )
 
             images.put(question.image)
-            """
-            if question.image and question.image != 'default.png':
-                print(f"  '{question_dbo.question_id}': require('assets/img/questions/{question.image}'),")
-            else:
-                print(f"  '{question_dbo.question_id}': null,")
-            """
 
 
 def fix_missed_localizations(
     dbase: DriverTestDBase,
     translator: Translator,
-    languages: list,
+    languages: list[Language],
     canonical_lang: Language,
-):
+) -> None:
     expected_localizations_map = dict(
         [(lang.value.language_id, lang) for lang in languages]
     )
