@@ -32,7 +32,7 @@ def load_ny_tests():
 
 
 def load_state_questions(state_id: int):
-    dbase_path = "usa/data/tests_US.db"
+    dbase_path = "data/usa/tests_US.db"
     cursor = sqlite3.connect(dbase_path)
     cursor.execute("pragma encoding=UTF8")
 

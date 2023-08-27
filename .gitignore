@@ -1,8 +1,8 @@
 # App data
 cache/
 DriveTest.db
-paraphrase.out.json
 data
+output
 .DS_Store
 
 # Byte-compiled / optimized / DLL files

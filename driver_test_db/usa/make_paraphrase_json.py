@@ -20,6 +20,7 @@ class ParaphrasedText:
 @dataclasses.dataclass
 class ParaphrasedAnswer:
     text: ParaphrasedText
+    is_correct: bool
 
 
 @dataclasses.dataclass
@@ -44,10 +45,20 @@ def main():
     para_questions = get_paraphrased_questions(
         orig_en_tests, para_tests_1, para_tests_2
     )
-    para_questions_dict = [dataclasses.asdict(e) for e in para_questions]
 
-    with open("paraphrase.out.json", "w") as output:
-        json.dump(para_questions_dict, output, indent=4)
+    chunk_size = 20
+    chunk_name_templ = "output/paraphrase.out.{index}.json"
+    chunk_index = 1
+    while True:
+        i = (chunk_index - 1) * chunk_size
+        if i >= len(para_questions):
+            break
+        chunk_data = [dataclasses.asdict(e) for e in para_questions[i : i + chunk_size]]
+        chunk_file = chunk_name_templ.format(index=chunk_index)
+        chunk_index += 1
+
+        with open(chunk_file, "w") as output:
+            json.dump(chunk_data, output, indent=4)
 
 
 def get_paraphrased_tests(tests, domain: str, request_templ: str):
@@ -94,7 +105,8 @@ def pack_paraphrased_question(
                     candidate_1=para_question_1.answers[i].text,
                     candidate_2=para_question_2.answers[i].text,
                     final="",
-                )
+                ),
+                is_correct=orig_question.answers[i].is_right_answer,
             )
         )
     return ParaphrasedQuestion(
