@@ -1,8 +1,6 @@
 from google.cloud import translate
 from driver_test_db.util.language import Language
-
-project_id = "driving-test-394702"
-api_key = "AIzaSyBWxwhKYTRz2xy55bGTxyymTL64Dg6P1BI"
+from driver_test_db.config import config
 
 
 class GoogleTranslator:
@@ -14,7 +12,9 @@ class GoogleTranslator:
 
 
 def _call_with_backoff(client, dest_lang: Language, src_text: str):
-    print(f"HACK_src_text: '{src_text}'")
+    print(f"HACK_GoogleTranslator_call: '{src_text}'")
+    project_id = config["google_translate"]["project_id"]
+    api_key = config["google_translate"]["api_key"]
     response = client.translate_text(
         request={
             "parent": f"projects/{project_id}/locations/global",
@@ -27,6 +27,6 @@ def _call_with_backoff(client, dest_lang: Language, src_text: str):
     if not response.translations or len(response.translations) != 1:
         raise Exception(f"Bad Google response {response}")
     print(
-        f"HACK_call_with_backoff: {src_text} -> {response.translations[0].translated_text}"
+        f"HACK_GoogleTranslator_result: {src_text} -> {response.translations[0].translated_text}"
     )
     return response.translations[0].translated_text

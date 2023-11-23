@@ -1,17 +1,18 @@
 import sqlite3
 from driver_test_db.util.dbase import DriverTestDBase
-from driver_test_db.util.loader import Loader
-from driver_test_db.util.language import Language
+from driver_test_db.util.language import Language, TextLocalizations
 from driver_test_db.util.data import Test, Question, Answer
+from driver_test_db.parser.parser import Parser
 
 
-class G1Loader(Loader):
-    def get_tests(self):
-        dbase = DriverTestDBase(dbase_path="g1canada/data/main.db")
+class DatabaseParser(Parser):
+    def __init__(self, dbase_path: str):
+        self.dbase_path = dbase_path
+
+    def get_tests(self) -> list[Test]:
+        dbase = DriverTestDBase(dbase_path=self.dbase_path)
         dbase.open()
-        return {
-            Language.EN: load_tests(dbase),
-        }
+        return load_tests(dbase)
 
 
 def load_tests(dbase):
@@ -31,7 +32,7 @@ def load_test(dbase, test_id):
 
 def load_questions(dbase, test_id):
     question_obj_list = []
-    for question in dbase.get_questions(test_id):
+    for question in dbase.get_test_questions(test_id):
         question_obj_list.append(load_question(dbase, question.question_id))
     return question_obj_list
 
@@ -39,6 +40,7 @@ def load_questions(dbase, test_id):
 def load_question(dbase, question_id):
     question = dbase.get_question(question_id)
     return Question(
+        orig_id=question_id,
         text=load_text(dbase, question.text_id),
         answers=load_answers(dbase, question_id),
         image=None,
@@ -61,10 +63,14 @@ def load_answer(dbase, answer_id):
 
 
 def load_text(dbase, text_id):
-    text = dbase.get_text(text_id)
+    # text = dbase.get_text(text_id)
+    text_localizations = TextLocalizations()
     for localization in dbase.get_text_localizations(text_id):
-        if localization.language_id == 1:
-            return localization.content
-    raise Exception(
-        f"Missed localization: {text_id}, {dbase.get_text_localizations(text_id)}"
-    )
+        text_localizations.set(
+            Language.from_id(localization.language_id), localization.content
+        )
+    # raise Exception(
+    #    f"Missed localization: {text_id}, {dbase.get_text_localizations(text_id)}"
+    # )
+    # print(f"Missed localization: {text_id}, {dbase.get_text_localizations(text_id)}")
+    return text_localizations

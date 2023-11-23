@@ -1,13 +1,14 @@
 from dataclasses import dataclass
 from typing import Callable
+from driver_test_db.util.language import TextLocalizations
 
 
-TextTransformer = Callable[[str], str]
+TextTransformer = Callable[[TextLocalizations], TextLocalizations]
 
 
 @dataclass
 class Answer:
-    text: str
+    text: TextLocalizations
     is_right_answer: bool
 
     def transform_texts(self, text_transformer: TextTransformer) -> "Answer":
@@ -19,12 +20,14 @@ class Answer:
 
 @dataclass
 class Question:
-    text: str
+    orig_id: str | None
+    text: TextLocalizations
     image: str
     answers: list[Answer]
 
     def transform_texts(self, text_transformer: TextTransformer) -> "Question":
         return Question(
+            orig_id=self.orig_id,
             text=text_transformer(self.text),
             image=self.image,
             answers=[
@@ -34,6 +37,7 @@ class Question:
 
     def transform_question_text(self, text_transformer: TextTransformer) -> "Question":
         return Question(
+            orig_id=self.orig_id,
             text=text_transformer(self.text),
             image=self.image,
             answers=self.answers,
@@ -42,7 +46,7 @@ class Question:
 
 @dataclass
 class Test:
-    title: str
+    title: TextLocalizations
     questions: list[Question]
 
     def transform_texts(self, text_transformer: TextTransformer) -> "Test":
@@ -54,9 +58,7 @@ class Test:
             ],
         )
 
-    def transform_question_texts(
-        self, text_transformer: Callable[[str], str]
-    ) -> "Test":
+    def transform_question_texts(self, text_transformer: TextTransformer) -> "Test":
         return Test(
             title=self.title,
             questions=[

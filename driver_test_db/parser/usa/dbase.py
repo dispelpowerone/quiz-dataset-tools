@@ -1,6 +1,7 @@
 import sqlite3
 from dataclasses import dataclass
 from driver_test_db.util.data import Question, Answer, Test
+from driver_test_db.util.language import Language, TextLocalizations
 
 
 @dataclass
@@ -17,14 +18,14 @@ class GAnswer:
     text: str
 
 
-def load_ny_tests():
+def load_ny_tests() -> list[Test]:
     test_size = 15
-    tests = list()
+    tests: list[Test] = []
     questions = load_state_questions(33)
     for i in range(0, len(questions), test_size):
         tests.append(
             Test(
-                title=f"Test {len(tests) + 1}",
+                title=_make_text(f"Test {len(tests) + 1}"),
                 questions=questions[i : i + test_size],
             )
         )
@@ -36,7 +37,7 @@ def load_state_questions(state_id: int):
     cursor = sqlite3.connect(dbase_path)
     cursor.execute("pragma encoding=UTF8")
 
-    questions = list()
+    questions = []
     g_questions = _load_state_questions(cursor, state_id)
     for g_question in g_questions:
         g_answers = _load_question_answers(cursor, g_question.id)
@@ -54,10 +55,12 @@ select distinct
 from question q
 left join test_question tq on tq.q_Id = q.Id
 left join state_test st on st.t_Id = tq.t_Id
+left join test t on t.Id = st.t_Id
 where st.s_Id = {state_id}
+    and t.type < 20
     """
     res = cursor.execute(query)
-    questions = list()
+    questions = []
     for row in res.fetchall():
         questions.append(
             GQuestion(
@@ -80,7 +83,7 @@ left join question_answer qa on qa.a_Id = a.Id
 where qa.q_Id = {question_id}
     """
     res = cursor.execute(query)
-    answers = list()
+    answers = []
     for row in res.fetchall():
         answers.append(
             GAnswer(
@@ -91,17 +94,27 @@ where qa.q_Id = {question_id}
     return answers
 
 
-def _make_question(g_question: GQuestion, g_answers: list[GAnswer]):
-    answers = list()
+def _make_question(g_question: GQuestion, g_answers: list[GAnswer]) -> Question:
+    answers = []
     for g_answer in g_answers:
         answers.append(
             Answer(
-                text=g_answer.text,
+                text=_make_text(g_answer.text),
                 is_right_answer=(g_answer.id == g_question.correct_answer),
             )
         )
+    image_png = g_question.image_name.replace(".png", "_Normal.png").replace(
+        ".jpg", "_Normal.png"
+    )
     return Question(
-        text=g_question.description,
-        image=g_question.image_name,
+        orig_id=str(g_question.id),
+        text=_make_text(g_question.description),
+        image=image_png,
         answers=answers,
     )
+
+
+def _make_text(g_text: str) -> TextLocalizations:
+    text = TextLocalizations()
+    text.set(Language.EN, g_text)
+    return text

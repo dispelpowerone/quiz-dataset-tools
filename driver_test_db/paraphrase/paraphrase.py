@@ -22,11 +22,6 @@ class Paraphrase(Transformer):
         result = result.strip('" ')
         return result
 
-    def paraphrase_tests(self, src_tests: list):
-        transformer = lambda text: f"{self.get(text)}"
-        # return [test.transform_question_texts(transformer) for test in src_tests]
-        return [test.transform_texts(transformer) for test in src_tests]
-
     def _ask_gpt(self, src_text):
         request = self._request_templ.format(text=src_text)
         messages = [{"role": "system", "content": request}]

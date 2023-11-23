@@ -3,9 +3,9 @@
 import dataclasses
 import json
 
-from driver_test_db.util.paraphrase import Paraphrase
+from driver_test_db.paraphrase.paraphrase import Paraphrase
 from driver_test_db.util.language import Language
-from driver_test_db.util.data import Question
+from driver_test_db.util.data import Question, Test
 from driver_test_db.usa.loader import USALoader
 
 
@@ -64,7 +64,12 @@ def main():
 def get_paraphrased_tests(tests, domain: str, request_templ: str):
     paraphrase = Paraphrase(domain, request_templ=request_templ)
     paraphrase.load_cache()
-    para_tests = paraphrase.paraphrase_tests(tests)
+
+    def transformer(text: str) -> str:
+        return paraphrase.get(text)
+
+    para_tests = [test.transform_texts(transformer) for test in tests]
+
     paraphrase.save_cache()
     return para_tests
 

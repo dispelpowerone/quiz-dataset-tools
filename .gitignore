@@ -4,6 +4,7 @@ DriveTest.db
 data
 output
 .DS_Store
+driver_test_db/config.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
