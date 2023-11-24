@@ -1,6 +1,7 @@
 import os
 import glob
-from typing import TypeVar
+from typing import TypeVar, Type
+from dataclasses_json import DataClassJsonMixin
 
 
 def prepare_output_dir(dir_name: str):
@@ -10,10 +11,10 @@ def prepare_output_dir(dir_name: str):
         os.remove(file_path)
 
 
-T = TypeVar("T")
+T = TypeVar("T", bound=DataClassJsonMixin)
 
 
-def dump_list(cls: T, data: list[T], output_dir: str, chunk_size: int) -> None:
+def dump_list(cls: Type[T], data: list[T], output_dir: str, chunk_size: int) -> None:
     prepare_output_dir(output_dir)
     chunk_name_templ = output_dir + "/out.{index}.json"
     chunk_index = 1
@@ -30,9 +31,9 @@ def dump_list(cls: T, data: list[T], output_dir: str, chunk_size: int) -> None:
             fd.write(chunk_data)
 
 
-def load_list(cls: T, source_dir: str) -> list[T] | None:
+def load_list(cls: Type[T], source_dir: str) -> list[T]:
     if not os.path.isdir(source_dir):
-        return None
+        raise Exception(f"No source directory found {source_dir}")
     data = []
     file_paths = glob.glob(f"{source_dir}/out.*.json")
     for file_path in file_paths:

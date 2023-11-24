@@ -1,3 +1,4 @@
+"""
 #!/usr/bin/env python3
 
 import dataclasses
@@ -128,3 +129,4 @@ def pack_paraphrased_question(
 
 
 main()
+"""

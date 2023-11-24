@@ -1,3 +1,4 @@
+"""
 import os
 import json
 from typing import Callable
@@ -89,3 +90,4 @@ def build_overrides(
 
 
 main()
+"""

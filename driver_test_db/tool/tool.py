@@ -54,11 +54,11 @@ def prebuild(domain: str, translate: bool, parser: str) -> None:
     builder.set_parser(get_parser(parser, domain))
     builder.set_languages(languages)
 
-    translator: Translator = None
+    translator = None
     if translate:
         translator = Translator(domain)
         translator.load_cache()
-    builder.set_translator(translator)
+        builder.set_translator(translator)
 
     builder.build()
 

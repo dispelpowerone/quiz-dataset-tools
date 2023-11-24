@@ -20,7 +20,7 @@ class Language(Enum):
     PA = _Language(7, "Punjabi")
 
     @staticmethod
-    def from_id(language_id: int) -> "Language":
+    def from_id(language_id: int) -> "Language" | None:
         for lang in Language:
             if lang.value.language_id == language_id:
                 return lang
