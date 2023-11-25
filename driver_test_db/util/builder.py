@@ -6,14 +6,14 @@ from driver_test_db.prebuild.types import PrebuildTest, PrebuildQuestion, Prebui
 
 class DatabaseBuilder:
     def __init__(self) -> None:
-        self.output_dir: str = "out"
+        self.dbase: DriverTestDBase | None = None
         self.images: Images | None = None
         self.languages: list[Language] = []
         self.tests: list[PrebuildTest] | None = None
         self.questions: list[PrebuildQuestion] | None = None
 
-    def set_output_dir(self, output_dir: str) -> None:
-        self.output_dir = output_dir
+    def set_database(self, dbase: DriverTestDBase) -> None:
+        self.dbase = dbase
 
     def set_images(self, images: Images) -> None:
         self.images = images
@@ -28,16 +28,13 @@ class DatabaseBuilder:
         self.questions = questions
 
     def build(self) -> None:
-        dbase = self._make_database_connection()
-        dbase.bootstrap()
+        assert self.dbase
+        self.dbase.bootstrap()
 
-        self._pack_tests(dbase)
-        self._pack_questions(dbase)
+        self._pack_tests(self.dbase)
+        self._pack_questions(self.dbase)
 
-        dbase.commit_and_close()
-
-    def _make_database_connection(self):
-        return DriverTestDBase()
+        self.dbase.commit()
 
     def _pack_tests(self, dbase: DriverTestDBase) -> None:
         assert self.tests

@@ -1,4 +1,4 @@
-all: mypy fmt test install
+all: mypy fmt install test
 
 mypy:
 	python3 -m mypy driver_test_db

@@ -279,8 +279,10 @@ class DBase:
             results.append(dbo_type.make(row))
         return results
 
-    def commit_and_close(self):
+    def commit(self):
         self.cursor.commit()
+
+    def close(self):
         self.cursor.close()
 
 
@@ -397,12 +399,19 @@ class DriverTestDBase:
         return self.dbase.select(TextLocalizationDBO, f"TextId = {text_id}")
 
     def get_text_localization(self, text_id, language_id):
-        return self.dbase.select(
+        results = self.dbase.select(
             TextLocalizationDBO, f"TextId = {text_id} and LanguageId = {language_id}"
         )
+        assert len(results) < 2
+        if results:
+            return results[0]
+        return None
 
     def get_language(self, language_id):
         return self.dbase.get(LanguageDBO, language_id)
 
-    def commit_and_close(self):
-        self.dbase.commit_and_close()
+    def commit(self):
+        self.dbase.commit()
+
+    def close(self):
+        self.dbase.close()

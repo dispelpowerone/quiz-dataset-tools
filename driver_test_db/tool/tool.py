@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import click
-from driver_test_db.util.text_overrides import TextOverrides
 from driver_test_db.util.language import Language
 from driver_test_db.util.builder import DatabaseBuilder
+from driver_test_db.util.dbase import DriverTestDBase
 from driver_test_db.prebuild.prebuild import PrebuildBuilder
 from driver_test_db.parser.parser import Parser
 from driver_test_db.parser.dbase import DatabaseParser
@@ -72,12 +72,19 @@ def prebuild(domain: str, translate: bool, parser: str) -> None:
 def build(domain: str) -> None:
     languages = [lang for lang in Language]
     prebuild_dir = get_prebuild_dir(domain)
+    build_dir = get_build_dir(domain)
+
+    dbase = DriverTestDBase(f"{build_dir}/main.db")
+    dbase.open()
 
     builder = DatabaseBuilder()
+    builder.set_database(dbase)
     builder.set_languages(languages)
     builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_dir))
     builder.set_prebuild_questions(PrebuildBuilder.load_questions(prebuild_dir))
     builder.build()
+
+    dbase.close()
 
 
 def get_parser(parser: str, domain: str) -> Parser:
@@ -90,3 +97,7 @@ def get_parser(parser: str, domain: str) -> Parser:
 
 def get_prebuild_dir(domain: str):
     return f"output/{domain}/prebuild"
+
+
+def get_build_dir(domain: str):
+    return f"output/{domain}/build"
