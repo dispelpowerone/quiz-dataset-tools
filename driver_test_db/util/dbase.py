@@ -331,6 +331,7 @@ class DriverTestDBase:
         return question
 
     def add_answer_if_not_exists(self, question_id, answer_index, is_correct):
+        assert answer_index < 10
         answer_id = 10 * question_id + answer_index
         answer = self.dbase.get(AnswerDBO, answer_id)
         if not answer:

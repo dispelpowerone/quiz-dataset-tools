@@ -75,7 +75,7 @@ def build(domain: str) -> None:
 
     builder = DatabaseBuilder()
     builder.set_languages(languages)
-    builder.set_prebuid_tests(PrebuildBuilder.load_tests(prebuild_dir))
+    builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_dir))
     builder.set_prebuild_questions(PrebuildBuilder.load_questions(prebuild_dir))
     builder.build()
 

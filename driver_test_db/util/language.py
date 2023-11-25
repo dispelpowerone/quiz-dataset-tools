@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Callable
+from typing import Callable, Optional
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json, Undefined, DataClassJsonMixin
 
@@ -20,7 +20,7 @@ class Language(Enum):
     PA = _Language(7, "Punjabi")
 
     @staticmethod
-    def from_id(language_id: int) -> "Language" | None:
+    def from_id(language_id: int) -> Optional["Language"]:
         for lang in Language:
             if lang.value.language_id == language_id:
                 return lang

@@ -21,23 +21,29 @@ class DatabaseBuilder:
     def set_languages(self, languages: list[Language]) -> None:
         self.languages = languages
 
-    def set_prebuid_tests(self, tests: list[PrebuildTest]) -> None:
+    def set_prebuild_tests(self, tests: list[PrebuildTest]) -> None:
         self.tests = tests
 
     def set_prebuild_questions(self, questions: list[PrebuildQuestion]) -> None:
         self.questions = questions
 
     def build(self) -> None:
-        dbase = DriverTestDBase()
+        dbase = self._make_database_connection()
         dbase.bootstrap()
+
         self._pack_tests(dbase)
+        self._pack_questions(dbase)
+
         dbase.commit_and_close()
+
+    def _make_database_connection(self):
+        return DriverTestDBase()
 
     def _pack_tests(self, dbase: DriverTestDBase) -> None:
         assert self.tests
         for test in self.tests:
             test_dbo = dbase.add_test_if_not_exists(test.test_id)
-        self._pack_text(dbase, test_dbo.text_id, test.title)
+            self._pack_text(dbase, test_dbo.text_id, test.title)
 
     def _pack_text(
         self, dbase: DriverTestDBase, text_id: int, text: PrebuildText
@@ -48,40 +54,22 @@ class DatabaseBuilder:
                 raise Exception("Missed localization")
             dbase.add_text_localization(text_id, lang.value.language_id, text_content)
 
-
-"""
-def _pack_questions(
-    dbase: DriverTestDBase, questions: list[PrebuildQuestion]
-) -> None:
-    for question in questions:
-        test_dbo = dbase.add_test_if_not_exists(question.test_id)
-        _pack_text(dbase, test_dbo.text_id, )
-
-    for test_index, test in enumerate(tests):
-        test_id = test_index + 1
-        
-        test_text_loc_id = dbase.add_text_localization(
-            test_dbo.text_id, language_id, test.title
-        )
-
-        for question_index, question in enumerate(test.questions):
+    def _pack_questions(self, dbase: DriverTestDBase) -> None:
+        assert self.questions
+        for question_index, question in enumerate(self.questions):
             question_dbo = dbase.add_question_if_not_exists(
-                test_id, question_index + 1, question.image
+                question.test_id, question.question_id, None
             )
-            question_text_loc_id = dbase.add_text_localization(
-                question_dbo.text_id, language_id, question.text
-            )
-            images.put(str(question_dbo.question_id), question.image)
+            self._pack_text(dbase, question_dbo.text_id, question.text)
 
             for answer_index, answer in enumerate(question.answers):
                 answer_dbo = dbase.add_answer_if_not_exists(
                     question_dbo.question_id, answer_index + 1, answer.is_right_answer
                 )
-                answer_text_loc_id = dbase.add_text_localization(
-                    answer_dbo.text_id, language_id, answer.text
-                )
+                self._pack_text(dbase, answer_dbo.text_id, answer.text)
 
 
+"""
 def fix_missed_localizations(
     dbase: DriverTestDBase,
     translator: Translator,
