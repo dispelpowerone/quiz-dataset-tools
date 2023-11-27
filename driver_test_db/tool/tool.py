@@ -4,6 +4,7 @@ import click
 from driver_test_db.util.language import Language
 from driver_test_db.util.builder import DatabaseBuilder
 from driver_test_db.util.dbase import DriverTestDBase
+from driver_test_db.util.fs import prepare_output_dir
 from driver_test_db.prebuild.prebuild import PrebuildBuilder
 from driver_test_db.parser.parser import Parser
 from driver_test_db.parser.dbase import DatabaseParser
@@ -73,6 +74,8 @@ def build(domain: str) -> None:
     languages = [lang for lang in Language]
     prebuild_dir = get_prebuild_dir(domain)
     build_dir = get_build_dir(domain)
+
+    prepare_output_dir(build_dir)
 
     dbase = DriverTestDBase(f"{build_dir}/main.db")
     dbase.open()
