@@ -9,6 +9,7 @@ from driver_test_db.prebuild.prebuild import PrebuildBuilder
 from driver_test_db.parser.parser import Parser
 from driver_test_db.parser.dbase import DatabaseParser
 from driver_test_db.parser.usa import USADatabaseParser
+from driver_test_db.parser.tilda import TildaParser
 from driver_test_db.translation.translation import Translator
 
 
@@ -95,6 +96,8 @@ def get_parser(parser: str, domain: str) -> Parser:
         return DatabaseParser(f"data/{domain}/main.db")
     elif parser == "gn":
         return USADatabaseParser()
+    elif parser == "tilda":
+        return TildaParser(f"data/{domain}")
     raise Exception(f"Unknown parser '{parser}'")
 
 
