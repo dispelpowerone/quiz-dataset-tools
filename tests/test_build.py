@@ -31,6 +31,7 @@ class TestDatabaseBuilder(unittest.TestCase):
                     test_id=1,
                     question_id=1,
                     text=self._make_text("T1Q1"),
+                    image=None,
                     answers=[
                         PrebuildAnswer(
                             self._make_text("T1Q1A1"), is_right_answer=False
@@ -48,6 +49,7 @@ class TestDatabaseBuilder(unittest.TestCase):
                     test_id=1,
                     question_id=2,
                     text=self._make_text("T1Q2"),
+                    image=None,
                     answers=[
                         PrebuildAnswer(
                             self._make_text("T1Q2A1"), is_right_answer=False
@@ -65,6 +67,7 @@ class TestDatabaseBuilder(unittest.TestCase):
                     test_id=2,
                     question_id=1,
                     text=self._make_text("T2Q1"),
+                    image=None,
                     answers=[
                         PrebuildAnswer(self._make_text("T2Q1A1"), is_right_answer=True),
                         PrebuildAnswer(

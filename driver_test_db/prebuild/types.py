@@ -22,6 +22,7 @@ class PrebuildQuestion(DataClassJsonMixin):
     question_id: int
     text: PrebuildText
     answers: list[PrebuildAnswer]
+    image: str | None = None
 
 
 @dataclass

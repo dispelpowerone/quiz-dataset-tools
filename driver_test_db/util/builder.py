@@ -6,17 +6,14 @@ from driver_test_db.prebuild.types import PrebuildTest, PrebuildQuestion, Prebui
 
 class DatabaseBuilder:
     def __init__(self) -> None:
+        self.images = Images("./", "output/images")
         self.dbase: DriverTestDBase | None = None
-        self.images: Images | None = None
         self.languages: list[Language] = []
         self.tests: list[PrebuildTest] | None = None
         self.questions: list[PrebuildQuestion] | None = None
 
     def set_database(self, dbase: DriverTestDBase) -> None:
         self.dbase = dbase
-
-    def set_images(self, images: Images) -> None:
-        self.images = images
 
     def set_languages(self, languages: list[Language]) -> None:
         self.languages = languages
@@ -30,11 +27,13 @@ class DatabaseBuilder:
     def build(self) -> None:
         assert self.dbase
         self.dbase.bootstrap()
+        self.images.clean()
 
         self._pack_tests(self.dbase)
         self._pack_questions(self.dbase)
 
         self.dbase.commit()
+        self.images.save_index()
 
     def _pack_tests(self, dbase: DriverTestDBase) -> None:
         assert self.tests
@@ -58,6 +57,7 @@ class DatabaseBuilder:
                 question.test_id, question.question_id, None
             )
             self._pack_text(dbase, question_dbo.text_id, question.text)
+            self.images.put(str(question_dbo.question_id), question.image)
 
             for answer_index, answer in enumerate(question.answers):
                 answer_dbo = dbase.add_answer_if_not_exists(

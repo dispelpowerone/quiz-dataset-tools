@@ -88,6 +88,7 @@ class PrebuildBuilder:
             test_id=test_id,
             question_id=question_id,
             text=self._make_prebuild_text(question.text),
+            image=question.image,
             answers=[self._make_prebuild_answer(answer) for answer in question.answers],
         )
 

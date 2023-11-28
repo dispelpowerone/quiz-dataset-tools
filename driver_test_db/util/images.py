@@ -9,7 +9,7 @@ class Images:
         self.dest_dir = dest_dir
         self.index = {}
 
-    def put(self, name: str, filename: str) -> None:
+    def put(self, name: str, filename: str | None) -> None:
         # If image has already added
         if name in self.index:
             return

@@ -22,7 +22,7 @@ class Answer:
 class Question:
     orig_id: str | None
     text: TextLocalizations
-    image: str
+    image: str | None
     answers: list[Answer]
 
     def transform_texts(self, text_transformer: TextTransformer) -> "Question":
