@@ -45,6 +45,20 @@ class Translator:
             self.translators[lang] = translator
 
 
+class PassThroughTranslator(Translator):
+    def __init__(self):
+        pass
+
+    def get_one(self, text: str, lang: Language) -> str:
+        return text
+
+    def save_cache(self):
+        pass
+
+    def load_cache(self):
+        pass
+
+
 class TranslationTextTransformer:
     def __init__(
         self,
@@ -69,11 +83,15 @@ class TranslationTextTransformer:
             translated_text_content = translated_text.get(lang)
             if translated_text_content is not None:
                 continue
-            if lang == Language.FA:
+            translated_text_content = self.translator.get_one(
+                canonical_text_content, lang
+            )
+            if (
+                translated_text_content != canonical_text_content
+                and lang != Language.FA
+            ):
                 translated_text_content = (
-                    f"{self.translator.get_one(canonical_text_content, lang)}"
+                    f"{translated_text_content} / {canonical_text_content}"
                 )
-            else:
-                translated_text_content = f"{self.translator.get_one(canonical_text_content, lang)} / {canonical_text_content}"
             translated_text.set(lang, translated_text_content)
         return translated_text

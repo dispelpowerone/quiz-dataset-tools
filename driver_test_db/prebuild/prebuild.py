@@ -2,6 +2,7 @@ from driver_test_db.util.text_overrides import TextOverrides
 from driver_test_db.translation.translation import (
     Translator,
     TranslationTextTransformer,
+    PassThroughTranslator,
 )
 from driver_test_db.parser.parser import Parser
 from driver_test_db.util.language import Language, TextLocalizations
@@ -78,7 +79,7 @@ class PrebuildBuilder:
     def _make_prebuild_test(self, test_id, test: Test) -> PrebuildTest:
         return PrebuildTest(
             test_id=test_id,
-            title=self._make_prebuild_text(test.title),
+            title=self._make_prebuild_text(test.title, should_translate=False),
         )
 
     def _make_prebuild_question(
@@ -98,22 +99,32 @@ class PrebuildBuilder:
             is_right_answer=answer.is_right_answer,
         )
 
-    def _make_prebuild_text(self, text: TextLocalizations) -> PrebuildText:
+    def _make_prebuild_text(
+        self, text: TextLocalizations, should_translate: bool = True
+    ) -> PrebuildText:
         # Apply transformers
         final_text = text
         for transformer in self.text_transformers:
             final_text = transformer(final_text)
         if self.translator:
-            transformer = TranslationTextTransformer(
-                translator=self.translator,
-                canonical_language=Language.EN,
-                languages=self.languages,
-            )
-            final_text = transformer(final_text)
+            final_text = self._fulfill_text_localizations(final_text, should_translate)
         return PrebuildText(
             localizations=final_text,
             paraphrase=None,
         )
+
+    def _fulfill_text_localizations(
+        self, text: TextLocalizations, should_translate: bool
+    ) -> TextLocalizations:
+        translator: Translator = PassThroughTranslator()
+        if self.translator and should_translate:
+            translator = self.translator
+        transformer = TranslationTextTransformer(
+            translator=translator,
+            canonical_language=Language.EN,
+            languages=self.languages,
+        )
+        return transformer(text)
 
     def _dump_tests(self, tests: list[PrebuildTest]) -> None:
         dump_list(
