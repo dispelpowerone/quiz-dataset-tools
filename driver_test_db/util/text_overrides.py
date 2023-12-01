@@ -1,25 +1,34 @@
 import csv
 import os
+from driver_test_db.util.language import Language
 
 
 class TextOverrides:
-    OVERRIDES_FILE_TEMPL = "output/{}/{}.overrides"
-    OVERRIDES_FILE_TEMP_TEMPL = "output/{}/{}.overrides"
+    SCHEMA = ["source_lang", "source_text", "context", "dest_lang", "dest_text"]
+    OVERRIDES_FILE_TEMPL = "data/overrides/{}/{}.overrides"
+    OVERRIDES_FILE_TEMP_TEMPL = "data/overrides/{}/{}.overrides.temp"
 
-    MappingType = dict[tuple[str, str], str]
+    MappingType = dict[tuple[str, str, str, str], str]
 
     def __init__(self, domain: str, name: str):
         self.domain = domain
         self.name = name
         self.overrides: TextOverrides.MappingType = {}
 
-    def get(self, text: str, context: str = "") -> str | None:
-        if not text:
-            return ""
-        return self.overrides.get((text, context))
+    def get(
+        self, lang: Language, text: str, context: str, override_lang: Language
+    ) -> str | None:
+        return self.overrides.get((lang.name, text, context, override_lang.name))
 
-    def put(self, text: str, context: str, override: str) -> None:
-        self.overrides[(text, context)] = override
+    def put(
+        self,
+        lang: Language,
+        text: str,
+        context: str,
+        override_lang: Language,
+        override: str,
+    ) -> None:
+        self.overrides[(lang.name, text, context, override_lang.name)] = override
 
     def save(self) -> None:
         print(f"TextOverrides::save: size = {len(self.overrides)}")
@@ -35,8 +44,9 @@ class TextOverrides:
             os.remove(overrides_file_temp)
         with open(overrides_file_temp, "w", newline="") as fd:
             writer = csv.writer(fd, delimiter=",", quoting=csv.QUOTE_ALL)
+            writer.writerow(TextOverrides.SCHEMA)
             for key, value in self.overrides.items():
-                writer.writerow([key[0], key[1], value])
+                writer.writerow([key[0], key[1], key[2], key[3], value])
         os.rename(overrides_file_temp, overrides_file)
 
     def load(self) -> None:
@@ -49,9 +59,11 @@ class TextOverrides:
             return
         with open(overrides_file, newline="") as fd:
             reader = csv.reader(fd, delimiter=",")
+            header = next(reader)
+            assert header == TextOverrides.SCHEMA
             for row in reader:
-                if len(row) != 3:
-                    raise Exception(f"TextOverrides::load: Invalid cache format: {row}")
-                overrides[(row[0], row[1])] = row[2]
+                if len(row) != len(TextOverrides.SCHEMA):
+                    raise Exception(f"TextOverrides::load: Invalid format: {row}")
+                overrides[(row[0], row[1], row[2], row[3])] = row[4]
         self.overrides = overrides
         print(f"TextOverrides::load: {len(self.overrides)} records loaded")

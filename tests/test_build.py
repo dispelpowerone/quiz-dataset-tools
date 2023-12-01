@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
-from driver_test_db.util.language import Language
+from driver_test_db.util.language import Language, TextLocalizations
 from driver_test_db.util.builder import DatabaseBuilder
 from driver_test_db.util.dbase import DriverTestDBase
 from driver_test_db.prebuild.types import (
@@ -113,7 +113,7 @@ class TestDatabaseBuilder(unittest.TestCase):
 
     def _make_text(self, en: str, fr: str = None):
         return PrebuildText(
-            localizations={Language.EN: en, Language.FR: fr}, paraphrase=None
+            localizations=TextLocalizations(EN=en, FR=fr), paraphrase=None
         )
 
     def _assert_text(self, text_id: int, en: str):
