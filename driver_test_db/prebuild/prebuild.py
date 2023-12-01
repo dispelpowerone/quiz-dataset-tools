@@ -14,7 +14,8 @@ from driver_test_db.prebuild.types import (
     PrebuildQuestion,
     PrebuildTest,
 )
-from driver_test_db.prebuild.text_format import strip_text, remove_echo_text
+from driver_test_db.prebuild.stage import BaseStage, StageState
+from driver_test_db.prebuild.stages.passthrough import PassthroughStage
 
 
 class PrebuildBuilder:
@@ -24,7 +25,6 @@ class PrebuildBuilder:
         self.translator: Translator | None = None
         self.parser: Parser | None = None
         self.languages: list[Language] = []
-        self.text_transformers: list[TextTransformer] = [strip_text, remove_echo_text]
 
     def set_output_dir(self, output_dir: str) -> None:
         self.output_dir = output_dir
@@ -42,25 +42,14 @@ class PrebuildBuilder:
         self.languages = languages
 
     def build(self) -> None:
+        stages: list[tuple[str, BaseStage]] = []
+        stages.append(("init", PassthroughStage()))
         # Prerequisites
-        assert self.parser
-        # assert self.translator
 
-        canonical_tests = self.parser.get_tests()
-        canonical_lang = self.parser.get_canonical_language()
-
-        prebuild_tests = []
-        prebuild_questions = []
-        for test_index, test in enumerate(canonical_tests):
-            test_id = test_index + 1
-            prebuild_tests.append(self._make_prebuild_test(test_id, test))
-            for question_index, question in enumerate(test.questions):
-                prebuild_questions.append(
-                    self._make_prebuild_question(test_id, question_index + 1, question)
-                )
-
-        self._dump_tests(prebuild_tests)
-        self._dump_questions(prebuild_questions)
+        state = self._load_initial_state()
+        for stage_name, stage in stages:
+            state = stage.process(state)
+            self._dump_state(stage_name, state)
 
     @staticmethod
     def load_tests(data_dir: str) -> list[PrebuildTest]:
@@ -76,10 +65,24 @@ class PrebuildBuilder:
             source_dir=f"{data_dir}/questions",
         )
 
+    def _load_initial_state(self) -> StageState:
+        assert self.parser
+        canonical_tests = self.parser.get_tests()
+        prebuild_tests = []
+        prebuild_questions = []
+        for test_index, test in enumerate(canonical_tests):
+            test_id = test_index + 1
+            prebuild_tests.append(self._make_prebuild_test(test_id, test))
+            for question_index, question in enumerate(test.questions):
+                prebuild_questions.append(
+                    self._make_prebuild_question(test_id, question_index + 1, question)
+                )
+        return StageState(tests=prebuild_tests, questions=prebuild_questions)
+
     def _make_prebuild_test(self, test_id, test: Test) -> PrebuildTest:
         return PrebuildTest(
             test_id=test_id,
-            title=self._make_prebuild_text(test.title, should_translate=False),
+            title=self._make_prebuild_text(test.title),
         )
 
     def _make_prebuild_question(
@@ -99,45 +102,22 @@ class PrebuildBuilder:
             is_right_answer=answer.is_right_answer,
         )
 
-    def _make_prebuild_text(
-        self, text: TextLocalizations, should_translate: bool = True
-    ) -> PrebuildText:
-        # Apply transformers
-        final_text = text
-        for transformer in self.text_transformers:
-            final_text = transformer(final_text)
-        if self.translator:
-            final_text = self._fulfill_text_localizations(final_text, should_translate)
+    def _make_prebuild_text(self, text: TextLocalizations) -> PrebuildText:
         return PrebuildText(
-            localizations=final_text,
+            localizations=text,
             paraphrase=None,
         )
 
-    def _fulfill_text_localizations(
-        self, text: TextLocalizations, should_translate: bool
-    ) -> TextLocalizations:
-        translator: Translator = PassThroughTranslator()
-        if self.translator and should_translate:
-            translator = self.translator
-        transformer = TranslationTextTransformer(
-            translator=translator,
-            canonical_language=Language.EN,
-            languages=self.languages,
-        )
-        return transformer(text)
-
-    def _dump_tests(self, tests: list[PrebuildTest]) -> None:
+    def _dump_state(self, stage_name: str, state: StageState) -> None:
         dump_list(
             cls=PrebuildTest,
-            data=tests,
-            output_dir=f"{self.output_dir}/tests",
+            data=state.tests,
+            output_dir=f"{self.output_dir}/{stage_name}/tests",
             chunk_size=100,
         )
-
-    def _dump_questions(self, questions: list[PrebuildQuestion]) -> None:
         dump_list(
             cls=PrebuildQuestion,
-            data=questions,
-            output_dir=f"{self.output_dir}/questions",
+            data=state.questions,
+            output_dir=f"{self.output_dir}/{stage_name}/questions",
             chunk_size=15,
         )
