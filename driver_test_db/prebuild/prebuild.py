@@ -16,6 +16,9 @@ from driver_test_db.prebuild.types import (
 )
 from driver_test_db.prebuild.stage import BaseStage, StageState
 from driver_test_db.prebuild.stages.passthrough import PassthroughStage
+from driver_test_db.prebuild.stages.compose import ComposeMode, ComposeStage
+from driver_test_db.prebuild.stages.override import OverrideStage
+from driver_test_db.prebuild.stages.translate import TranslateStage
 
 
 class PrebuildBuilder:
@@ -25,6 +28,8 @@ class PrebuildBuilder:
         self.translator: Translator | None = None
         self.parser: Parser | None = None
         self.languages: list[Language] = []
+        self.compose_mode: ComposeMode = ComposeMode.SKIP
+        self.questions_per_test: int = 15
 
     def set_output_dir(self, output_dir: str) -> None:
         self.output_dir = output_dir
@@ -41,10 +46,23 @@ class PrebuildBuilder:
     def set_languages(self, languages: list[Language]) -> None:
         self.languages = languages
 
+    def set_compose_mode(self, mode: str):
+        self.compose_mode = ComposeMode.from_str(mode)
+
     def build(self) -> None:
         stages: list[tuple[str, BaseStage]] = []
         stages.append(("init", PassthroughStage()))
-        # Prerequisites
+        if self.compose_mode != ComposeMode.SKIP:
+            stages.append(
+                ("compose", ComposeStage(self.compose_mode, self.questions_per_test))
+            )
+        if self.overrides:
+            stages.append(("overrides", OverrideStage(self.overrides)))
+        if self.translator:
+            stages.append(
+                ("translate", TranslateStage(self.translator, self.languages))
+            )
+        stages.append(("final", PassthroughStage()))
 
         state = self._load_initial_state()
         for stage_name, stage in stages:

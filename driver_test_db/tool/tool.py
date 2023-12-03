@@ -5,6 +5,7 @@ from driver_test_db.util.language import Language
 from driver_test_db.util.builder import DatabaseBuilder
 from driver_test_db.util.dbase import DriverTestDBase
 from driver_test_db.util.fs import prepare_output_dir
+from driver_test_db.util.text_overrides import TextOverrides
 from driver_test_db.prebuild.prebuild import PrebuildBuilder
 from driver_test_db.parser.parser import Parser
 from driver_test_db.parser.dbase import DatabaseParser
@@ -35,11 +36,20 @@ option_translate = click.option(
 )
 
 
+option_text_overrides = click.option(
+    "--text-overrides",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help="Enable original text overrides.",
+)
+
+
 option_parser = click.option(
     "--parser",
     show_default=True,
     default="dbase",
-    type=str,
+    type=click.Choice(["dbase", "genius", "tilda"]),
     help="Parser to use to read tests data.",
 )
 
@@ -47,8 +57,9 @@ option_parser = click.option(
 @main.command()
 @option_domain
 @option_translate
+@option_text_overrides
 @option_parser
-def prebuild(domain: str, translate: bool, parser: str) -> None:
+def prebuild(domain: str, translate: bool, text_overrides: bool, parser: str) -> None:
     languages = [lang for lang in Language]
 
     builder = PrebuildBuilder()
@@ -58,9 +69,14 @@ def prebuild(domain: str, translate: bool, parser: str) -> None:
 
     translator = None
     if translate:
-        translator = Translator(domain)
+        translator = Translator(domain=domain)
         translator.load_cache()
         builder.set_translator(translator)
+
+    if text_overrides:
+        overrides = TextOverrides(domain=domain)
+        overrides.load()
+        builder.set_overrides(overrides)
 
     builder.build()
 
@@ -73,7 +89,7 @@ def prebuild(domain: str, translate: bool, parser: str) -> None:
 @option_domain
 def build(domain: str) -> None:
     languages = [lang for lang in Language]
-    prebuild_dir = get_prebuild_dir(domain)
+    prebuild_final_dir = f"{get_prebuild_dir(domain)}/final"
     build_dir = get_build_dir(domain)
 
     prepare_output_dir(build_dir)
@@ -84,8 +100,8 @@ def build(domain: str) -> None:
     builder = DatabaseBuilder()
     builder.set_database(dbase)
     builder.set_languages(languages)
-    builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_dir))
-    builder.set_prebuild_questions(PrebuildBuilder.load_questions(prebuild_dir))
+    builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_final_dir))
+    builder.set_prebuild_questions(PrebuildBuilder.load_questions(prebuild_final_dir))
     builder.build()
 
     dbase.close()
@@ -94,7 +110,7 @@ def build(domain: str) -> None:
 def get_parser(parser: str, domain: str) -> Parser:
     if parser == "dbase":
         return DatabaseParser(f"data/{domain}/main.db")
-    elif parser == "gn":
+    elif parser == "genius":
         return USADatabaseParser()
     elif parser == "tilda":
         return TildaParser(f"data/{domain}")

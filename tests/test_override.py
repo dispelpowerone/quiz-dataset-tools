@@ -20,7 +20,7 @@ class TestOverrideStage(unittest.TestCase):
             ("boo", "foo", "over-foo-boo"),
             ("bar", "", "over-bar"),
         ]
-        self.overrides = TextOverrides(domain="test", name="test")
+        self.overrides = TextOverrides(domain="test")
         for entry in self.override_list:
             self.overrides.put(
                 lang=Language.EN,

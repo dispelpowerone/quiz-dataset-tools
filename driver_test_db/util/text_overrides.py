@@ -5,14 +5,13 @@ from driver_test_db.util.language import Language
 
 class TextOverrides:
     SCHEMA = ["source_lang", "source_text", "context", "dest_lang", "dest_text"]
-    OVERRIDES_FILE_TEMPL = "data/overrides/{}/{}.overrides"
-    OVERRIDES_FILE_TEMP_TEMPL = "data/overrides/{}/{}.overrides.temp"
+    OVERRIDES_FILE_TEMPL = "data/{}/overrides.csv"
+    OVERRIDES_FILE_TEMP_TEMPL = "data/{}/overrides.csv.temp"
 
     MappingType = dict[tuple[str, str, str, str], str]
 
-    def __init__(self, domain: str, name: str):
+    def __init__(self, domain: str):
         self.domain = domain
-        self.name = name
         self.overrides: TextOverrides.MappingType = {}
 
     def get(
@@ -33,11 +32,9 @@ class TextOverrides:
     def save(self) -> None:
         print(f"TextOverrides::save: size = {len(self.overrides)}")
         overrides_file_temp = TextOverrides.OVERRIDES_FILE_TEMP_TEMPL.format(
-            self.domain, self.name
+            self.domain
         )
-        overrides_file = TextOverrides.OVERRIDES_FILE_TEMPL.format(
-            self.domain, self.name
-        )
+        overrides_file = TextOverrides.OVERRIDES_FILE_TEMPL.format(self.domain)
         head_tail = os.path.split(overrides_file_temp)
         os.makedirs(head_tail[0], exist_ok=True)
         if os.path.exists(overrides_file_temp):
@@ -50,9 +47,7 @@ class TextOverrides:
         os.rename(overrides_file_temp, overrides_file)
 
     def load(self) -> None:
-        overrides_file = TextOverrides.OVERRIDES_FILE_TEMPL.format(
-            self.domain, self.name
-        )
+        overrides_file = TextOverrides.OVERRIDES_FILE_TEMPL.format(self.domain)
         overrides: TextOverrides.MappingType = {}
         if not os.path.exists(overrides_file):
             self.overrides = overrides

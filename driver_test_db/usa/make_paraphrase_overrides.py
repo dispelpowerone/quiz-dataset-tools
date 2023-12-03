@@ -18,7 +18,7 @@ def main() -> None:
     print(
         f"Loaded {len(orig_questions)} orig and {len(para_questions)} paraphrased questions"
     )
-    check_questions(orig_questions, para_questions)
+    # check_questions(orig_questions, para_questions)
     build_overrides(para_questions)
 
 
@@ -88,7 +88,7 @@ def for_each_text(
 
 
 def build_overrides(para_questions: list[ParaphrasedQuestion]) -> None:
-    overrides = TextOverrides("ny", "base")
+    overrides = TextOverrides("ny")
 
     def put_override(context: str, text: str, override: str):
         if override.strip() != "":

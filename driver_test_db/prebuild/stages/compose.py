@@ -10,7 +10,18 @@ from driver_test_db.prebuild.types import (
 
 
 class ComposeMode(Enum):
+    SKIP = 0
     FIX_MISSED = 1
+
+    @staticmethod
+    def from_str(mode: str) -> "ComposeMode":
+        mode = mode.upper()
+        if mode == "skip":
+            return ComposeMode.SKIP
+        elif mode == "fix_missed":
+            return ComposeMode.FIX_MISSED
+        else:
+            raise Exception(f"Unknown ComposeMode: {mode}")
 
 
 class ComposeStage(BaseStage):
@@ -23,7 +34,9 @@ class ComposeStage(BaseStage):
 
     def process(self, state: StageState) -> StageState:
         result_state = copy.deepcopy(state)
-        if self.mode == ComposeMode.FIX_MISSED:
+        if self.mode == ComposeMode.SKIP:
+            pass
+        elif self.mode == ComposeMode.FIX_MISSED:
             result_state.questions = _fill_tests(
                 tests=result_state.tests,
                 questions_pool=result_state.questions,
