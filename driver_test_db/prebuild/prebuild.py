@@ -1,3 +1,4 @@
+import copy
 from driver_test_db.util.text_overrides import TextOverrides
 from driver_test_db.translation.translation import (
     Translator,
@@ -30,6 +31,7 @@ class PrebuildBuilder:
         self.languages: list[Language] = []
         self.compose_mode: ComposeMode = ComposeMode.SKIP
         self.questions_per_test: int = 15
+        self.continue_from_stage: str | None = None
 
     def set_output_dir(self, output_dir: str) -> None:
         self.output_dir = output_dir
@@ -46,24 +48,14 @@ class PrebuildBuilder:
     def set_languages(self, languages: list[Language]) -> None:
         self.languages = languages
 
-    def set_compose_mode(self, mode: str):
+    def set_compose_mode(self, mode: str) -> None:
         self.compose_mode = ComposeMode.from_str(mode)
 
-    def build(self) -> None:
-        stages: list[tuple[str, BaseStage]] = []
-        stages.append(("init", PassthroughStage()))
-        if self.compose_mode != ComposeMode.SKIP:
-            stages.append(
-                ("compose", ComposeStage(self.compose_mode, self.questions_per_test))
-            )
-        if self.overrides:
-            stages.append(("overrides", OverrideStage(self.overrides)))
-        if self.translator:
-            stages.append(
-                ("translate", TranslateStage(self.translator, self.languages))
-            )
-        stages.append(("final", PassthroughStage()))
+    def set_continue_from_stage(self, stage: str) -> None:
+        self.continue_from_stage = stage
 
+    def build(self) -> None:
+        stages = self._make_stages_list()
         state = self._load_initial_state()
         for stage_name, stage in stages:
             state = stage.process(state)
@@ -83,7 +75,46 @@ class PrebuildBuilder:
             source_dir=f"{data_dir}/questions",
         )
 
+    def _make_stages_list(self) -> list[tuple[str, BaseStage]]:
+        stages: list[tuple[str, BaseStage]] = []
+        stages.append(("init", PassthroughStage()))
+        if self.compose_mode != ComposeMode.SKIP:
+            stages.append(
+                ("compose", ComposeStage(self.compose_mode, self.questions_per_test))
+            )
+        if self.overrides:
+            stages.append(("overrides", OverrideStage(self.overrides)))
+        if self.translator:
+            stages.append(
+                ("translate", TranslateStage(self.translator, self.languages))
+            )
+        stages.append(("final", PassthroughStage()))
+        # Move to requested stage
+        if self.continue_from_stage:
+            stage_index = None
+            for i, entry in enumerate(stages):
+                if entry[0] == self.continue_from_stage:
+                    stage_index = i
+                    break
+            if stage_index is None:
+                raise Exception(
+                    f"Can't continue from stage {self.continue_from_stage}, the stage is not found"
+                )
+            stages = stages[stage_index + 1 :]
+        return stages
+
     def _load_initial_state(self) -> StageState:
+        if self.continue_from_stage:
+            return StageState(
+                tests=load_list(
+                    cls=PrebuildTest,
+                    source_dir=f"{self.output_dir}/{self.continue_from_stage}/tests",
+                ),
+                questions=load_list(
+                    cls=PrebuildQuestion,
+                    source_dir=f"{self.output_dir}/{self.continue_from_stage}/questions",
+                ),
+            )
         assert self.parser
         canonical_tests = self.parser.get_tests()
         prebuild_tests = []
@@ -123,6 +154,7 @@ class PrebuildBuilder:
     def _make_prebuild_text(self, text: TextLocalizations) -> PrebuildText:
         return PrebuildText(
             localizations=text,
+            original=copy.deepcopy(text),
             paraphrase=None,
         )
 
