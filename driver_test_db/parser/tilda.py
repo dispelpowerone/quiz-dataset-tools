@@ -16,7 +16,7 @@ class TildaParser(Parser):
     def _load_tests(self) -> list[Test]:
         test_obj_list = []
         pages = glob.glob(f"{self.project_path}/page*")
-        for page_index, page_path in enumerate(pages):
+        for page_index, page_path in enumerate(sorted(pages)):
             test_id = page_index + 1
             test_obj_list.append(self._load_test(test_id, page_path))
         return test_obj_list
