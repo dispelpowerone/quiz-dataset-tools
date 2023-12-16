@@ -54,17 +54,49 @@ option_parser = click.option(
 )
 
 
+option_data_path = click.option(
+    "--data-path",
+    type=str,
+    help="Source data path.",
+)
+
+
+option_languages = click.option(
+    "--languages",
+    show_default=True,
+    default=f"{','.join([l.name for l in Language])}",
+    type=str,
+    help="Comma separated list of languages.",
+)
+
+
+option_continue_from_stage = click.option(
+    "--continue-from-stage",
+    type=click.Choice(["init", "compose", "overrides", "translate"]),
+    help="Prebuild stage to continue from.",
+)
+
+
 @main.command()
 @option_domain
 @option_translate
 @option_text_overrides
 @option_parser
-def prebuild(domain: str, translate: bool, text_overrides: bool, parser: str) -> None:
+@option_data_path
+@option_continue_from_stage
+def prebuild(
+    domain: str,
+    translate: bool,
+    text_overrides: bool,
+    parser: str,
+    data_path: str,
+    continue_from_stage: str | None,
+) -> None:
     languages = [lang for lang in Language]
 
     builder = PrebuildBuilder()
     builder.set_output_dir(get_prebuild_dir(domain))
-    builder.set_parser(get_parser(parser, domain))
+    builder.set_parser(get_parser(parser, data_path))
     builder.set_languages(languages)
 
     translator = None
@@ -78,6 +110,9 @@ def prebuild(domain: str, translate: bool, text_overrides: bool, parser: str) ->
         overrides.load()
         builder.set_overrides(overrides)
 
+    if continue_from_stage:
+        builder.set_continue_from_stage(continue_from_stage)
+
     builder.build()
 
     # Flush translator's cache
@@ -87,8 +122,9 @@ def prebuild(domain: str, translate: bool, text_overrides: bool, parser: str) ->
 
 @main.command()
 @option_domain
-def build(domain: str) -> None:
-    languages = [lang for lang in Language]
+@option_languages
+def build(domain: str, languages: str) -> None:
+    languages_list = get_languages_list(languages)
     prebuild_final_dir = f"{get_prebuild_dir(domain)}/final"
     build_dir = get_build_dir(domain)
 
@@ -99,7 +135,7 @@ def build(domain: str) -> None:
 
     builder = DatabaseBuilder()
     builder.set_database(dbase)
-    builder.set_languages(languages)
+    builder.set_languages(languages_list)
     builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_final_dir))
     builder.set_prebuild_questions(PrebuildBuilder.load_questions(prebuild_final_dir))
     builder.build()
@@ -107,13 +143,13 @@ def build(domain: str) -> None:
     dbase.close()
 
 
-def get_parser(parser: str, domain: str) -> Parser:
+def get_parser(parser: str, data_path: str) -> Parser:
     if parser == "dbase":
-        return DatabaseParser(f"data/{domain}/main.db")
+        return DatabaseParser(data_path)
     elif parser == "genius":
         return USADatabaseParser()
     elif parser == "tilda":
-        return TildaParser(f"data/{domain}")
+        return TildaParser(data_path)
     raise Exception(f"Unknown parser '{parser}'")
 
 
@@ -123,3 +159,13 @@ def get_prebuild_dir(domain: str):
 
 def get_build_dir(domain: str):
     return f"output/{domain}/build"
+
+
+def get_languages_list(languages: str) -> list[Language]:
+    languages_list: list[Language] = []
+    for language_name in languages.strip().split(","):
+        language = Language.from_name(language_name)
+        if not language:
+            raise Exception(f"Unknown language: {language_name}")
+        languages_list.append(language)
+    return languages_list
