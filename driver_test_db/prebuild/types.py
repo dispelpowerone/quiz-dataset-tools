@@ -7,6 +7,7 @@ from driver_test_db.util.language import Language, TextLocalizations
 @dataclass
 class PrebuildText(DataClassJsonMixin):
     localizations: TextLocalizations
+    original: TextLocalizations | None
     paraphrase: ParaphrasedText | None
 
 
