@@ -9,6 +9,7 @@ from driver_test_db.prebuild.types import (
     PrebuildAnswer,
     PrebuildText,
 )
+from tests.common import make_prebuild_text
 
 
 class TestDatabaseBuilder(unittest.TestCase):
@@ -21,8 +22,8 @@ class TestDatabaseBuilder(unittest.TestCase):
     def test_build_end_to_end(self):
         self.builder.set_prebuild_tests(
             [
-                PrebuildTest(test_id=1, title=self._make_text("Test 1")),
-                PrebuildTest(test_id=2, title=self._make_text("Test 2")),
+                PrebuildTest(test_id=1, title=make_prebuild_text("Test 1")),
+                PrebuildTest(test_id=2, title=make_prebuild_text("Test 2")),
             ]
         )
         self.builder.set_prebuild_questions(
@@ -30,54 +31,60 @@ class TestDatabaseBuilder(unittest.TestCase):
                 PrebuildQuestion(
                     test_id=1,
                     question_id=1,
-                    text=self._make_text("T1Q1"),
+                    text=make_prebuild_text("T1Q1"),
                     image=None,
                     answers=[
                         PrebuildAnswer(
-                            self._make_text("T1Q1A1"), is_right_answer=False
+                            make_prebuild_text("T1Q1A1"), is_right_answer=False
                         ),
                         PrebuildAnswer(
-                            self._make_text("T1Q1A2"), is_right_answer=False
+                            make_prebuild_text("T1Q1A2"), is_right_answer=False
                         ),
-                        PrebuildAnswer(self._make_text("T1Q1A3"), is_right_answer=True),
                         PrebuildAnswer(
-                            self._make_text("T1Q1A4"), is_right_answer=False
+                            make_prebuild_text("T1Q1A3"), is_right_answer=True
+                        ),
+                        PrebuildAnswer(
+                            make_prebuild_text("T1Q1A4"), is_right_answer=False
                         ),
                     ],
                 ),
                 PrebuildQuestion(
                     test_id=1,
                     question_id=2,
-                    text=self._make_text("T1Q2"),
+                    text=make_prebuild_text("T1Q2"),
                     image=None,
                     answers=[
                         PrebuildAnswer(
-                            self._make_text("T1Q2A1"), is_right_answer=False
+                            make_prebuild_text("T1Q2A1"), is_right_answer=False
                         ),
                         PrebuildAnswer(
-                            self._make_text("T1Q2A2"), is_right_answer=False
+                            make_prebuild_text("T1Q2A2"), is_right_answer=False
                         ),
                         PrebuildAnswer(
-                            self._make_text("T1Q2A3"), is_right_answer=False
+                            make_prebuild_text("T1Q2A3"), is_right_answer=False
                         ),
-                        PrebuildAnswer(self._make_text("T1Q2A4"), is_right_answer=True),
+                        PrebuildAnswer(
+                            make_prebuild_text("T1Q2A4"), is_right_answer=True
+                        ),
                     ],
                 ),
                 PrebuildQuestion(
                     test_id=2,
                     question_id=1,
-                    text=self._make_text("T2Q1"),
+                    text=make_prebuild_text("T2Q1"),
                     image=None,
                     answers=[
-                        PrebuildAnswer(self._make_text("T2Q1A1"), is_right_answer=True),
                         PrebuildAnswer(
-                            self._make_text("T2Q1A2"), is_right_answer=False
+                            make_prebuild_text("T2Q1A1"), is_right_answer=True
                         ),
                         PrebuildAnswer(
-                            self._make_text("T2Q1A3"), is_right_answer=False
+                            make_prebuild_text("T2Q1A2"), is_right_answer=False
                         ),
                         PrebuildAnswer(
-                            self._make_text("T2Q1A4"), is_right_answer=False
+                            make_prebuild_text("T2Q1A3"), is_right_answer=False
+                        ),
+                        PrebuildAnswer(
+                            make_prebuild_text("T2Q1A4"), is_right_answer=False
                         ),
                     ],
                 ),
@@ -110,11 +117,6 @@ class TestDatabaseBuilder(unittest.TestCase):
         # Test 2
         test2_questions = self.dbase.get_test_questions(2)
         self.assertEqual(1, len(test2_questions))
-
-    def _make_text(self, en: str, fr: str = None):
-        return PrebuildText(
-            localizations=TextLocalizations(EN=en, FR=fr), paraphrase=None
-        )
 
     def _assert_text(self, text_id: int, en: str):
         text_localizations = self.dbase.get_text_localizations(text_id)

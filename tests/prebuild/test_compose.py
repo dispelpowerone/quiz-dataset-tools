@@ -9,6 +9,7 @@ from driver_test_db.prebuild.types import (
     PrebuildTest,
     PrebuildText,
 )
+from tests.common import make_prebuild_text
 
 
 class TestComposeStage(unittest.TestCase):
@@ -17,21 +18,21 @@ class TestComposeStage(unittest.TestCase):
 
     def test_fix_missed(self):
         tests = [
-            PrebuildTest(test_id=1, title=self._make_text("Test 1")),
-            PrebuildTest(test_id=2, title=self._make_text("Test 2")),
-            PrebuildTest(test_id=3, title=self._make_text("Test 3")),
+            PrebuildTest(test_id=1, title=make_prebuild_text("Test 1")),
+            PrebuildTest(test_id=2, title=make_prebuild_text("Test 2")),
+            PrebuildTest(test_id=3, title=make_prebuild_text("Test 3")),
         ]
         questions = [
             PrebuildQuestion(
                 test_id=1,
                 question_id=1,
-                text=self._make_text("T1Q1"),
+                text=make_prebuild_text("T1Q1"),
                 answers=[],
             ),
             PrebuildQuestion(
                 test_id=2,
                 question_id=1,
-                text=self._make_text("T2Q1"),
+                text=make_prebuild_text("T2Q1"),
                 answers=[],
             ),
         ]
@@ -69,6 +70,3 @@ class TestComposeStage(unittest.TestCase):
             state.questions[4].text.localizations.get(Language.EN)
             != state.questions[5].text.localizations.get(Language.EN)
         )
-
-    def _make_text(self, en: str):
-        return PrebuildText(localizations=TextLocalizations(EN=en), paraphrase=None)

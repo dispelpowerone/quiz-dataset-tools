@@ -10,6 +10,7 @@ from driver_test_db.prebuild.types import (
     PrebuildTest,
     PrebuildText,
 )
+from tests.common import make_prebuild_text
 
 
 class TestOverrideStage(unittest.TestCase):
@@ -32,18 +33,18 @@ class TestOverrideStage(unittest.TestCase):
 
     def test_end_to_end(self):
         tests = [
-            PrebuildTest(test_id=1, title=self._make_text("Test 1")),
+            PrebuildTest(test_id=1, title=make_prebuild_text("Test 1")),
         ]
         questions = [
             PrebuildQuestion(
                 test_id=1,
                 question_id=1,
-                text=self._make_text("foo"),
+                text=make_prebuild_text("foo"),
                 answers=[
-                    PrebuildAnswer(self._make_text("foo"), is_right_answer=False),
-                    PrebuildAnswer(self._make_text("boo"), is_right_answer=True),
-                    PrebuildAnswer(self._make_text("bar"), is_right_answer=False),
-                    PrebuildAnswer(self._make_text("zee"), is_right_answer=False),
+                    PrebuildAnswer(make_prebuild_text("foo"), is_right_answer=False),
+                    PrebuildAnswer(make_prebuild_text("boo"), is_right_answer=True),
+                    PrebuildAnswer(make_prebuild_text("bar"), is_right_answer=False),
+                    PrebuildAnswer(make_prebuild_text("zee"), is_right_answer=False),
                 ],
             ),
         ]
@@ -67,6 +68,3 @@ class TestOverrideStage(unittest.TestCase):
         self.assertEqual(
             "zee", question_1.answers[3].text.localizations.get(Language.EN)
         )
-
-    def _make_text(self, en: str):
-        return PrebuildText(localizations=TextLocalizations(EN=en), paraphrase=None)

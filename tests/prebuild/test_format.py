@@ -9,6 +9,7 @@ from driver_test_db.prebuild.types import (
     PrebuildTest,
     PrebuildText,
 )
+from tests.common import make_prebuild_text
 
 
 class TestFormatStage(unittest.TestCase):
@@ -17,19 +18,19 @@ class TestFormatStage(unittest.TestCase):
 
     def test_end_to_end(self):
         tests = [
-            PrebuildTest(test_id=1, title=self._make_text("Test 1", "fr-Test 1")),
+            PrebuildTest(test_id=1, title=make_prebuild_text("Test 1", fr="fr-Test 1")),
         ]
         questions = [
             PrebuildQuestion(
                 test_id=1,
                 question_id=1,
-                text=self._make_text("foo", "fr-foo"),
+                text=make_prebuild_text("foo", fr="fr-foo"),
                 answers=[
                     PrebuildAnswer(
-                        self._make_text("boo", "fr-boo"), is_right_answer=False
+                        make_prebuild_text("boo", fr="fr-boo"), is_right_answer=False
                     ),
                     PrebuildAnswer(
-                        self._make_text("bar", "bar"), is_right_answer=False
+                        make_prebuild_text("bar", fr="bar"), is_right_answer=False
                     ),
                 ],
             ),
@@ -50,8 +51,3 @@ class TestFormatStage(unittest.TestCase):
         self.assertEqual("fr-boo / boo", answers[0].text.localizations.get(Language.FR))
         self.assertEqual("bar", answers[1].text.localizations.get(Language.EN))
         self.assertEqual("bar", answers[1].text.localizations.get(Language.FR))
-
-    def _make_text(self, en: str, fr: str):
-        return PrebuildText(
-            localizations=TextLocalizations(EN=en, FR=fr), paraphrase=None
-        )
