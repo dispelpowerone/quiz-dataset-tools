@@ -16,7 +16,7 @@ class TestDatabaseBuilder(unittest.TestCase):
     def setUp(self):
         self.dbase = DriverTestDBase("/tmp/test_main.db")
         self.dbase.open()
-        self.builder = DatabaseBuilder()
+        self.builder = DatabaseBuilder("./")
         self.builder.set_database(self.dbase)
 
     def test_build_end_to_end(self):

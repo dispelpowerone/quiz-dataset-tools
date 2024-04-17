@@ -22,14 +22,16 @@ class Answer:
 class Question:
     orig_id: str | None
     text: TextLocalizations
-    image: str | None
     answers: list[Answer]
+    image: str | None = None
+    audio: str | None = None
 
     def transform_texts(self, text_transformer: TextTransformer) -> "Question":
         return Question(
             orig_id=self.orig_id,
             text=text_transformer(self.text),
             image=self.image,
+            audio=self.audio,
             answers=[
                 answer.transform_texts(text_transformer) for answer in self.answers
             ],
@@ -40,6 +42,7 @@ class Question:
             orig_id=self.orig_id,
             text=text_transformer(self.text),
             image=self.image,
+            audio=self.audio,
             answers=self.answers,
         )
 

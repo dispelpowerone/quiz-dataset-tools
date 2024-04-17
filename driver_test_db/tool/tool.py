@@ -11,6 +11,7 @@ from driver_test_db.parser.parser import Parser
 from driver_test_db.parser.dbase import DatabaseParser
 from driver_test_db.parser.usa import USADatabaseParser
 from driver_test_db.parser.tilda import TildaParser
+from driver_test_db.parser.songs import SongsParser
 from driver_test_db.translation.translation import Translator
 
 
@@ -49,13 +50,14 @@ option_parser = click.option(
     "--parser",
     show_default=True,
     default="dbase",
-    type=click.Choice(["dbase", "genius", "tilda"]),
+    type=click.Choice(["dbase", "genius", "tilda", "songs"]),
     help="Parser to use to read tests data.",
 )
 
 
 option_data_path = click.option(
     "--data-path",
+    required=True,
     type=str,
     help="Source data path.",
 )
@@ -123,7 +125,8 @@ def prebuild(
 @main.command()
 @option_domain
 @option_languages
-def build(domain: str, languages: str) -> None:
+@option_data_path
+def build(domain: str, languages: str, data_path: str) -> None:
     languages_list = get_languages_list(languages)
     prebuild_final_dir = f"{get_prebuild_dir(domain)}/final"
     build_dir = get_build_dir(domain)
@@ -133,7 +136,7 @@ def build(domain: str, languages: str) -> None:
     dbase = DriverTestDBase(f"{build_dir}/main.db")
     dbase.open()
 
-    builder = DatabaseBuilder()
+    builder = DatabaseBuilder(data_path)
     builder.set_database(dbase)
     builder.set_languages(languages_list)
     builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_final_dir))
@@ -150,6 +153,8 @@ def get_parser(parser: str, data_path: str) -> Parser:
         return USADatabaseParser()
     elif parser == "tilda":
         return TildaParser(data_path)
+    elif parser == "songs":
+        return SongsParser(data_path)
     raise Exception(f"Unknown parser '{parser}'")
 
 

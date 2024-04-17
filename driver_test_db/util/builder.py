@@ -1,12 +1,15 @@
 from driver_test_db.util.dbase import DriverTestDBase
-from driver_test_db.util.images import Images
+from driver_test_db.util.media import MediaIndex, MediaType
 from driver_test_db.util.language import Language
 from driver_test_db.prebuild.types import PrebuildTest, PrebuildQuestion, PrebuildText
 
 
 class DatabaseBuilder:
-    def __init__(self) -> None:
-        self.images = Images("./", "output/images")
+    def __init__(self, data_path: str) -> None:
+        self.images = MediaIndex(
+            MediaType.IMAGE, f"{data_path}/images", "output/images"
+        )
+        self.audio = MediaIndex(MediaType.AUDIO, f"{data_path}/audio", "output/audio")
         self.dbase: DriverTestDBase | None = None
         self.languages: list[Language] = []
         self.tests: list[PrebuildTest] | None = None
@@ -28,12 +31,14 @@ class DatabaseBuilder:
         assert self.dbase
         self.dbase.bootstrap()
         self.images.clean()
+        self.audio.clean()
 
         self._pack_tests(self.dbase)
         self._pack_questions(self.dbase)
 
         self.dbase.commit()
         self.images.save_index()
+        self.audio.save_index()
 
     def _pack_tests(self, dbase: DriverTestDBase) -> None:
         assert self.tests
@@ -58,6 +63,7 @@ class DatabaseBuilder:
             )
             self._pack_text(dbase, question_dbo.text_id, question.text)
             self.images.put(str(question_dbo.question_id), question.image)
+            self.audio.put(str(question_dbo.question_id), question.audio)
 
             for answer_index, answer in enumerate(question.answers):
                 answer_dbo = dbase.add_answer_if_not_exists(
