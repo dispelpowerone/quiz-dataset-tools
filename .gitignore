@@ -1,10 +1,9 @@
 # App data
 cache/
-DriveTest.db
 data
 output
 .DS_Store
-driver_test_db/config.py
+quiz_dataset_tools/config.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

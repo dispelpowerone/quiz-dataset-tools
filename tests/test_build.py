@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import MagicMock
-from driver_test_db.util.language import Language, TextLocalizations
-from driver_test_db.util.builder import DatabaseBuilder
-from driver_test_db.util.dbase import DriverTestDBase
-from driver_test_db.prebuild.types import (
+from quiz_dataset_tools.util.language import Language, TextLocalizations
+from quiz_dataset_tools.util.builder import DatabaseBuilder
+from quiz_dataset_tools.util.dbase import DriverTestDBase
+from quiz_dataset_tools.prebuild.types import (
     PrebuildTest,
     PrebuildQuestion,
     PrebuildAnswer,

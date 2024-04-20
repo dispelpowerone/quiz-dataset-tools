@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import MagicMock
-from driver_test_db.util.language import Language, TextLocalizations
-from driver_test_db.prebuild.stage import StageState
-from driver_test_db.prebuild.stages.compose import ComposeMode, ComposeStage
-from driver_test_db.prebuild.types import (
+from quiz_dataset_tools.util.language import Language, TextLocalizations
+from quiz_dataset_tools.prebuild.stage import StageState
+from quiz_dataset_tools.prebuild.stages.compose import ComposeMode, ComposeStage
+from quiz_dataset_tools.prebuild.types import (
     PrebuildAnswer,
     PrebuildQuestion,
     PrebuildTest,

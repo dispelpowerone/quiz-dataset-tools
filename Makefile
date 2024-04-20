@@ -1,10 +1,10 @@
 all: mypy fmt install test
 
 mypy:
-	python3 -m mypy driver_test_db
+	python3 -m mypy quiz_dataset_tools
 
 fmt:
-	python3 -m black driver_test_db tests
+	python3 -m black quiz_dataset_tools tests
 
 install:
 	python3 -m pip install .

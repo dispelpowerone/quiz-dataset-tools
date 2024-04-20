@@ -3,10 +3,10 @@
 from distutils.core import setup
 
 setup(
-    name='driver_test_db',
+    name='quiz-dataset-tools',
     version='1.0',
     description='Utils to build driver test database',
     author='Dmitry Vasilyev',
     author_email='dispelpowerone@gmail.com',
-    packages=['driver_test_db'],
+    packages=['quiz_dataset_tools'],
 )

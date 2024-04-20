@@ -1,5 +1,5 @@
-from driver_test_db.util.language import TextLocalizations
-from driver_test_db.prebuild.types import (
+from quiz_dataset_tools.util.language import TextLocalizations
+from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
 )
 
