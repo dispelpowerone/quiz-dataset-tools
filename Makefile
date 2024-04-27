@@ -15,3 +15,6 @@ test:
 doctor:
 	python3 -m pip check
 	python3 -m pip list --outdated
+
+server:
+	uvicorn quiz_dataset_tools.server.main:app
