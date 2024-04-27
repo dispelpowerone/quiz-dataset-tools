@@ -45,3 +45,5 @@ typing-inspect==0.9.0
 typing_extensions==4.7.1
 urllib3==1.26.16
 yarl==1.9.2
+types_beautifulsoup==4.12.0
+setuptools==69.5.1
