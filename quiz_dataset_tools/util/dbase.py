@@ -5,6 +5,27 @@ from dataclasses import dataclass
 from typing import Any
 
 
+class Row:
+    def __init__(self, data: list[str | None]):
+        self.data = data
+
+    def get(self, i: int) -> str:
+        val = self.data[i]
+        if val is None:
+            raise Exception(f"Unexpected None value at index {i}, {self.data}")
+        return val
+
+    def get_nullable(self, i: int) -> str | None:
+        return self.data[i]
+
+    def get_int(self, i: int) -> int:
+        return int(self.get(i))
+
+    def get_nullable_int(self, i: int) -> int | None:
+        val = self.get_nullable(i)
+        return int(val) if val is not None else None
+
+
 class BaseDBO:
     __table__ = ""
     __key__ = ""
@@ -35,7 +56,7 @@ class BaseDBO:
         return ()
 
     @staticmethod
-    def make(row: list[str]) -> "BaseDBO":
+    def make(row: Row) -> "BaseDBO":
         return BaseDBO()
 
 
@@ -43,27 +64,33 @@ class BaseDBO:
 class TestDBO(BaseDBO):
     test_id: int
     text_id: int
+    position: int | None
 
     __table__ = "Tests"
     __key__ = "TestId"
-    __fields__ = ["TestId", "TextId"]
+    __fields__ = ["TestId", "TextId", "Position"]
     __create_table__ = """
 CREATE TABLE "Tests" (
     "TestId"    INTEGER NOT NULL UNIQUE,
     "TextId"    INTEGER,
+    "Position"  INTEGER UNIQUE,
     PRIMARY KEY("TestId" AUTOINCREMENT)
 )
     """
 
     @staticmethod
-    def make(row: list[str]) -> "TestDBO":
-        return TestDBO(test_id=int(row[0]), text_id=int(row[1]))
+    def make(row: Row) -> "TestDBO":
+        return TestDBO(
+            test_id=row.get_int(0),
+            text_id=row.get_int(1),
+            position=row.get_nullable_int(2),
+        )
 
     def get_key_values(self) -> tuple[int]:
         return (self.test_id,)
 
-    def get_field_values(self) -> tuple[int, int]:
-        return (self.test_id, self.text_id)
+    def get_field_values(self) -> tuple[int, int, int | None]:
+        return (self.test_id, self.text_id, self.position)
 
 
 @dataclass
@@ -71,7 +98,7 @@ class QuestionDBO(BaseDBO):
     question_id: int
     test_id: int
     text_id: int
-    image: str
+    image: str | None
 
     __table__ = "Questions"
     __key__ = "QuestionId"
@@ -87,18 +114,18 @@ CREATE TABLE "Questions" (
     """
 
     @staticmethod
-    def make(row: list[str]) -> "QuestionDBO":
+    def make(row: Row) -> "QuestionDBO":
         return QuestionDBO(
-            question_id=int(row[0]),
-            test_id=int(row[1]),
-            text_id=int(row[2]),
-            image=row[3],
+            question_id=row.get_int(0),
+            test_id=row.get_int(1),
+            text_id=row.get_int(2),
+            image=row.get_nullable(3),
         )
 
     def get_key_values(self) -> tuple[int]:
         return (self.question_id,)
 
-    def get_field_values(self) -> tuple[int, int, int, str]:
+    def get_field_values(self) -> tuple[int, int, int, str | None]:
         return (self.question_id, self.test_id, self.text_id, self.image)
 
 
@@ -123,12 +150,12 @@ CREATE TABLE "Answers" (
     """
 
     @staticmethod
-    def make(row: list[str]) -> "AnswerDBO":
+    def make(row: Row) -> "AnswerDBO":
         return AnswerDBO(
-            answer_id=int(row[0]),
-            question_id=int(row[1]),
-            text_id=int(row[2]),
-            is_correct=int(row[3]),
+            answer_id=row.get_int(0),
+            question_id=row.get_int(1),
+            text_id=row.get_int(2),
+            is_correct=row.get_int(3),
         )
 
     def get_key_values(self) -> tuple[int]:
@@ -155,8 +182,8 @@ CREATE TABLE "Texts" (
     """
 
     @staticmethod
-    def make(row: list[str]) -> "TextDBO":
-        return TextDBO(text_id=int(row[0]), description=row[1])
+    def make(row: Row) -> "TextDBO":
+        return TextDBO(text_id=row.get_int(0), description=row.get(1))
 
     def get_key_values(self) -> tuple[int]:
         return (self.text_id,)
@@ -186,12 +213,12 @@ CREATE TABLE "TextLocalizations" (
     """
 
     @staticmethod
-    def make(row: list[str]) -> "TextLocalizationDBO":
+    def make(row: Row) -> "TextLocalizationDBO":
         return TextLocalizationDBO(
-            text_localization_id=int(row[0]),
-            text_id=int(row[1]),
-            language_id=int(row[2]),
-            content=row[3],
+            text_localization_id=row.get_int(0),
+            text_id=row.get_int(1),
+            language_id=row.get_int(2),
+            content=row.get(3),
         )
 
     def get_key_values(self) -> tuple[int]:
@@ -218,10 +245,10 @@ CREATE TABLE "Languages" (
     """
 
     @staticmethod
-    def make(row: list[str]) -> "LanguageDBO":
+    def make(row: Row) -> "LanguageDBO":
         return LanguageDBO(
-            language_id=int(row[0]),
-            language_name=row[1],
+            language_id=row.get_int(0),
+            language_name=row.get(1),
         )
 
     def get_key_values(self) -> tuple[int]:
@@ -251,7 +278,8 @@ class DBase:
             reader = csv.reader(csvfile)
             next(reader, None)
             for row in reader:
-                self.add(dbo_type.make(row))
+                nullable_row: list[str | None] = [val for val in row]
+                self.add(dbo_type.make(Row(nullable_row)))
 
     def get(self, dbo_type: BaseDBO, key: Any) -> BaseDBO | None:
         res = self.cursor.execute(
@@ -261,7 +289,7 @@ class DBase:
         row = res.fetchone()
         if not row:
             return None
-        return dbo_type.make(row)
+        return dbo_type.make(Row(row))
 
     def add(self, dbo: BaseDBO) -> int:
         res = self.cursor.execute(
@@ -276,7 +304,7 @@ class DBase:
         )
         results = []
         for row in res.fetchall():
-            results.append(dbo_type.make(row))
+            results.append(dbo_type.make(Row(row)))
         return results
 
     def commit(self):
@@ -310,11 +338,13 @@ class DriverTestDBase:
     def open(self):
         self.dbase.open()
 
-    def add_test_if_not_exists(self, test_id):
+    def add_test_if_not_exists(self, test_id, position):
         test = self.dbase.get(TestDBO, test_id)
         if not test:
             test = TestDBO(
-                test_id=test_id, text_id=self.add_text(f"Test {test_id} title")
+                test_id=test_id,
+                text_id=self.add_text(f"Test {test_id} title"),
+                position=position,
             )
             self.dbase.add(test)
         return test

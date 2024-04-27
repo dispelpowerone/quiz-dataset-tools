@@ -118,6 +118,31 @@ class TestDatabaseBuilder(unittest.TestCase):
         test2_questions = self.dbase.get_test_questions(2)
         self.assertEqual(1, len(test2_questions))
 
+    def test_positions(self):
+        self.builder.set_prebuild_tests(
+            [
+                PrebuildTest(test_id=1, title=make_prebuild_text("Test 1"), position=2),
+                PrebuildTest(test_id=2, title=make_prebuild_text("Test 2")),
+            ]
+        )
+        self.builder.set_prebuild_questions(
+            [
+                PrebuildQuestion(
+                    test_id=1,
+                    question_id=1,
+                    text=make_prebuild_text("T1Q1"),
+                    image=None,
+                    answers=[],
+                ),
+            ]
+        )
+
+        self.builder.set_languages([Language.EN])
+        self.builder.build()
+
+        self.assertEqual(2, self.dbase.get_test(1).position)
+        self.assertEqual(None, self.dbase.get_test(2).position)
+
     def _assert_text(self, text_id: int, en: str):
         text_localizations = self.dbase.get_text_localizations(text_id)
         self.assertEqual(1, len(text_localizations))

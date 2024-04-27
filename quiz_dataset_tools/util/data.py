@@ -51,10 +51,12 @@ class Question:
 class Test:
     title: TextLocalizations
     questions: list[Question]
+    position: int | None = None
 
     def transform_texts(self, text_transformer: TextTransformer) -> "Test":
         return Test(
             title=self.title,
+            position=self.position,
             questions=[
                 question.transform_texts(text_transformer)
                 for question in self.questions
@@ -64,6 +66,7 @@ class Test:
     def transform_question_texts(self, text_transformer: TextTransformer) -> "Test":
         return Test(
             title=self.title,
+            position=self.position,
             questions=[
                 question.transform_question_text(text_transformer)
                 for question in self.questions

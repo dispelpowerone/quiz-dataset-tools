@@ -132,6 +132,7 @@ class PrebuildBuilder:
         return PrebuildTest(
             test_id=test_id,
             title=self._make_prebuild_text(test.title),
+            position=test.position,
         )
 
     def _make_prebuild_question(

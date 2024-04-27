@@ -31,3 +31,4 @@ class PrebuildQuestion(DataClassJsonMixin):
 class PrebuildTest(DataClassJsonMixin):
     test_id: int
     title: PrebuildText
+    position: int | None = None

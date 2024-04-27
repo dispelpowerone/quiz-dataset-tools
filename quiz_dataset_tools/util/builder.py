@@ -47,7 +47,7 @@ class DatabaseBuilder:
     def _pack_tests(self, dbase: DriverTestDBase) -> None:
         assert self.tests
         for test in self.tests:
-            test_dbo = dbase.add_test_if_not_exists(test.test_id)
+            test_dbo = dbase.add_test_if_not_exists(test.test_id, test.position)
             self._pack_text(dbase, test_dbo.text_id, test.title)
 
     def _pack_text(

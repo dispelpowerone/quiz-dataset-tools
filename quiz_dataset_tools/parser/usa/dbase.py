@@ -23,9 +23,10 @@ def load_ny_tests() -> list[Test]:
     tests: list[Test] = []
     questions = load_state_questions(33)
     for i in range(0, len(questions), test_size):
+        test_number = len(tests) + 1
         tests.append(
             Test(
-                title=_make_text(f"Test {len(tests) + 1}"),
+                title=_make_text(f"Test {test_number}"),
                 questions=questions[i : i + test_size],
             )
         )
