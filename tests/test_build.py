@@ -143,7 +143,75 @@ class TestDatabaseBuilder(unittest.TestCase):
         self.assertEqual(2, self.dbase.get_test(1).position)
         self.assertEqual(None, self.dbase.get_test(2).position)
 
+    def test_fallback_language(self):
+        self.builder.set_prebuild_tests(
+            [
+                PrebuildTest(
+                    test_id=1, title=make_prebuild_text("Test 1", fr="fr Test 1")
+                ),
+                PrebuildTest(
+                    test_id=2, title=make_prebuild_text("Test 2", es="es Test 2")
+                ),
+            ]
+        )
+        self.builder.set_prebuild_questions(
+            [
+                PrebuildQuestion(
+                    test_id=1,
+                    question_id=1,
+                    text=make_prebuild_text("T1Q1"),
+                    image=None,
+                    answers=[],
+                ),
+            ]
+        )
+
+        self.builder.set_languages([Language.EN, Language.FR, Language.ES])
+        self.builder.set_fallback_language(Language.EN)
+        self.builder.build()
+
+        txt1_id = self.dbase.get_test(1).text_id
+        self._assert_localization(txt1_id, Language.EN, "Test 1")
+        self._assert_localization(txt1_id, Language.FR, "fr Test 1")
+        self._assert_localization(txt1_id, Language.ES, "Test 1")
+
+        txt2_id = self.dbase.get_test(2).text_id
+        self._assert_localization(txt2_id, Language.EN, "Test 2")
+        self._assert_localization(txt2_id, Language.FR, "Test 2")
+        self._assert_localization(txt2_id, Language.ES, "es Test 2")
+
+    def test_missed_fallback_language(self):
+        self.builder.set_prebuild_tests(
+            [
+                PrebuildTest(test_id=1, title=make_prebuild_text("Test 1")),
+            ]
+        )
+        self.builder.set_prebuild_questions(
+            [
+                PrebuildQuestion(
+                    test_id=1,
+                    question_id=1,
+                    text=make_prebuild_text("T1Q1"),
+                    image=None,
+                    answers=[],
+                ),
+            ]
+        )
+
+        self.builder.set_languages([Language.EN, Language.FR])
+        self.builder.set_fallback_language(Language.FR)
+        with self.assertRaises(Exception):
+            self.builder.build()
+
     def _assert_text(self, text_id: int, en: str):
         text_localizations = self.dbase.get_text_localizations(text_id)
         self.assertEqual(1, len(text_localizations))
         self.assertEqual(en, text_localizations[0].content)
+
+    def _assert_localization(self, text_id: int, language: Language, content: str):
+        self.assertEqual(
+            content,
+            self.dbase.get_text_localization(
+                text_id, language.value.language_id
+            ).content,
+        )

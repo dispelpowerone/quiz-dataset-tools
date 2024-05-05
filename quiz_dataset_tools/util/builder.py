@@ -16,6 +16,7 @@ class DatabaseBuilder:
         self.audio = MediaIndex(MediaType.AUDIO, f"{data_path}/audio", "output/audio")
         self.dbase: DriverTestDBase | None = None
         self.languages: list[Language] = []
+        self.fallback_language: Language | None = None
         self.tests: list[PrebuildTest] | None = None
         self.questions: list[PrebuildQuestion] | None = None
 
@@ -24,6 +25,9 @@ class DatabaseBuilder:
 
     def set_languages(self, languages: list[Language]) -> None:
         self.languages = languages
+
+    def set_fallback_language(self, language: Language) -> None:
+        self.fallback_language = language
 
     def set_prebuild_tests(self, tests: list[PrebuildTest]) -> None:
         self.tests = tests
@@ -56,7 +60,12 @@ class DatabaseBuilder:
         for lang in self.languages:
             text_content = text.localizations.get(lang)
             if text_content is None:
-                raise Exception("Missed localization")
+                if self.fallback_language:
+                    text_content = text.localizations.get(self.fallback_language)
+                    if text_content is None:
+                        raise Exception("Missed fallback localization")
+                else:
+                    raise Exception("Missed localization")
             dbase.add_text_localization(text_id, lang.value.language_id, text_content)
 
     def _pack_questions(self, dbase: DriverTestDBase) -> None:

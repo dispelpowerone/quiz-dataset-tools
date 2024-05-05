@@ -72,6 +72,13 @@ option_languages = click.option(
 )
 
 
+option_fallback_language = click.option(
+    "--fallback-language",
+    type=click.Choice([l.name for l in Language]),
+    help="Fallback localization.",
+)
+
+
 option_continue_from_stage = click.option(
     "--continue-from-stage",
     type=click.Choice(["init", "compose", "overrides", "translate"]),
@@ -125,9 +132,9 @@ def prebuild(
 @main.command()
 @option_domain
 @option_languages
+@option_fallback_language
 @option_data_path
-def build(domain: str, languages: str, data_path: str) -> None:
-    languages_list = get_languages_list(languages)
+def build(domain: str, languages: str, fallback_language: str, data_path: str) -> None:
     prebuild_final_dir = f"{get_prebuild_dir(domain)}/final"
     build_dir = get_build_dir(domain)
 
@@ -138,7 +145,8 @@ def build(domain: str, languages: str, data_path: str) -> None:
 
     builder = DatabaseBuilder(data_path)
     builder.set_database(dbase)
-    builder.set_languages(languages_list)
+    builder.set_languages(get_languages_list(languages))
+    builder.set_fallback_language(get_language(fallback_language))
     builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_final_dir))
     builder.set_prebuild_questions(PrebuildBuilder.load_questions(prebuild_final_dir))
     builder.build()
@@ -169,8 +177,12 @@ def get_build_dir(domain: str):
 def get_languages_list(languages: str) -> list[Language]:
     languages_list: list[Language] = []
     for language_name in languages.strip().split(","):
-        language = Language.from_name(language_name)
-        if not language:
-            raise Exception(f"Unknown language: {language_name}")
-        languages_list.append(language)
+        languages_list.append(get_language(language_name))
     return languages_list
+
+
+def get_language(language_name: str) -> Language:
+    language = Language.from_name(language_name)
+    if not language:
+        raise Exception(f"Unknown language: {language_name}")
+    return language
