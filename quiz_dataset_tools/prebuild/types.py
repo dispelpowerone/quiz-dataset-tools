@@ -7,8 +7,8 @@ from quiz_dataset_tools.util.language import Language, TextLocalizations
 @dataclass
 class PrebuildText(DataClassJsonMixin):
     localizations: TextLocalizations
-    original: TextLocalizations | None
-    paraphrase: ParaphrasedText | None
+    original: TextLocalizations | None = None
+    paraphrase: ParaphrasedText | None = None
 
 
 @dataclass

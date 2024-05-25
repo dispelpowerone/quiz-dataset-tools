@@ -146,7 +146,8 @@ def build(domain: str, languages: str, fallback_language: str, data_path: str) -
     builder = DatabaseBuilder(data_path)
     builder.set_database(dbase)
     builder.set_languages(get_languages_list(languages))
-    builder.set_fallback_language(get_language(fallback_language))
+    if fallback_language:
+        builder.set_fallback_language(get_language(fallback_language))
     builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_final_dir))
     builder.set_prebuild_questions(PrebuildBuilder.load_questions(prebuild_final_dir))
     builder.build()
