@@ -19,11 +19,14 @@ from quiz_dataset_tools.prebuild.stage import BaseStage, StageState
 from quiz_dataset_tools.prebuild.stages.passthrough import PassthroughStage
 from quiz_dataset_tools.prebuild.stages.compose import ComposeMode, ComposeStage
 from quiz_dataset_tools.prebuild.stages.override import OverrideStage
+from quiz_dataset_tools.prebuild.stages.dump_overrides import DumpOverridesStage
 from quiz_dataset_tools.prebuild.stages.translate import TranslateStage
+from quiz_dataset_tools.prebuild.stages.final import FinalStage
 
 
 class PrebuildBuilder:
     def __init__(self) -> None:
+        self.data_path: str = "data"
         self.output_dir: str = "out"
         self.overrides: TextOverrides | None = None
         self.translator: Translator | None = None
@@ -32,6 +35,9 @@ class PrebuildBuilder:
         self.compose_mode: ComposeMode = ComposeMode.SKIP
         self.questions_per_test: int = 15
         self.continue_from_stage: str | None = None
+
+    def set_data_path(self, data_path: str) -> None:
+        self.data_path = data_path
 
     def set_output_dir(self, output_dir: str) -> None:
         self.output_dir = output_dir
@@ -58,8 +64,16 @@ class PrebuildBuilder:
         stages = self._make_stages_list()
         state = self._load_initial_state()
         for stage_name, stage in stages:
+            stage.setup()
             state = stage.process(state)
             self._dump_state(stage_name, state)
+
+    def dump_overrides(self) -> None:
+        assert self.languages
+        assert self.overrides
+        final_state = self._load_stage_state("final")
+        dump_stage = DumpOverridesStage(self.languages, self.overrides)
+        dump_stage.process(final_state)
 
     @staticmethod
     def load_tests(data_dir: str) -> list[PrebuildTest]:
@@ -83,12 +97,12 @@ class PrebuildBuilder:
                 ("compose", ComposeStage(self.compose_mode, self.questions_per_test))
             )
         if self.overrides:
-            stages.append(("overrides", OverrideStage(self.overrides)))
+            stages.append(("overrides", OverrideStage(self.languages, self.overrides)))
         if self.translator:
             stages.append(
                 ("translate", TranslateStage(self.translator, self.languages))
             )
-        stages.append(("final", PassthroughStage()))
+        stages.append(("final", FinalStage(self.data_path, self.output_dir)))
         # Move to requested stage
         if self.continue_from_stage:
             stage_index = None
@@ -105,16 +119,8 @@ class PrebuildBuilder:
 
     def _load_initial_state(self) -> StageState:
         if self.continue_from_stage:
-            return StageState(
-                tests=load_list(
-                    cls=PrebuildTest,
-                    source_dir=f"{self.output_dir}/{self.continue_from_stage}/tests",
-                ),
-                questions=load_list(
-                    cls=PrebuildQuestion,
-                    source_dir=f"{self.output_dir}/{self.continue_from_stage}/questions",
-                ),
-            )
+            return self._load_stage_state(self.continue_from_stage)
+
         assert self.parser
         canonical_tests = self.parser.get_tests()
         prebuild_tests = []
@@ -127,6 +133,18 @@ class PrebuildBuilder:
                     self._make_prebuild_question(test_id, question_index + 1, question)
                 )
         return StageState(tests=prebuild_tests, questions=prebuild_questions)
+
+    def _load_stage_state(self, stage_name: str) -> StageState:
+        return StageState(
+            tests=load_list(
+                cls=PrebuildTest,
+                source_dir=f"{self.output_dir}/{stage_name}/tests",
+            ),
+            questions=load_list(
+                cls=PrebuildQuestion,
+                source_dir=f"{self.output_dir}/{stage_name}/questions",
+            ),
+        )
 
     def _make_prebuild_test(self, test_id, test: Test) -> PrebuildTest:
         return PrebuildTest(

@@ -1,4 +1,6 @@
 import unittest
+import os
+from random import randrange
 from unittest.mock import MagicMock
 from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.util.builder import DatabaseBuilder
@@ -14,10 +16,12 @@ from tests.common import make_prebuild_text
 
 class TestDatabaseBuilder(unittest.TestCase):
     def setUp(self):
-        self.dbase = DriverTestDBase("/tmp/test_main.db")
+        dbase_file = f"/tmp/test.main.db.{randrange(1000)}"
+        self.dbase = DriverTestDBase(dbase_file)
         self.dbase.open()
         self.builder = DatabaseBuilder("./")
         self.builder.set_database(self.dbase)
+        os.remove(dbase_file)
 
     def test_build_end_to_end(self):
         self.builder.set_prebuild_tests(

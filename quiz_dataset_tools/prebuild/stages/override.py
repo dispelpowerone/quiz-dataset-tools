@@ -4,31 +4,43 @@ from quiz_dataset_tools.prebuild.stage import DataUpdateBaseStage, StageState
 from quiz_dataset_tools.prebuild.types import (
     PrebuildAnswer,
     PrebuildQuestion,
-    PrebuildTest,
+    PrebuildText,
+)
+from quiz_dataset_tools.prebuild.overrides import (
+    make_question_context,
+    make_answer_context,
 )
 
 
 class OverrideStage(DataUpdateBaseStage):
-    def __init__(self, overrides: TextOverrides):
+    def __init__(self, languages: list[Language], overrides: TextOverrides):
+        self.languages = languages
         self.overrides = overrides
+        self.matched_count = 0
+        self.missed_count = 0
 
     def update_question(self, question: PrebuildQuestion) -> None:
-        answer_context = question.text.localizations.get(Language.EN)
-        assert answer_context
+        self._override_text(question.text, make_question_context(question))
         for answer in question.answers:
-            self._override_text(answer.text.localizations, answer_context)
-        self._override_text(question.text.localizations, "")
+            self._override_text(answer.text, make_answer_context(question, answer))
 
-    def _override_text(self, text: TextLocalizations, context: str):
-        # Override only english localization for now
-        # We expect it to be a canonical one
-        text_content = text.get(Language.EN)
-        assert text_content is not None
-        text_override = self.overrides.get(
-            lang=Language.EN,
-            text=text_content,
-            context=context,
-            override_lang=Language.EN,
-        )
-        if text_override:
-            text.set(Language.EN, text_override)
+    def _override_text(self, text: PrebuildText, context: str):
+        try:
+            assert text.original
+            # We expect english version to be a canonical one
+            orig_text = text.original.get(Language.EN)
+            assert orig_text
+            for lang in self.languages:
+                override = self.overrides.get(
+                    context=context,
+                    lang=Language.EN,
+                    text=orig_text,
+                    override_lang=lang,
+                )
+                if override:
+                    self.matched_count += 1
+                    text.localizations.set(lang, override)
+                else:
+                    self.missed_count += 1
+        except Exception as e:
+            raise Exception(f"Failed to override text[{text}]: {e}")

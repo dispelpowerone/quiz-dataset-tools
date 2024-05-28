@@ -11,9 +11,10 @@ def make_prebuild_text(
     ru: str = None,
     fa: str = None,
     pa: str = None,
+    orig: str = None,
 ):
     return PrebuildText(
         localizations=TextLocalizations(EN=en, FR=fr, ES=es, RU=ru, FA=fa, PA=pa),
         paraphrase=None,
-        original=None,
+        original=None if orig is None else TextLocalizations(EN=orig),
     )

@@ -14,6 +14,9 @@ class StageState:
 
 
 class BaseStage:
+    def setup(self):
+        pass
+
     def process(self, state: StageState) -> StageState:
         return state
 
@@ -24,8 +27,9 @@ class DataUpdateBaseStage(BaseStage):
         for test in result_state.tests:
             self.update_test(test)
         for question in result_state.questions:
+            question_copy = copy.deepcopy(question)
             for answer in question.answers:
-                self.update_answer(answer)
+                self.update_answer(question_copy, answer)
             self.update_question(question)
         return result_state
 
@@ -35,5 +39,5 @@ class DataUpdateBaseStage(BaseStage):
     def update_question(self, question: PrebuildQuestion) -> None:
         pass
 
-    def update_answer(self, answer: PrebuildAnswer) -> None:
+    def update_answer(self, question: PrebuildQuestion, answer: PrebuildAnswer) -> None:
         pass

@@ -10,6 +10,10 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildTest,
     PrebuildText,
 )
+from quiz_dataset_tools.prebuild.overrides import (
+    make_question_context,
+    make_answer_context,
+)
 from tests.common import make_prebuild_text
 
 
@@ -17,11 +21,11 @@ class TestOverrideStage(unittest.TestCase):
     def setUp(self):
         self.override_list = [
             ("foo", "", "over-foo"),
-            ("foo", "foo", "over-foo-foo"),
-            ("boo", "foo", "over-foo-boo"),
+            ("foo", "question: foo; is_right_answer: False", "over-foo-foo"),
+            ("boo", "question: foo; is_right_answer: True", "over-foo-boo"),
             ("bar", "", "over-bar"),
         ]
-        self.overrides = TextOverrides(domain="test")
+        self.overrides = TextOverrides(data_path="test")
         for entry in self.override_list:
             self.overrides.put(
                 lang=Language.EN,
@@ -39,16 +43,24 @@ class TestOverrideStage(unittest.TestCase):
             PrebuildQuestion(
                 test_id=1,
                 question_id=1,
-                text=make_prebuild_text("foo"),
+                text=make_prebuild_text("foo", orig="foo"),
                 answers=[
-                    PrebuildAnswer(make_prebuild_text("foo"), is_right_answer=False),
-                    PrebuildAnswer(make_prebuild_text("boo"), is_right_answer=True),
-                    PrebuildAnswer(make_prebuild_text("bar"), is_right_answer=False),
-                    PrebuildAnswer(make_prebuild_text("zee"), is_right_answer=False),
+                    PrebuildAnswer(
+                        make_prebuild_text("foo", orig="foo"), is_right_answer=False
+                    ),
+                    PrebuildAnswer(
+                        make_prebuild_text("boo", orig="boo"), is_right_answer=True
+                    ),
+                    PrebuildAnswer(
+                        make_prebuild_text("bar", orig="bar"), is_right_answer=False
+                    ),
+                    PrebuildAnswer(
+                        make_prebuild_text("zee", orig="zee"), is_right_answer=False
+                    ),
                 ],
             ),
         ]
-        stage = OverrideStage(overrides=self.overrides)
+        stage = OverrideStage(languages=[Language.EN], overrides=self.overrides)
         state = stage.process(StageState(tests=tests, questions=questions))
         # Check test title
         self.assertEqual("Test 1", state.tests[0].title.localizations.get(Language.EN))

@@ -14,7 +14,7 @@ class FormatStage(DataUpdateBaseStage):
     def update_question(self, question: PrebuildQuestion) -> None:
         self._format_localizations(question.text.localizations)
 
-    def update_answer(self, answer: PrebuildAnswer) -> None:
+    def update_answer(self, question: PrebuildQuestion, answer: PrebuildAnswer) -> None:
         self._format_localizations(answer.text.localizations)
 
     def _format_localizations(self, text: TextLocalizations):

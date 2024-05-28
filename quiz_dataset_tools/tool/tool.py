@@ -9,7 +9,10 @@ from quiz_dataset_tools.util.text_overrides import TextOverrides
 from quiz_dataset_tools.prebuild.prebuild import PrebuildBuilder
 from quiz_dataset_tools.parser.parser import Parser
 from quiz_dataset_tools.parser.dbase import DatabaseParser
-from quiz_dataset_tools.parser.usa import USADatabaseParser
+from quiz_dataset_tools.parser.usa import (
+    USADatabaseNYParser,
+    USADatabaseTXParser,
+)
 from quiz_dataset_tools.parser.tilda import TildaParser
 from quiz_dataset_tools.parser.songs import SongsParser
 from quiz_dataset_tools.translation.translation import Translator
@@ -50,7 +53,7 @@ option_parser = click.option(
     "--parser",
     show_default=True,
     default="dbase",
-    type=click.Choice(["dbase", "genius", "tilda", "songs"]),
+    type=click.Choice(["dbase", "genius-ny", "genius-tx", "tilda", "songs"]),
     help="Parser to use to read tests data.",
 )
 
@@ -104,6 +107,7 @@ def prebuild(
     languages = [lang for lang in Language]
 
     builder = PrebuildBuilder()
+    builder.set_data_path(data_path)
     builder.set_output_dir(get_prebuild_dir(domain))
     builder.set_parser(get_parser(parser, data_path))
     builder.set_languages(languages)
@@ -115,7 +119,7 @@ def prebuild(
         builder.set_translator(translator)
 
     if text_overrides:
-        overrides = TextOverrides(domain=domain)
+        overrides = TextOverrides(data_path=data_path)
         overrides.load()
         builder.set_overrides(overrides)
 
@@ -127,6 +131,25 @@ def prebuild(
     # Flush translator's cache
     if translator:
         translator.save_cache()
+
+
+@main.command()
+@option_languages
+@option_data_path
+def dump_overrides(
+    languages: str,
+    data_path: str,
+) -> None:
+    overrides = TextOverrides(data_path=data_path)
+    # overrides.load()
+
+    builder = PrebuildBuilder()
+    builder.set_output_dir("")
+    builder.set_languages(get_languages_list(languages))
+    builder.set_overrides(overrides)
+    builder.dump_overrides()
+
+    overrides.save()
 
 
 @main.command()
@@ -158,8 +181,10 @@ def build(domain: str, languages: str, fallback_language: str, data_path: str) -
 def get_parser(parser: str, data_path: str) -> Parser:
     if parser == "dbase":
         return DatabaseParser(data_path)
-    elif parser == "genius":
-        return USADatabaseParser()
+    elif parser == "genius-ny":
+        return USADatabaseNYParser()
+    elif parser == "genius-tx":
+        return USADatabaseTXParser()
     elif parser == "tilda":
         return TildaParser(data_path)
     elif parser == "songs":

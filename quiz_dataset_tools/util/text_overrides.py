@@ -4,20 +4,20 @@ from quiz_dataset_tools.util.language import Language
 
 
 class TextOverrides:
-    SCHEMA = ["source_lang", "source_text", "context", "dest_lang", "dest_text"]
-    OVERRIDES_FILE_TEMPL = "data/{}/overrides.csv"
+    SCHEMA = ["context", "source_lang", "source_text", "dest_lang", "dest_text"]
+    OVERRIDES_FILE_TEMPL = "{}/overrides.csv"
     OVERRIDES_FILE_TEMP_TEMPL = "data/{}/overrides.csv.temp"
 
     MappingType = dict[tuple[str, str, str, str], str]
 
-    def __init__(self, domain: str):
-        self.domain = domain
+    def __init__(self, data_path: str):
+        self.data_path = data_path
         self.overrides: TextOverrides.MappingType = {}
 
     def get(
         self, lang: Language, text: str, context: str, override_lang: Language
     ) -> str | None:
-        return self.overrides.get((lang.name, text, context, override_lang.name))
+        return self.overrides.get((context, lang.name, text, override_lang.name))
 
     def put(
         self,
@@ -27,14 +27,14 @@ class TextOverrides:
         override_lang: Language,
         override: str,
     ) -> None:
-        self.overrides[(lang.name, text, context, override_lang.name)] = override
+        self.overrides[(context, lang.name, text, override_lang.name)] = override
 
     def save(self) -> None:
         print(f"TextOverrides::save: size = {len(self.overrides)}")
         overrides_file_temp = TextOverrides.OVERRIDES_FILE_TEMP_TEMPL.format(
-            self.domain
+            self.data_path
         )
-        overrides_file = TextOverrides.OVERRIDES_FILE_TEMPL.format(self.domain)
+        overrides_file = TextOverrides.OVERRIDES_FILE_TEMPL.format(self.data_path)
         head_tail = os.path.split(overrides_file_temp)
         os.makedirs(head_tail[0], exist_ok=True)
         if os.path.exists(overrides_file_temp):
@@ -47,7 +47,7 @@ class TextOverrides:
         os.rename(overrides_file_temp, overrides_file)
 
     def load(self) -> None:
-        overrides_file = TextOverrides.OVERRIDES_FILE_TEMPL.format(self.domain)
+        overrides_file = TextOverrides.OVERRIDES_FILE_TEMPL.format(self.data_path)
         overrides: TextOverrides.MappingType = {}
         if not os.path.exists(overrides_file):
             self.overrides = overrides

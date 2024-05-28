@@ -1,14 +1,14 @@
 import os
 import glob
+import shutil
 from typing import TypeVar, Type
 from dataclasses_json import DataClassJsonMixin
 
 
 def prepare_output_dir(dir_name: str):
+    if os.path.exists(dir_name):
+        shutil.rmtree(dir_name)
     os.makedirs(dir_name, exist_ok=True)
-    file_paths = glob.glob(f"{dir_name}/*")
-    for file_path in file_paths:
-        os.remove(file_path)
 
 
 T = TypeVar("T", bound=DataClassJsonMixin)

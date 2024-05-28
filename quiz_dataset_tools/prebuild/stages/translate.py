@@ -35,7 +35,7 @@ class TranslateStage(DataUpdateBaseStage):
             question.text.localizations
         )
 
-    def update_answer(self, answer: PrebuildAnswer) -> None:
+    def update_answer(self, question: PrebuildQuestion, answer: PrebuildAnswer) -> None:
         answer.text.localizations = self.translation_transformer(
             answer.text.localizations
         )
