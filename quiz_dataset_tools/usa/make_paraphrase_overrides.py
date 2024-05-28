@@ -4,7 +4,7 @@ from typing import Callable
 from quiz_dataset_tools.util.data import Question, Answer
 from quiz_dataset_tools.util.language import Language
 from quiz_dataset_tools.util.text_overrides import TextOverrides
-from quiz_dataset_tools.parser.usa.parser import USADatabaseParser
+from quiz_dataset_tools.parser.usa.parser import USADatabaseNYParser
 from quiz_dataset_tools.paraphrase.io import load_questions_chunked
 from quiz_dataset_tools.paraphrase.types import ParaphrasedQuestion, ParaphrasedAnswer
 from pprint import pprint
@@ -23,7 +23,7 @@ def main() -> None:
 
 
 def load_orig_questions() -> list[Question]:
-    orig_tests = USADatabaseParser().get_tests()
+    orig_tests = USADatabaseNYParser().get_tests()
     questions: list[Question] = []
     for test in orig_tests:
         questions.extend(test.questions)

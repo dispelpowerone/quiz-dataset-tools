@@ -18,10 +18,10 @@ class GAnswer:
     text: str
 
 
-def load_ny_tests() -> list[Test]:
+def load_tests_by_state(state_id: int) -> list[Test]:
     test_size = 15
     tests: list[Test] = []
-    questions = load_state_questions(33)
+    questions = load_state_questions(state_id)
     for i in range(0, len(questions), test_size):
         test_number = len(tests) + 1
         tests.append(
