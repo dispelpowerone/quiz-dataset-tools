@@ -81,12 +81,12 @@ class TextLocalizationOrm(BaseOrm):
         return result
 
     @staticmethod
-    def to_obj(self) -> TextLocalizations:
-        lang = Language.from_id(self.LanguageId)
-        assert lang
+    def to_obj(orms: list["TextLocalizationOrm"]) -> TextLocalizations:
         obj = TextLocalizations()
-        for localization in self.Localizations:
-            obj.set(lang, self.Content)
+        for orm in orms:
+            lang = Language.from_id(orm.LanguageId)
+            assert lang
+            obj.set(lang, orm.Content)
         return obj
 
 
