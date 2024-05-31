@@ -3,7 +3,7 @@ from .models.tests import GetTestsRequest, GetTestsResponse
 from .service import DatabaseService
 
 service = DatabaseService(
-    "/Users/d.vasilyev/Workspace/quiz-dataset-tools/output/ny_positions/build/main.db"
+    "/Users/d.vasilyev/Workspace/quiz-dataset-tools/output/tx/prebuild/data"
 )
 app = FastAPI()
 

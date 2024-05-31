@@ -1,5 +1,5 @@
 from pydantic.dataclasses import dataclass
-from ...util.dbase import TestDBO
+from quiz_dataset_tools.prebuild.types import PrebuildTest
 
 
 @dataclass
@@ -10,4 +10,4 @@ class GetTestsRequest:
 @dataclass
 class GetTestsResponse:
     error_code: int
-    payload: list[TestDBO]
+    payload: list[PrebuildTest]
