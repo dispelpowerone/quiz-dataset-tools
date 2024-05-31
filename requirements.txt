@@ -47,3 +47,4 @@ urllib3==1.26.16
 yarl==1.9.2
 types_beautifulsoup==4.12.0
 setuptools==69.5.1
+sqlalchemy==2.0.30
