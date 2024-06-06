@@ -9,6 +9,6 @@ class MixedTranslator:
         self.google_translator = GoogleTranslator()
 
     def get(self, dest_lang: Language, src_text: str):
-        if dest_lang in [Language.PA, Language.FA]:
+        if dest_lang in [Language.FA]:
             return self.google_translator.get(dest_lang, src_text)
         return self.deepl_translator.get(dest_lang, src_text)

@@ -8,16 +8,18 @@ from dataclasses_json import dataclass_json, config, LetterCase
 class _Language:
     language_id: int
     name: str
+    code: str
 
 
 class Language(Enum):
-    EN = _Language(1, "English")
-    FR = _Language(2, "French")
-    ZH = _Language(3, "Chinese")
-    ES = _Language(4, "Spanish")
-    RU = _Language(5, "Russian")
-    FA = _Language(6, "Farsi")
-    PA = _Language(7, "Punjabi")
+    EN = _Language(1, "English", "EN")
+    FR = _Language(2, "French", "FR")
+    ZH = _Language(3, "Chinese", "ZH")
+    ES = _Language(4, "Spanish", "ES")
+    RU = _Language(5, "Russian", "RU")
+    FA = _Language(6, "Farsi", "FA")
+    KO = _Language(8, "Korean", "KO")
+    PT = _Language(9, "Portuguese", "PT-BR")
 
     @staticmethod
     def from_id(language_id: int) -> Optional["Language"]:
@@ -47,6 +49,8 @@ class TextLocalizations:
     RU: str | None = field(default=None, metadata=config(exclude=lambda x: x is None))  # type: ignore
     FA: str | None = field(default=None, metadata=config(exclude=lambda x: x is None))  # type: ignore
     PA: str | None = field(default=None, metadata=config(exclude=lambda x: x is None))  # type: ignore
+    KO: str | None = None
+    PT: str | None = None
 
     def set(self, lang: Language, text: str) -> None:
         if not hasattr(self, lang.name):

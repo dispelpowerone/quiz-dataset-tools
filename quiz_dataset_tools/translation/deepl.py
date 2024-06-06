@@ -29,7 +29,7 @@ class DeepLTranslator:
 def _call_with_backoff(translator, dest_lang: Language, src_text: str):
     print(f"HACK_DeepLTranslator_call: {dest_lang}")
     result = translator.translate_text(
-        src_text, source_lang="EN", target_lang=dest_lang.name
+        src_text, source_lang="EN", target_lang=dest_lang.value.code
     )
     print(f"HACK_DeepLTranslator_result: {src_text} -> {result.text}")
     return result.text
