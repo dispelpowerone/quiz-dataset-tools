@@ -59,12 +59,12 @@ class TestTranslateStage(unittest.TestCase):
         # Check question text
         question = state.questions[0]
         self.assertEqual("foo", question.text.localizations.get(Language.EN))
-        self.assertEqual("fr-foo / foo", question.text.localizations.get(Language.FR))
-        self.assertEqual("un-foo / foo", question.text.localizations.get(Language.ES))
+        self.assertEqual("fr-foo", question.text.localizations.get(Language.FR))
+        self.assertEqual("un-foo", question.text.localizations.get(Language.ES))
         self.assertIsNone(question.text.localizations.get(Language.ZH))
         # Check answer
         answer = question.answers[1]
         self.assertEqual("bar", answer.text.localizations.get(Language.EN))
-        self.assertEqual("fr-bar / bar", answer.text.localizations.get(Language.FR))
-        self.assertEqual("un-bar / bar", answer.text.localizations.get(Language.ES))
+        self.assertEqual("fr-bar", answer.text.localizations.get(Language.FR))
+        self.assertEqual("un-bar", answer.text.localizations.get(Language.ES))
         self.assertIsNone(answer.text.localizations.get(Language.ZH))

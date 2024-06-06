@@ -86,12 +86,14 @@ class TranslationTextTransformer:
             translated_text_content = self.translator.get_one(
                 canonical_text_content, lang
             )
-            if (
-                translated_text_content != canonical_text_content
-                and lang != Language.FA
-            ):
-                translated_text_content = (
-                    f"{translated_text_content} / {canonical_text_content}"
-                )
+            # Commented because we don't want to mix localization and
+            # canonical text.
+            # if (
+            #     translated_text_content != canonical_text_content
+            #     and lang != Language.FA
+            # ):
+            #     translated_text_content = (
+            #         f"{translated_text_content} / {canonical_text_content}"
+            #     )
             translated_text.set(lang, translated_text_content)
         return translated_text
