@@ -17,4 +17,4 @@ doctor:
 	python3 -m pip list --outdated
 
 server:
-	uvicorn quiz_dataset_tools.server.main:app
+	uvicorn quiz_dataset_tools.server.main:app --host 0.0.0.0
