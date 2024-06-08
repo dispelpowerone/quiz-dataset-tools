@@ -35,7 +35,9 @@ class TextOrm(BaseOrm):
     TextId: Mapped[int] = mapped_column(primary_key=True)
     Original: Mapped[str | None]
 
-    Localizations: Mapped[List["TextLocalizationOrm"]] = relationship()
+    Localizations: Mapped[List["TextLocalizationOrm"]] = relationship(
+        back_populates="Text"
+    )
 
     @staticmethod
     def from_obj(obj: PrebuildText) -> "TextOrm":
@@ -43,6 +45,7 @@ class TextOrm(BaseOrm):
         if obj.original:
             original = obj.original.get(Language.EN)
         return TextOrm(
+            TextId=obj.text_id,
             Localizations=TextLocalizationOrm.from_obj(obj.localizations),
             Original=original,
         )
@@ -53,9 +56,13 @@ class TextOrm(BaseOrm):
             original = TextLocalizations()
             original.set(Language.EN, self.Original)
         return PrebuildText(
+            text_id=self.TextId,
             localizations=TextLocalizationOrm.to_obj(self.Localizations),
             original=original,
         )
+
+    def update(self, obj: PrebuildText) -> None:
+        TextLocalizationOrm.sync_with_obj(self.Localizations, obj.localizations)
 
 
 class TextLocalizationOrm(BaseOrm):
@@ -66,18 +73,12 @@ class TextLocalizationOrm(BaseOrm):
     LanguageId: Mapped[int] = mapped_column(ForeignKey("Languages.LanguageId"))
     Content: Mapped[str]
 
+    Text: Mapped["TextOrm"] = relationship(back_populates="Localizations")
+
     @staticmethod
     def from_obj(obj: TextLocalizations) -> list["TextLocalizationOrm"]:
-        result = []
-        for lang in Language:
-            localization = obj.get(lang)
-            if localization is None:
-                continue
-            result.append(
-                TextLocalizationOrm(
-                    LanguageId=lang.value.language_id, Content=localization
-                )
-            )
+        result: list["TextLocalizationOrm"] = []
+        TextLocalizationOrm.sync_with_obj(result, obj)
         return result
 
     @staticmethod
@@ -88,6 +89,33 @@ class TextLocalizationOrm(BaseOrm):
             assert lang
             obj.set(lang, orm.Content)
         return obj
+
+    @staticmethod
+    def sync_with_obj(orms: list["TextLocalizationOrm"], obj: TextLocalizations):
+        for lang in Language:
+            localization = obj.get(lang)
+            localization_orm = TextLocalizationOrm.find_localization(
+                orms, lang.value.language_id
+            )
+            if localization is None and localization_orm is None:
+                continue
+            elif localization_orm is None:
+                orms.append(
+                    TextLocalizationOrm(
+                        LanguageId=lang.value.language_id, Content=localization
+                    )
+                )
+            elif localization is None:
+                localization_orm.Content = ""
+            else:
+                localization_orm.Content = localization
+
+    @staticmethod
+    def find_localization(orms: list["TextLocalizationOrm"], language_id: int):
+        for localization in orms:
+            if localization.LanguageId == language_id:
+                return localization
+        return None
 
 
 class AnswerOrm(BaseOrm):
@@ -105,6 +133,12 @@ class AnswerOrm(BaseOrm):
         return AnswerOrm(
             Text=TextOrm.from_obj(obj.text),
             IsRightAnswer=obj.is_right_answer,
+        )
+
+    def to_obj(self) -> PrebuildAnswer:
+        return PrebuildAnswer(
+            text=self.Text.to_obj(),
+            is_right_answer=self.IsRightAnswer,
         )
 
 
@@ -128,6 +162,15 @@ class QuestionOrm(BaseOrm):
             Answers=[AnswerOrm.from_obj(a) for a in obj.answers],
             Image=obj.image,
             Audio=obj.audio,
+        )
+
+    def to_obj(self) -> PrebuildQuestion:
+        return PrebuildQuestion(
+            test_id=self.TestId,
+            question_id=self.QuestionId,
+            text=self.Text.to_obj(),
+            image=self.Image,
+            answers=[a.to_obj() for a in self.Answers],
         )
 
 

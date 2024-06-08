@@ -24,7 +24,7 @@ jsonpickle==3.0.2
 marshmallow==3.20.1
 meson==1.2.1
 multidict==6.0.4
-mypy==1.5.1
+mypy==1.10.0
 mypy-extensions==1.0.0
 openai==0.27.8
 packaging==23.1
@@ -42,10 +42,9 @@ tenacity==8.2.2
 tomli==2.0.1
 tqdm==4.65.0
 typing-inspect==0.9.0
-typing_extensions==4.7.1
+typing_extensions==4.12.1
 urllib3==1.26.16
 yarl==1.9.2
-types_beautifulsoup==4.12.0
 setuptools==69.5.1
 sqlalchemy==2.0.30
 FastAPI==0.110.2
