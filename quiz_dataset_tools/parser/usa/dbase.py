@@ -28,6 +28,7 @@ def load_tests_by_state(state_id: int) -> list[Test]:
             Test(
                 title=_make_text(f"Test {test_number}"),
                 questions=questions[i : i + test_size],
+                position=test_number,
             )
         )
     return tests
