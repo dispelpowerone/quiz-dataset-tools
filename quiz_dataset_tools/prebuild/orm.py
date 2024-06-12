@@ -34,6 +34,7 @@ class TextOrm(BaseOrm):
 
     TextId: Mapped[int] = mapped_column(primary_key=True)
     Original: Mapped[str | None]
+    IsManuallyChecked: Mapped[bool]
 
     Localizations: Mapped[List["TextLocalizationOrm"]] = relationship(
         back_populates="Text"
@@ -48,6 +49,7 @@ class TextOrm(BaseOrm):
             TextId=obj.text_id,
             Localizations=TextLocalizationOrm.from_obj(obj.localizations),
             Original=original,
+            IsManuallyChecked=obj.is_manually_checked,
         )
 
     def to_obj(self) -> PrebuildText:
@@ -59,10 +61,12 @@ class TextOrm(BaseOrm):
             text_id=self.TextId,
             localizations=TextLocalizationOrm.to_obj(self.Localizations),
             original=original,
+            is_manually_checked=self.IsManuallyChecked,
         )
 
     def update(self, obj: PrebuildText) -> None:
         TextLocalizationOrm.sync_with_obj(self.Localizations, obj.localizations)
+        self.IsManuallyChecked = obj.is_manually_checked
 
 
 class TextLocalizationOrm(BaseOrm):

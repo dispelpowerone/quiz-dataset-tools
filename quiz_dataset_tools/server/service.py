@@ -23,5 +23,6 @@ class DatabaseService:
         )
 
     def update_text(self, req: UpdateTextRequest) -> UpdateTextResponse:
+        print(f"Update text: {req.text}")
         self.dbase.update_text(req.text)
         return UpdateTextResponse(error_code=0, payload=None)
