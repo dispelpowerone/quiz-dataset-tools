@@ -1,5 +1,7 @@
+import datetime
 from typing import List
-from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey, DateTime
+from sqlalchemy.sql import func
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -35,6 +37,9 @@ class TextOrm(BaseOrm):
     TextId: Mapped[int] = mapped_column(primary_key=True)
     Original: Mapped[str | None]
     IsManuallyChecked: Mapped[bool]
+    LastUpdateTimestamp: Mapped[datetime.datetime] = mapped_column(
+        DateTime(timezone=True), onupdate=func.now()
+    )
 
     Localizations: Mapped[List["TextLocalizationOrm"]] = relationship(
         back_populates="Text"
@@ -62,6 +67,7 @@ class TextOrm(BaseOrm):
             localizations=TextLocalizationOrm.to_obj(self.Localizations),
             original=original,
             is_manually_checked=self.IsManuallyChecked,
+            last_update_timestamp=int(self.LastUpdateTimestamp.timestamp()),
         )
 
     def update(self, obj: PrebuildText) -> None:

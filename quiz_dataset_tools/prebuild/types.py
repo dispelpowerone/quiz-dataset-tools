@@ -11,6 +11,7 @@ class PrebuildText(DataClassJsonMixin):
     original: TextLocalizations | None = None
     paraphrase: ParaphrasedText | None = None
     is_manually_checked: bool = False
+    last_update_timestamp: int | None = None
 
 
 @dataclass
