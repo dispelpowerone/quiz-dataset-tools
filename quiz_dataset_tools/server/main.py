@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from quiz_dataset_tools.server.models.tests import GetTestsRequest, GetTestsResponse
 from quiz_dataset_tools.server.models.questions import (
@@ -37,3 +37,8 @@ async def get_questions(req: GetQuestionsRequest) -> GetQuestionsResponse:
 @app.post("/text/update")
 async def update_text(req: UpdateTextRequest) -> UpdateTextResponse:
     return service.update_text(req)
+
+
+@app.post("/question/image/update")
+async def update_question_image(file: UploadFile):
+    service.update_question_image(file)
