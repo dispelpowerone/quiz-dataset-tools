@@ -10,7 +10,6 @@ charset-normalizer==3.2.0
 click==8.1.7
 dataclasses-json==0.6.0
 deepl==1.15.0
-driver-test-db @ file:///Users/d.vasilyev/Workspace/driver-test-db
 frozenlist==1.4.0
 google-api-core==2.11.1
 google-auth==2.22.0

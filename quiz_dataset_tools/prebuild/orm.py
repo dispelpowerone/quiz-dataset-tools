@@ -62,12 +62,15 @@ class TextOrm(BaseOrm):
         if self.Original is not None:
             original = TextLocalizations()
             original.set(Language.EN, self.Original)
+        last_update_timestamp = None
+        if self.LastUpdateTimestamp:
+            last_update_timestamp = int(self.LastUpdateTimestamp.timestamp())
         return PrebuildText(
             text_id=self.TextId,
             localizations=TextLocalizationOrm.to_obj(self.Localizations),
             original=original,
             is_manually_checked=self.IsManuallyChecked,
-            last_update_timestamp=int(self.LastUpdateTimestamp.timestamp()),
+            last_update_timestamp=last_update_timestamp,
         )
 
     def update(self, obj: PrebuildText) -> None:
