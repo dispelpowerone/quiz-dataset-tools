@@ -12,6 +12,7 @@ from quiz_dataset_tools.parser.dbase import DatabaseParser
 from quiz_dataset_tools.parser.usa import (
     USADatabaseNYParser,
     USADatabaseTXParser,
+    USADatabaseCAParser,
 )
 from quiz_dataset_tools.parser.tilda import TildaParser
 from quiz_dataset_tools.parser.songs import SongsParser
@@ -53,7 +54,9 @@ option_parser = click.option(
     "--parser",
     show_default=True,
     default="dbase",
-    type=click.Choice(["dbase", "genius-ny", "genius-tx", "tilda", "songs"]),
+    type=click.Choice(
+        ["dbase", "genius-ny", "genius-tx", "genius-ca", "tilda", "songs"]
+    ),
     help="Parser to use to read tests data.",
 )
 
@@ -96,7 +99,7 @@ option_continue_from_stage = click.option(
 @option_parser
 @option_data_path
 @option_continue_from_stage
-def prebuild(
+def prebuild_init(
     domain: str,
     translate: bool,
     text_overrides: bool,
@@ -153,20 +156,41 @@ def prebuild_translate(
 
 
 @main.command()
+@option_domain
+@option_data_path
+def prebuild_override(
+    domain: str,
+    data_path: str,
+) -> None:
+    languages = [lang for lang in Language]
+
+    overrides = TextOverrides(data_path=data_path)
+    overrides.load()
+
+    builder = PrebuildBuilder()
+    builder.set_output_dir(get_prebuild_dir(domain))
+    builder.set_languages(languages)
+    builder.set_overrides(overrides)
+    builder.run_override()
+
+
+@main.command()
+@option_domain
 @option_languages
 @option_data_path
-def dump_overrides(
+def prebuild_dump_overrides(
+    domain: str,
     languages: str,
     data_path: str,
 ) -> None:
     overrides = TextOverrides(data_path=data_path)
-    # overrides.load()
+    overrides.load()
 
     builder = PrebuildBuilder()
-    builder.set_output_dir("")
+    builder.set_output_dir(get_prebuild_dir(domain))
     builder.set_languages(get_languages_list(languages))
     builder.set_overrides(overrides)
-    builder.dump_overrides()
+    builder.run_dump_overrides()
 
     overrides.save()
 
@@ -204,6 +228,8 @@ def get_parser(parser: str, data_path: str) -> Parser:
         return USADatabaseNYParser()
     elif parser == "genius-tx":
         return USADatabaseTXParser()
+    elif parser == "genius-ca":
+        return USADatabaseCAParser()
     elif parser == "tilda":
         return TildaParser(data_path)
     elif parser == "songs":

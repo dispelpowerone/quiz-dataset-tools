@@ -74,12 +74,15 @@ class PrebuildBuilder:
         assert self.translator
         self._run_stage_on_dbase(TranslateStage(self.translator, self.languages))
 
-    def dump_overrides(self) -> None:
+    def run_override(self) -> None:
         assert self.languages
         assert self.overrides
-        final_state = self._load_stage_state("final")
-        dump_stage = DumpOverridesStage(self.languages, self.overrides)
-        dump_stage.process(final_state)
+        self._run_stage_on_dbase(OverrideStage(self.languages, self.overrides))
+
+    def run_dump_overrides(self) -> None:
+        assert self.languages
+        assert self.overrides
+        self._run_stage_on_dbase(DumpOverridesStage(self.languages, self.overrides))
 
     @staticmethod
     def load_tests(data_dir: str) -> list[PrebuildTest]:
