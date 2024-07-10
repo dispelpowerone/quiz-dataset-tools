@@ -81,7 +81,7 @@ class TranslationTextTransformer:
             if lang == self.canonical_language:
                 continue
             translated_text_content = translated_text.get(lang)
-            if translated_text_content is not None:
+            if translated_text_content:
                 continue
             translated_text_content = self.translator.get_one(
                 canonical_text_content, lang

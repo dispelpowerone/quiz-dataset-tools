@@ -134,6 +134,25 @@ def prebuild(
 
 
 @main.command()
+@option_domain
+def prebuild_translate(
+    domain: str,
+) -> None:
+    languages = [lang for lang in Language]
+
+    translator = Translator(domain=domain)
+    translator.load_cache()
+
+    builder = PrebuildBuilder()
+    builder.set_output_dir(get_prebuild_dir(domain))
+    builder.set_languages(languages)
+    builder.set_translator(translator)
+    builder.run_translate()
+
+    translator.save_cache()
+
+
+@main.command()
 @option_languages
 @option_data_path
 def dump_overrides(
@@ -158,7 +177,7 @@ def dump_overrides(
 @option_fallback_language
 @option_data_path
 def build(domain: str, languages: str, fallback_language: str, data_path: str) -> None:
-    prebuild_final_dir = f"{get_prebuild_dir(domain)}/final"
+    prebuild_data_dir = f"{get_prebuild_dir(domain)}/data"
     build_dir = get_build_dir(domain)
 
     prepare_output_dir(build_dir)
@@ -166,13 +185,13 @@ def build(domain: str, languages: str, fallback_language: str, data_path: str) -
     dbase = DriverTestDBase(f"{build_dir}/main.db")
     dbase.open()
 
-    builder = DatabaseBuilder(data_path)
+    builder = DatabaseBuilder(data_path, build_dir)
     builder.set_database(dbase)
     builder.set_languages(get_languages_list(languages))
     if fallback_language:
         builder.set_fallback_language(get_language(fallback_language))
-    builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_final_dir))
-    builder.set_prebuild_questions(PrebuildBuilder.load_questions(prebuild_final_dir))
+    builder.set_prebuild_tests(PrebuildBuilder.load_tests(prebuild_data_dir))
+    builder.set_prebuild_questions(PrebuildBuilder.load_questions(prebuild_data_dir))
     builder.build()
 
     dbase.close()

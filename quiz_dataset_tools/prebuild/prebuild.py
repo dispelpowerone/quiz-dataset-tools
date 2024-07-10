@@ -9,6 +9,7 @@ from quiz_dataset_tools.parser.parser import Parser
 from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.util.data import Test, Question, Answer, TextTransformer
 from quiz_dataset_tools.util.fs import dump_list, load_list
+from quiz_dataset_tools.prebuild.dbase import PrebuildDBase
 from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
     PrebuildAnswer,
@@ -68,6 +69,11 @@ class PrebuildBuilder:
             state = stage.process(state)
             self._dump_state(stage_name, state)
 
+    def run_translate(self) -> None:
+        assert self.languages
+        assert self.translator
+        self._run_stage_on_dbase(TranslateStage(self.translator, self.languages))
+
     def dump_overrides(self) -> None:
         assert self.languages
         assert self.overrides
@@ -77,17 +83,17 @@ class PrebuildBuilder:
 
     @staticmethod
     def load_tests(data_dir: str) -> list[PrebuildTest]:
-        return load_list(
-            cls=PrebuildTest,
-            source_dir=f"{data_dir}/tests",
-        )
+        return PrebuildDBase(data_dir).get_tests()
 
     @staticmethod
     def load_questions(data_dir: str) -> list[PrebuildQuestion]:
-        return load_list(
-            cls=PrebuildQuestion,
-            source_dir=f"{data_dir}/questions",
-        )
+        return PrebuildDBase(data_dir).get_questions()
+
+    def _run_stage_on_dbase(self, stage: BaseStage) -> None:
+        stage.setup()
+        state = self._load_stage_state_from_dbase()
+        state = stage.process(state)
+        self._save_stage_state_to_dbase(state)
 
     def _make_stages_list(self) -> list[tuple[str, BaseStage]]:
         stages: list[tuple[str, BaseStage]] = []
@@ -145,6 +151,21 @@ class PrebuildBuilder:
                 source_dir=f"{self.output_dir}/{stage_name}/questions",
             ),
         )
+
+    def _load_stage_state_from_dbase(self) -> StageState:
+        dbase = PrebuildDBase(f"{self.output_dir}/data")
+        return StageState(
+            tests=dbase.get_tests(),
+            questions=dbase.get_questions(),
+        )
+
+    def _save_stage_state_to_dbase(self, state: StageState) -> None:
+        dbase = PrebuildDBase(f"{self.output_dir}/data", backup=True)
+        for test in state.tests:
+            dbase.update_test(test)
+        for question in state.questions:
+            dbase.update_question(question)
+        dbase.close()
 
     def _make_prebuild_test(self, test_id, test: Test) -> PrebuildTest:
         return PrebuildTest(
