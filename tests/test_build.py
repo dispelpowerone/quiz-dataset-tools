@@ -26,8 +26,8 @@ class TestDatabaseBuilder(unittest.TestCase):
     def test_build_end_to_end(self):
         self.builder.set_prebuild_tests(
             [
-                PrebuildTest(test_id=1, title=make_prebuild_text("Test 1")),
-                PrebuildTest(test_id=2, title=make_prebuild_text("Test 2")),
+                PrebuildTest(test_id=1, title=make_prebuild_text("Test 1"), position=1),
+                PrebuildTest(test_id=2, title=make_prebuild_text("Test 2"), position=2),
             ]
         )
         self.builder.set_prebuild_questions(
@@ -126,7 +126,7 @@ class TestDatabaseBuilder(unittest.TestCase):
         self.builder.set_prebuild_tests(
             [
                 PrebuildTest(test_id=1, title=make_prebuild_text("Test 1"), position=2),
-                PrebuildTest(test_id=2, title=make_prebuild_text("Test 2")),
+                PrebuildTest(test_id=2, title=make_prebuild_text("Test 2"), position=1),
             ]
         )
         self.builder.set_prebuild_questions(
@@ -145,16 +145,20 @@ class TestDatabaseBuilder(unittest.TestCase):
         self.builder.build()
 
         self.assertEqual(2, self.dbase.get_test(1).position)
-        self.assertEqual(None, self.dbase.get_test(2).position)
+        self.assertEqual(1, self.dbase.get_test(2).position)
 
     def test_fallback_language(self):
         self.builder.set_prebuild_tests(
             [
                 PrebuildTest(
-                    test_id=1, title=make_prebuild_text("Test 1", fr="fr Test 1")
+                    test_id=1,
+                    title=make_prebuild_text("Test 1", fr="fr Test 1"),
+                    position=1,
                 ),
                 PrebuildTest(
-                    test_id=2, title=make_prebuild_text("Test 2", es="es Test 2")
+                    test_id=2,
+                    title=make_prebuild_text("Test 2", es="es Test 2"),
+                    position=2,
                 ),
             ]
         )
@@ -176,13 +180,13 @@ class TestDatabaseBuilder(unittest.TestCase):
 
         txt1_id = self.dbase.get_test(1).text_id
         self._assert_localization(txt1_id, Language.EN, "Test 1")
-        self._assert_localization(txt1_id, Language.FR, "fr Test 1 / Test 1")
+        self._assert_localization(txt1_id, Language.FR, "Test 1")
         self._assert_localization(txt1_id, Language.ES, "Test 1")
 
         txt2_id = self.dbase.get_test(2).text_id
         self._assert_localization(txt2_id, Language.EN, "Test 2")
         self._assert_localization(txt2_id, Language.FR, "Test 2")
-        self._assert_localization(txt2_id, Language.ES, "es Test 2 / Test 2")
+        self._assert_localization(txt2_id, Language.ES, "Test 2")
 
     def test_missed_fallback_language(self):
         self.builder.set_prebuild_tests(
