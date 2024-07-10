@@ -19,7 +19,7 @@ class TestDatabaseBuilder(unittest.TestCase):
         dbase_file = f"/tmp/test.main.db.{randrange(1000)}"
         self.dbase = DriverTestDBase(dbase_file)
         self.dbase.open()
-        self.builder = DatabaseBuilder("./")
+        self.builder = DatabaseBuilder("./", "./")
         self.builder.set_database(self.dbase)
         os.remove(dbase_file)
 
@@ -176,13 +176,13 @@ class TestDatabaseBuilder(unittest.TestCase):
 
         txt1_id = self.dbase.get_test(1).text_id
         self._assert_localization(txt1_id, Language.EN, "Test 1")
-        self._assert_localization(txt1_id, Language.FR, "fr Test 1")
+        self._assert_localization(txt1_id, Language.FR, "fr Test 1 / Test 1")
         self._assert_localization(txt1_id, Language.ES, "Test 1")
 
         txt2_id = self.dbase.get_test(2).text_id
         self._assert_localization(txt2_id, Language.EN, "Test 2")
         self._assert_localization(txt2_id, Language.FR, "Test 2")
-        self._assert_localization(txt2_id, Language.ES, "es Test 2")
+        self._assert_localization(txt2_id, Language.ES, "es Test 2 / Test 2")
 
     def test_missed_fallback_language(self):
         self.builder.set_prebuild_tests(

@@ -9,11 +9,20 @@ from quiz_dataset_tools.prebuild.types import (
 
 
 class DatabaseBuilder:
-    def __init__(self, data_path: str) -> None:
+    def __init__(self, data_path: str, output_dir: str) -> None:
+        self.output_dir = output_dir
         self.images = MediaIndex(
-            MediaType.IMAGE, f"{data_path}/images", "output/images"
+            MediaType.IMAGE,
+            f"{data_path}/images",
+            f"{output_dir}/images",
+            preserve_file_names=False,
         )
-        self.audio = MediaIndex(MediaType.AUDIO, f"{data_path}/audio", "output/audio")
+        self.audio = MediaIndex(
+            MediaType.AUDIO,
+            f"{data_path}/audio",
+            f"{output_dir}/audio",
+            preserve_file_names=True,
+        )
         self.dbase: DriverTestDBase | None = None
         self.languages: list[Language] = []
         self.fallback_language: Language | None = None
@@ -51,12 +60,19 @@ class DatabaseBuilder:
     def _pack_tests(self, dbase: DriverTestDBase) -> None:
         assert self.tests
         for test in self.tests:
+            assert test.position
             test_dbo = dbase.add_test_if_not_exists(test.test_id, test.position)
-            self._pack_text(dbase, test_dbo.text_id, test.title)
+            # self._pack_text(dbase, test_dbo.text_id, test.title)
+            for lang in self.languages:
+                dbase.add_text_localization(
+                    test_dbo.text_id, lang.value.language_id, f"Test {test.position}"
+                )
 
     def _pack_text(
         self, dbase: DriverTestDBase, text_id: int, text: PrebuildText
     ) -> None:
+        canonical_lang = Language.EN
+        canonical_content = text.localizations.get(canonical_lang)
         for lang in self.languages:
             text_content = text.localizations.get(lang)
             if text_content is None:
@@ -66,6 +82,8 @@ class DatabaseBuilder:
                         raise Exception("Missed fallback localization")
                 else:
                     raise Exception("Missed localization")
+            if text_content != canonical_content and lang != Language.FA:
+                text_content = f"{text_content} / {canonical_content}"
             dbase.add_text_localization(text_id, lang.value.language_id, text_content)
 
     def _pack_questions(self, dbase: DriverTestDBase) -> None:
