@@ -44,14 +44,14 @@ class DumpOverridesStage(DataUpdateBaseStage):
                 override = text.localizations.get(lang)
                 assert override_en
                 assert override
-                override_clean = self._cleanup_localization(override, override_en)
-                assert override_clean
+                # override_clean = self._cleanup_localization(override, override_en)
+                # assert override_clean
                 self.overrides.put(
                     lang=Language.EN,
                     text=orig_text,
                     context=context,
                     override_lang=lang,
-                    override=override_clean,
+                    override=override,
                 )
         except Exception as e:
             raise Exception(f"Failed to dump text[{text}]: {e}")

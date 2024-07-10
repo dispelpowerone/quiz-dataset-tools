@@ -29,16 +29,14 @@ class TestDumpOverridesStage(unittest.TestCase):
             PrebuildQuestion(
                 test_id=1,
                 question_id=1,
-                text=make_prebuild_text("foo", es="foo-es/ foo", orig="orig-foo"),
+                text=make_prebuild_text("foo", es="foo-es", orig="orig-foo"),
                 answers=[
                     PrebuildAnswer(
                         make_prebuild_text("boo", es="boo-es", orig="orig-boo"),
                         is_right_answer=True,
                     ),
                     PrebuildAnswer(
-                        make_prebuild_text(
-                            "bar mph", es="bar-es/ bar mph", orig="orig-bar"
-                        ),
+                        make_prebuild_text("bar mph", es="bar-es", orig="orig-bar"),
                         is_right_answer=False,
                     ),
                 ],
