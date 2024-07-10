@@ -18,7 +18,6 @@ class Language(Enum):
     ES = _Language(4, "Spanish", "ES")
     RU = _Language(5, "Russian", "RU")
     FA = _Language(6, "Farsi", "FA")
-    KO = _Language(8, "Korean", "KO")
     PT = _Language(9, "Portuguese", "PT-BR")
 
     @staticmethod
@@ -49,7 +48,6 @@ class TextLocalizations:
     RU: str | None = field(default=None, metadata=config(exclude=lambda x: x is None))  # type: ignore
     FA: str | None = field(default=None, metadata=config(exclude=lambda x: x is None))  # type: ignore
     PA: str | None = field(default=None, metadata=config(exclude=lambda x: x is None))  # type: ignore
-    KO: str | None = None
     PT: str | None = None
 
     def set(self, lang: Language, text: str) -> None:
