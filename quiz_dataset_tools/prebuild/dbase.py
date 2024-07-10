@@ -3,6 +3,7 @@ from sqlalchemy.orm import (
     sessionmaker,
 )
 from quiz_dataset_tools.util.language import Language, TextLocalizations
+from quiz_dataset_tools.util.fs import backup_file
 from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
     PrebuildQuestion,
@@ -27,8 +28,14 @@ def _session_decorator(func):
 
 
 class PrebuildDBase:
-    def __init__(self, data_dir: str):
-        self.engine = create_engine(f"sqlite:///{data_dir}/prebuild.db", echo=False)
+    def __init__(self, data_dir: str, backup: bool = False):
+        database_path = f"{data_dir}/prebuild.db"
+        if backup:
+            self._backup_database(database_path)
+        self.engine = create_engine(f"sqlite:///{database_path}", echo=False)
+
+    def close(self):
+        self.engine.dispose()
 
     def bootstrap(self) -> None:
         self._bootstrap_tables()
@@ -40,8 +47,30 @@ class PrebuildDBase:
         session.commit()
 
     @_session_decorator
+    def update_test(self, session, test: PrebuildTest) -> None:
+        test_orm = session.query(TestOrm).where(TestOrm.TestId == test.test_id).first()
+        assert (
+            test_orm is not None
+        ), f"Cant find test in the dbase, test_id = {test.test_id}"
+        test_orm.update(test)
+        session.commit()
+
+    @_session_decorator
     def add_question(self, session, question: PrebuildQuestion) -> None:
         session.add(QuestionOrm.from_obj(question))
+        session.commit()
+
+    @_session_decorator
+    def update_question(self, session, question: PrebuildQuestion) -> None:
+        question_orm = (
+            session.query(QuestionOrm)
+            .where(QuestionOrm.QuestionId == question.question_id)
+            .first()
+        )
+        assert (
+            question_orm is not None
+        ), f"Cant find question in the dbase, question_id = {question.question_id}"
+        question_orm.update(question)
         session.commit()
 
     @_session_decorator
@@ -70,6 +99,9 @@ class PrebuildDBase:
         text_orm.update(text)
         session.commit()
 
+    def _backup_database(self, database_path) -> None:
+        backup_file(database_path)
+
     def _bootstrap_tables(self) -> None:
         BaseOrm.metadata.drop_all(self.engine)
         BaseOrm.metadata.create_all(self.engine)
@@ -87,11 +119,11 @@ class PrebuildDBase:
 
 
 """
-text = PrebuildText(
-    text_id=1,
-    localizations=TextLocalizations(EN="New EN", ES="New ES"),
-)
-
 dbase = PrebuildDBase("/Users/d.vasilyev/Workspace/quiz-dataset-tools")
-dbase.update_text(text)
+tests = dbase.get_tests()
+print(tests[0])
+tests[0].title.localizations.ES = "fake ES"
+dbase.update_test(tests[0])
+tests = dbase.get_tests()
+print(tests[0])
 """

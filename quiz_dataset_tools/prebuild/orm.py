@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Optional
 from sqlalchemy import Integer, String, ForeignKey, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import (
@@ -74,7 +74,7 @@ class TextOrm(BaseOrm):
         )
 
     def update(self, obj: PrebuildText) -> None:
-        TextLocalizationOrm.sync_with_obj(self.Localizations, obj.localizations)
+        TextLocalizationOrm.update_all(self.Localizations, obj.localizations)
         self.IsManuallyChecked = obj.is_manually_checked
 
 
@@ -91,7 +91,7 @@ class TextLocalizationOrm(BaseOrm):
     @staticmethod
     def from_obj(obj: TextLocalizations) -> list["TextLocalizationOrm"]:
         result: list["TextLocalizationOrm"] = []
-        TextLocalizationOrm.sync_with_obj(result, obj)
+        TextLocalizationOrm.update_all(result, obj)
         return result
 
     @staticmethod
@@ -104,12 +104,10 @@ class TextLocalizationOrm(BaseOrm):
         return obj
 
     @staticmethod
-    def sync_with_obj(orms: list["TextLocalizationOrm"], obj: TextLocalizations):
+    def update_all(orms: list["TextLocalizationOrm"], obj: TextLocalizations) -> None:
         for lang in Language:
             localization = obj.get(lang)
-            localization_orm = TextLocalizationOrm.find_localization(
-                orms, lang.value.language_id
-            )
+            localization_orm = TextLocalizationOrm.find(orms, lang.value.language_id)
             if localization is None and localization_orm is None:
                 continue
             elif localization_orm is None:
@@ -124,7 +122,9 @@ class TextLocalizationOrm(BaseOrm):
                 localization_orm.Content = localization
 
     @staticmethod
-    def find_localization(orms: list["TextLocalizationOrm"], language_id: int):
+    def find(
+        orms: list["TextLocalizationOrm"], language_id: int
+    ) -> Optional["TextLocalizationOrm"]:
         for localization in orms:
             if localization.LanguageId == language_id:
                 return localization
@@ -144,15 +144,45 @@ class AnswerOrm(BaseOrm):
     @staticmethod
     def from_obj(obj: PrebuildAnswer) -> "AnswerOrm":
         return AnswerOrm(
+            AnswerId=obj.answer_id,
+            QuestionId=obj.question_id,
             Text=TextOrm.from_obj(obj.text),
             IsRightAnswer=obj.is_right_answer,
         )
 
     def to_obj(self) -> PrebuildAnswer:
         return PrebuildAnswer(
+            answer_id=self.AnswerId,
+            question_id=self.QuestionId,
             text=self.Text.to_obj(),
             is_right_answer=self.IsRightAnswer,
         )
+
+    def update(self, obj: PrebuildAnswer) -> None:
+        assert self.QuestionId == obj.question_id
+        assert self.AnswerId == obj.answer_id
+        self.IsRightAnswer = obj.is_right_answer
+        self.Text.update(obj.text)
+
+    @staticmethod
+    def update_all(orm_list: list["AnswerOrm"], obj_list: list[PrebuildAnswer]) -> None:
+        assert len(orm_list) == len(
+            obj_list
+        ), "Number of answers in ORM should match the number of objects to update"
+        for obj in obj_list:
+            assert obj.answer_id, "Can't update without answer_id set"
+            orm = AnswerOrm.find(orm_list, obj.answer_id)
+            assert orm, f"No answer found, answer_id = {obj.answer_id}"
+            orm.update(obj)
+
+    @staticmethod
+    def find(
+        orm_list: list["AnswerOrm"], answer_id: int
+    ) -> Optional["AnswerOrm"] | None:
+        for answer in orm_list:
+            if answer.AnswerId == answer_id:
+                return answer
+        return None
 
 
 class QuestionOrm(BaseOrm):
@@ -186,6 +216,14 @@ class QuestionOrm(BaseOrm):
             answers=[a.to_obj() for a in self.Answers],
         )
 
+    def update(self, obj: PrebuildQuestion) -> None:
+        assert self.TestId == obj.test_id
+        assert self.QuestionId == obj.question_id
+        self.Image = obj.image
+        self.Audio = obj.audio
+        self.Text.update(obj.text)
+        AnswerOrm.update_all(self.Answers, obj.answers)
+
 
 class TestOrm(BaseOrm):
     __tablename__ = "Tests"
@@ -210,3 +248,8 @@ class TestOrm(BaseOrm):
             title=self.Title.to_obj(),
             position=self.Position,
         )
+
+    def update(self, obj: PrebuildTest) -> None:
+        assert self.TestId == obj.test_id
+        self.Position = obj.position
+        self.Title.update(obj.title)

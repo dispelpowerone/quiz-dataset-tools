@@ -18,6 +18,8 @@ class PrebuildText(DataClassJsonMixin):
 class PrebuildAnswer(DataClassJsonMixin):
     text: PrebuildText
     is_right_answer: bool
+    answer_id: int | None = None
+    question_id: int | None = None
 
 
 @dataclass

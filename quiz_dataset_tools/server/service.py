@@ -13,7 +13,7 @@ from quiz_dataset_tools.server.models.texts import (
 
 class DatabaseService:
     def __init__(self, data_dir="./"):
-        self.dbase = PrebuildDBase(data_dir)
+        self.dbase = PrebuildDBase(data_dir, backup=True)
         self.images_dir = f"{data_dir}/images"
 
     def get_tests(self, req: GetTestsRequest) -> GetTestsResponse:

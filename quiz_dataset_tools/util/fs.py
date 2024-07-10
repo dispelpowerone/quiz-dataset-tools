@@ -1,6 +1,7 @@
 import os
 import glob
 import shutil
+from datetime import datetime
 from typing import TypeVar, Type
 from dataclasses_json import DataClassJsonMixin
 
@@ -58,3 +59,12 @@ def list_partial_files(template: str) -> list[str]:
     if len(files_list) != len(glob_paths):
         raise Exception(f"Broken files list: {files_list} != {glob_paths}")
     return files_list
+
+
+def backup_file(file_path) -> str:
+    backup_suffix = datetime.now().strftime("%Y-%m-%d-%s")
+    temp_path = f"{file_path}.temp"
+    backup_path = f"{file_path}.{backup_suffix}"
+    shutil.copyfile(file_path, temp_path)
+    os.rename(temp_path, backup_path)
+    return backup_path
