@@ -38,7 +38,7 @@ class TextOrm(BaseOrm):
     Original: Mapped[str | None]
     IsManuallyChecked: Mapped[bool]
     LastUpdateTimestamp: Mapped[datetime.datetime] = mapped_column(
-        DateTime(timezone=True), onupdate=func.now()
+        DateTime(timezone=True), default=func.now(), onupdate=func.now()
     )
 
     Localizations: Mapped[List["TextLocalizationOrm"]] = relationship(
