@@ -166,14 +166,15 @@ class AnswerOrm(BaseOrm):
 
     @staticmethod
     def update_all(orm_list: list["AnswerOrm"], obj_list: list[PrebuildAnswer]) -> None:
-        assert len(orm_list) == len(
-            obj_list
-        ), "Number of answers in ORM should match the number of objects to update"
         for obj in obj_list:
-            assert obj.answer_id, "Can't update without answer_id set"
-            orm = AnswerOrm.find(orm_list, obj.answer_id)
-            assert orm, f"No answer found, answer_id = {obj.answer_id}"
-            orm.update(obj)
+            if obj.answer_id:
+                # Update existing record
+                orm = AnswerOrm.find(orm_list, obj.answer_id)
+                assert orm, f"No answer found, answer_id = {obj.answer_id}"
+                orm.update(obj)
+            else:
+                # Add a new record
+                orm_list.append(AnswerOrm.from_obj(obj))
 
     @staticmethod
     def find(

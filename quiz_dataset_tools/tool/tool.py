@@ -197,6 +197,16 @@ def prebuild_dump_overrides(
 
 @main.command()
 @option_domain
+def prebuild_doctor(
+    domain: str,
+) -> None:
+    builder = PrebuildBuilder()
+    builder.set_output_dir(get_prebuild_dir(domain))
+    builder.run_doctor()
+
+
+@main.command()
+@option_domain
 @option_languages
 @option_fallback_language
 @option_data_path
