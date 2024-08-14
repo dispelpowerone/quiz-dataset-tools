@@ -138,17 +138,17 @@ def prebuild_init(
 
 @main.command()
 @option_domain
+@option_languages
 def prebuild_translate(
     domain: str,
+    languages: str,
 ) -> None:
-    languages = [lang for lang in Language]
-
     translator = Translator(domain=domain)
     translator.load_cache()
 
     builder = PrebuildBuilder()
     builder.set_output_dir(get_prebuild_dir(domain))
-    builder.set_languages(languages)
+    builder.set_languages(get_languages_list(languages))
     builder.set_translator(translator)
     builder.run_translate()
 
