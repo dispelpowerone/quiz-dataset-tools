@@ -1,6 +1,5 @@
 TextId,Description
 1,Language selection title
-2,Language selection description
 3,Button Start
 4,Button Next question
 5,Title Question
@@ -16,32 +15,4 @@ TextId,Description
 15,3 sec suggest Deleting the current question
 16,Button Delete this question
 17,Button Delete all questions
-18,EdMaterials Native Language Title
-19,EdMaterials Native Language Description
-20,EdMaterials G1 Exam Process Title
-21,EdMaterials G1 Exam Process Description
-22,EdMaterials many mistakes Title
-23,EdMaterials many mistakes Description
-24,EdMaterials much time Title
-25,EdMaterials much time Description
-26,EdMaterials Exam Documents Title
-27,EdMaterials Exam Documents Description
-28,EdMaterials Do not park Title
-29,EdMaterials Do not park Description
-30,EdMaterials  7 Demerit Title
-31,EdMaterials  7 Demerit Description
-32,EdMaterials 6 Demerit Title
-33,EdMaterials 6 Demerit Description
-34,EdMaterials 4 Demerit Title
-35,EdMaterials 4 Demerit Description
-36,EdMaterials 3 Demerit Title
-37,EdMaterials 3 Demerit Description
-38,EdMaterials 2 Demerit Title
-39,EdMaterials 2 Demerit Description
-40,EdMaterials Penalties  full G Title
-41,EdMaterials Penalties  full G Description
-42,EdMaterials Penalties  full G1-G2 Title
-43,EdMaterials Penalties  full G1-G2 Description
-44,EdMaterials change your address Title
-45,EdMaterials change your address Description
 46,Support
