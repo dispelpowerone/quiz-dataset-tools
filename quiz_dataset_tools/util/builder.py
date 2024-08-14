@@ -81,7 +81,7 @@ class DatabaseBuilder:
                     if text_content is None:
                         raise Exception("Missed fallback localization")
                 else:
-                    raise Exception(f"Missed localization, {text=}")
+                    raise Exception(f"Missed localization, {text=}, {lang=}")
             if text_content != canonical_content and lang != Language.FA:
                 text_content = f"{text_content} / {canonical_content}"
             dbase.add_text_localization(text_id, lang.value.language_id, text_content)
