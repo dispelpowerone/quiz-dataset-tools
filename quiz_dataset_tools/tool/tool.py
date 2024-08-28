@@ -32,24 +32,6 @@ option_domain = click.option(
 )
 
 
-option_translate = click.option(
-    "--translate",
-    is_flag=True,
-    show_default=True,
-    default=False,
-    help="Enable automatic translations.",
-)
-
-
-option_text_overrides = click.option(
-    "--text-overrides",
-    is_flag=True,
-    show_default=True,
-    default=False,
-    help="Enable original text overrides.",
-)
-
-
 option_parser = click.option(
     "--parser",
     show_default=True,
@@ -85,55 +67,21 @@ option_fallback_language = click.option(
 )
 
 
-option_continue_from_stage = click.option(
-    "--continue-from-stage",
-    type=click.Choice(["init", "compose", "overrides", "translate"]),
-    help="Prebuild stage to continue from.",
-)
-
-
 @main.command()
 @option_domain
-@option_translate
-@option_text_overrides
 @option_parser
 @option_data_path
-@option_continue_from_stage
 def prebuild_init(
     domain: str,
-    translate: bool,
-    text_overrides: bool,
     parser: str,
     data_path: str,
-    continue_from_stage: str | None,
 ) -> None:
-    languages = [lang for lang in Language]
-
     builder = PrebuildBuilder()
     builder.set_data_path(data_path)
     builder.set_output_dir(get_prebuild_dir(domain))
     builder.set_parser(get_parser(parser, data_path))
-    builder.set_languages(languages)
-
-    translator = None
-    if translate:
-        translator = Translator(domain=domain)
-        translator.load_cache()
-        builder.set_translator(translator)
-
-    if text_overrides:
-        overrides = TextOverrides(data_path=data_path)
-        overrides.load()
-        builder.set_overrides(overrides)
-
-    if continue_from_stage:
-        builder.set_continue_from_stage(continue_from_stage)
-
-    builder.build()
-
-    # Flush translator's cache
-    if translator:
-        translator.save_cache()
+    builder.set_languages([lang for lang in Language])
+    builder.run_init()
 
 
 @main.command()
