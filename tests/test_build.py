@@ -16,7 +16,7 @@ from tests.common import make_prebuild_text
 
 class TestDatabaseBuilder(unittest.TestCase):
     def setUp(self):
-        dbase_file = f"/tmp/test.main.db.{randrange(1000)}"
+        dbase_file = f"/tmp/test.main.db"
         self.dbase = DriverTestDBase(dbase_file)
         self.dbase.open()
         self.builder = DatabaseBuilder("./", "./")
@@ -39,16 +39,24 @@ class TestDatabaseBuilder(unittest.TestCase):
                     image=None,
                     answers=[
                         PrebuildAnswer(
-                            make_prebuild_text("T1Q1A1"), is_right_answer=False
+                            make_prebuild_text("T1Q1A1"),
+                            answer_id=1011,
+                            is_right_answer=False,
                         ),
                         PrebuildAnswer(
-                            make_prebuild_text("T1Q1A2"), is_right_answer=False
+                            make_prebuild_text("T1Q1A2"),
+                            answer_id=1012,
+                            is_right_answer=False,
                         ),
                         PrebuildAnswer(
-                            make_prebuild_text("T1Q1A3"), is_right_answer=True
+                            make_prebuild_text("T1Q1A3"),
+                            answer_id=1013,
+                            is_right_answer=True,
                         ),
                         PrebuildAnswer(
-                            make_prebuild_text("T1Q1A4"), is_right_answer=False
+                            make_prebuild_text("T1Q1A4"),
+                            answer_id=1014,
+                            is_right_answer=False,
                         ),
                     ],
                 ),
@@ -59,16 +67,24 @@ class TestDatabaseBuilder(unittest.TestCase):
                     image=None,
                     answers=[
                         PrebuildAnswer(
-                            make_prebuild_text("T1Q2A1"), is_right_answer=False
+                            make_prebuild_text("T1Q2A1"),
+                            answer_id=1021,
+                            is_right_answer=False,
                         ),
                         PrebuildAnswer(
-                            make_prebuild_text("T1Q2A2"), is_right_answer=False
+                            make_prebuild_text("T1Q2A2"),
+                            answer_id=1022,
+                            is_right_answer=False,
                         ),
                         PrebuildAnswer(
-                            make_prebuild_text("T1Q2A3"), is_right_answer=False
+                            make_prebuild_text("T1Q2A3"),
+                            answer_id=1023,
+                            is_right_answer=False,
                         ),
                         PrebuildAnswer(
-                            make_prebuild_text("T1Q2A4"), is_right_answer=True
+                            make_prebuild_text("T1Q2A4"),
+                            answer_id=1024,
+                            is_right_answer=True,
                         ),
                     ],
                 ),
@@ -79,16 +95,24 @@ class TestDatabaseBuilder(unittest.TestCase):
                     image=None,
                     answers=[
                         PrebuildAnswer(
-                            make_prebuild_text("T2Q1A1"), is_right_answer=True
+                            make_prebuild_text("T2Q1A1"),
+                            answer_id=2011,
+                            is_right_answer=True,
                         ),
                         PrebuildAnswer(
-                            make_prebuild_text("T2Q1A2"), is_right_answer=False
+                            make_prebuild_text("T2Q1A2"),
+                            answer_id=2012,
+                            is_right_answer=False,
                         ),
                         PrebuildAnswer(
-                            make_prebuild_text("T2Q1A3"), is_right_answer=False
+                            make_prebuild_text("T2Q1A3"),
+                            answer_id=2013,
+                            is_right_answer=False,
                         ),
                         PrebuildAnswer(
-                            make_prebuild_text("T2Q1A4"), is_right_answer=False
+                            make_prebuild_text("T2Q1A4"),
+                            answer_id=2014,
+                            is_right_answer=False,
                         ),
                     ],
                 ),

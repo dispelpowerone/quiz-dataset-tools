@@ -315,6 +315,8 @@ class DBase:
 
 
 class DriverTestDBase:
+    TextIdOffset = 1000
+
     def __init__(self, dbase_path="DriveTest.db"):
         self.dbase = DBase(dbase_path)
 
@@ -338,46 +340,51 @@ class DriverTestDBase:
     def open(self):
         self.dbase.open()
 
-    def add_test_if_not_exists(self, test_id, position):
+    def add_test_if_not_exists(self, test_id, position, text_id):
         test = self.dbase.get(TestDBO, test_id)
         if not test:
             test = TestDBO(
                 test_id=test_id,
-                text_id=self.add_text(f"Test {test_id} title"),
+                text_id=self.add_text(text_id, f"Test {test_id} title"),
                 position=position,
             )
             self.dbase.add(test)
         return test
 
-    def add_question_if_not_exists(self, test_id, question_index, image):
-        question_id = 100 * test_id + question_index
+    def add_question_if_not_exists(self, test_id, question_id, text_id, image):
+        assert test_id
+        assert question_id
+        question_legacy_offset = 100 * test_id
+        if question_id < question_legacy_offset:
+            question_id += question_legacy_offset
         question = self.dbase.get(QuestionDBO, question_id)
         if not question:
             question = QuestionDBO(
                 question_id=question_id,
                 test_id=test_id,
-                text_id=self.add_text(f"Question {question_id} content"),
+                text_id=self.add_text(text_id, f"Question {question_id} content"),
                 image=image,
             )
             self.dbase.add(question)
         return question
 
-    def add_answer_if_not_exists(self, question_id, answer_index, is_correct):
-        assert answer_index < 10
-        answer_id = 10 * question_id + answer_index
+    def add_answer_if_not_exists(self, question_id, answer_id, text_id, is_correct):
+        assert question_id
+        assert answer_id
         answer = self.dbase.get(AnswerDBO, answer_id)
         if not answer:
             answer = AnswerDBO(
                 answer_id=answer_id,
                 question_id=question_id,
-                text_id=self.add_text(f"Answer {answer_id} content"),
+                text_id=self.add_text(text_id, f"Answer {answer_id} content"),
                 is_correct=is_correct,
             )
             self.dbase.add(answer)
         return answer
 
-    def add_text(self, description):
-        text = TextDBO(text_id=None, description=description)
+    def add_text(self, text_id, description):
+        final_text_id = text_id + DriverTestDBase.TextIdOffset
+        text = TextDBO(text_id=final_text_id, description=description)
         return self.dbase.add(text)
 
     def add_text_localization(self, text_id, language_id, content):
