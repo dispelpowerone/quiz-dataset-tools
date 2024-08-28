@@ -25,6 +25,9 @@ class Translator:
         self.translators: Dict[Language, Any] = {}
 
     def get_one(self, text: str, lang: Language) -> str:
+        # We don't translate stable texts
+        if is_stable_text(text):
+            return text
         translator = self.translators.get(lang)
         if not translator:
             translator = CachedTranslator(self.domain, lang, self.impl)
@@ -97,3 +100,26 @@ class TranslationTextTransformer:
             #     )
             translated_text.set(lang, translated_text_content)
         return translated_text
+
+
+# Check if word is worth to translate
+def is_stable_text(content) -> bool:
+    # For example:
+    #   0.08%
+    #   A
+    #   A, B, C, D
+    if len(content.strip()) == 1:
+        return True
+    count = 0
+    for ch in content:
+        if ch in ["$", ".", "%"] or ch.isnumeric():
+            count += 1
+    if count / len(content) > 0.8:
+        return True
+    if content.find(",") != -1:
+        all_stable = True
+        for part in content.split(","):
+            all_stable = all_stable and is_stable_text(part)
+        if all_stable:
+            return True
+    return False
