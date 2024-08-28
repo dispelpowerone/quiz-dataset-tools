@@ -109,7 +109,6 @@ def _make_question(g_question: GQuestion, g_answers: list[GAnswer]) -> Question:
         ".jpg", "_Normal.png"
     )
     return Question(
-        orig_id=str(g_question.id),
         text=_make_text(g_question.description),
         image=image_png,
         answers=answers,

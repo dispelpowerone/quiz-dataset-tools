@@ -46,7 +46,6 @@ class TildaParser(Parser):
         ]
         question_answers = question_soup.find("div", "t806__answers")
         return Question(
-            orig_id=str(question_id),
             text=self._make_text(question_text),
             answers=self._load_answers(question_answers),
             image=f"{self.project_path}/{question_image}",

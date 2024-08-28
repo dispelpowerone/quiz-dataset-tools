@@ -43,7 +43,6 @@ class SongsParser(Parser):
 
     def _make_question(self, song: SongType, song_index: int) -> Question:
         return Question(
-            orig_id=self._make_id(song),
             # Use fixed question for now
             # text=self._make_text(song["question"]),
             text=self._make_text("What song is this?"),

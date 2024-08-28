@@ -10,19 +10,21 @@ TextTransformer = Callable[[TextLocalizations], TextLocalizations]
 class Answer:
     text: TextLocalizations
     is_right_answer: bool
+    orig_id: int | None = None
 
     def transform_texts(self, text_transformer: TextTransformer) -> "Answer":
         return Answer(
             text=text_transformer(self.text),
             is_right_answer=self.is_right_answer,
+            orig_id=self.orig_id,
         )
 
 
 @dataclass
 class Question:
-    orig_id: str | None
     text: TextLocalizations
     answers: list[Answer]
+    orig_id: int | None = None
     image: str | None = None
     audio: str | None = None
 
@@ -52,11 +54,13 @@ class Test:
     title: TextLocalizations
     questions: list[Question]
     position: int | None = None
+    orig_id: int | None = None
 
     def transform_texts(self, text_transformer: TextTransformer) -> "Test":
         return Test(
             title=self.title,
             position=self.position,
+            orig_id=self.orig_id,
             questions=[
                 question.transform_texts(text_transformer)
                 for question in self.questions
@@ -67,6 +71,7 @@ class Test:
         return Test(
             title=self.title,
             position=self.position,
+            orig_id=self.orig_id,
             questions=[
                 question.transform_question_text(text_transformer)
                 for question in self.questions

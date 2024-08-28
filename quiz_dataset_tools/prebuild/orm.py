@@ -202,6 +202,7 @@ class QuestionOrm(BaseOrm):
     def from_obj(obj: PrebuildQuestion) -> "QuestionOrm":
         return QuestionOrm(
             TestId=obj.test_id,
+            QuestionId=obj.question_id,
             Text=TextOrm.from_obj(obj.text),
             Answers=[AnswerOrm.from_obj(a) for a in obj.answers],
             Image=obj.image,

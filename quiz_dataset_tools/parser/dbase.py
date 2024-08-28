@@ -1,4 +1,5 @@
 import sqlite3
+import re
 from quiz_dataset_tools.util.dbase import DriverTestDBase
 from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.util.data import Test, Question, Answer
@@ -6,13 +7,35 @@ from quiz_dataset_tools.parser.parser import Parser
 
 
 class DatabaseParser(Parser):
-    def __init__(self, dbase_path: str):
-        self.dbase_path = dbase_path
+    def __init__(self, assets_path: str):
+        self.assets_path = assets_path
 
     def get_tests(self) -> list[Test]:
-        dbase = DriverTestDBase(dbase_path=self.dbase_path)
+        dbase_path = f"{self.assets_path}/main.db"
+        dbase = DriverTestDBase(dbase_path=dbase_path)
         dbase.open()
-        return load_tests(dbase)
+        tests = load_tests(dbase)
+        images = load_images_index(self.assets_path)
+        for test in tests:
+            for question in test.questions:
+                question.image = images.get(question.orig_id)
+        return tests
+
+
+def load_images_index(assets_path: str) -> dict[int, str]:
+    # Records format
+    # '102': require('assets/img/questions/102.png'),
+    record_re = re.compile("\\s+'(\\d+)':\\s+require\\('([^'/]+/?)+'\\)")
+    index_path = f"{assets_path}/images/index.ts"
+    index = {}
+    with open(index_path) as file:
+        for line in file:
+            match = record_re.match(line)
+            if not match:
+                continue
+            groups = match.groups()
+            index[int(groups[0])] = groups[1]
+    return index
 
 
 def load_tests(dbase):
@@ -25,8 +48,10 @@ def load_tests(dbase):
 def load_test(dbase, test_id):
     test = dbase.get_test(test_id)
     return Test(
+        orig_id=test_id,
         title=load_text(dbase, test.text_id),
         questions=load_questions(dbase, test_id),
+        position=test.position,
     )
 
 
@@ -57,6 +82,7 @@ def load_answers(dbase, question_id):
 def load_answer(dbase, answer_id):
     answer = dbase.get_answer(answer_id)
     return Answer(
+        orig_id=answer_id,
         text=load_text(dbase, answer.text_id),
         is_right_answer=answer.is_correct,
     )
@@ -64,7 +90,9 @@ def load_answer(dbase, answer_id):
 
 def load_text(dbase, text_id):
     # text = dbase.get_text(text_id)
-    text_localizations = TextLocalizations()
+    text_localizations = TextLocalizations(
+        orig_id=text_id,
+    )
     for localization in dbase.get_text_localizations(text_id):
         text_localizations.set(
             Language.from_id(localization.language_id), localization.content
