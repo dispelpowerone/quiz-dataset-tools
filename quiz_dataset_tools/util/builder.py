@@ -61,8 +61,9 @@ class DatabaseBuilder:
         assert self.tests
         for test in self.tests:
             assert test.position
-            test_dbo = dbase.add_test_if_not_exists(test.test_id, test.position)
-            # self._pack_text(dbase, test_dbo.text_id, test.title)
+            test_dbo = dbase.add_test_if_not_exists(
+                test.test_id, test.position, test.title.text_id
+            )
             for lang in self.languages:
                 dbase.add_text_localization(
                     test_dbo.text_id, lang.value.language_id, f"Test {test.position}"
@@ -90,7 +91,7 @@ class DatabaseBuilder:
         assert self.questions
         for question_index, question in enumerate(self.questions):
             question_dbo = dbase.add_question_if_not_exists(
-                question.test_id, question.question_id, None
+                question.test_id, question.question_id, question.text.text_id, None
             )
             self._pack_text(dbase, question_dbo.text_id, question.text)
             self.images.put(str(question_dbo.question_id), question.image)
@@ -98,7 +99,10 @@ class DatabaseBuilder:
 
             for answer_index, answer in enumerate(question.answers):
                 answer_dbo = dbase.add_answer_if_not_exists(
-                    question_dbo.question_id, answer_index + 1, answer.is_right_answer
+                    question_dbo.question_id,
+                    answer.answer_id,
+                    answer.text.text_id,
+                    answer.is_right_answer,
                 )
                 self._pack_text(dbase, answer_dbo.text_id, answer.text)
 
