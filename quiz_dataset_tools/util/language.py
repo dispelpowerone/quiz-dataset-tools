@@ -18,6 +18,7 @@ class Language(Enum):
     ES = _Language(4, "Spanish", "ES")
     RU = _Language(5, "Russian", "RU")
     FA = _Language(6, "Farsi", "FA")
+    PA = _Language(7, "Punjabi", "PA")
     PT = _Language(9, "Portuguese", "PT-BR")
 
     @staticmethod
