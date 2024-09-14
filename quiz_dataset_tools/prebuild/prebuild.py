@@ -100,7 +100,7 @@ class PrebuildBuilder:
         assert self.parser
         canonical_tests = self.parser.get_tests()
         prebuild_tests = []
-        prebuild_questions = []
+        prebuild_questions: list[PrebuildQuestion] = []
         for test_index, test in enumerate(canonical_tests):
             test_id = test_index + 1
             # Use original test id if available
@@ -108,7 +108,7 @@ class PrebuildBuilder:
                 test_id = test.orig_id
             prebuild_tests.append(self._make_prebuild_test(test_id, test))
             for question_index, question in enumerate(test.questions):
-                question_id = question_index + 1
+                question_id = len(prebuild_questions) + 1
                 # Use original question id if available
                 if question.orig_id is not None:
                     question_id = question.orig_id
