@@ -32,11 +32,12 @@ class DumpOverridesStage(DataUpdateBaseStage):
         self._dump_text(make_question_context(question), question.text)
 
     def update_answer(self, question: PrebuildQuestion, answer: PrebuildAnswer) -> None:
-        self._dump_text(make_answer_context(question, answer), answer.text)
+        if answer.text.original:
+            self._dump_text(make_answer_context(question, answer), answer.text)
 
     def _dump_text(self, context: str, text: PrebuildText) -> None:
         try:
-            assert text.original
+            assert text.original, f"{text=}"
             orig_text = text.original.get(Language.EN)
             assert orig_text
             for lang in self.languages:
@@ -54,7 +55,7 @@ class DumpOverridesStage(DataUpdateBaseStage):
                     override=override,
                 )
         except Exception as e:
-            raise Exception(f"Failed to dump text[{text}]: {e}")
+            raise Exception(f"Failed to dump {text=}: {e=}")
 
     def _cleanup_localization(self, text: str, suffix: str) -> str:
         if text == suffix or "/" not in text:
