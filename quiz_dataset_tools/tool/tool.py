@@ -13,6 +13,7 @@ from quiz_dataset_tools.parser.usa import (
     USADatabaseNYParser,
     USADatabaseTXParser,
     USADatabaseCAParser,
+    USADatabaseFLParser,
 )
 from quiz_dataset_tools.parser.tilda import TildaParser
 from quiz_dataset_tools.parser.songs import SongsParser
@@ -37,7 +38,7 @@ option_parser = click.option(
     show_default=True,
     default="dbase",
     type=click.Choice(
-        ["dbase", "genius-ny", "genius-tx", "genius-ca", "tilda", "songs"]
+        ["dbase", "genius-ny", "genius-tx", "genius-ca", "genius-fl", "tilda", "songs"]
     ),
     help="Parser to use to read tests data.",
 )
@@ -188,6 +189,8 @@ def get_parser(parser: str, data_path: str) -> Parser:
         return USADatabaseTXParser()
     elif parser == "genius-ca":
         return USADatabaseCAParser()
+    elif parser == "genius-fl":
+        return USADatabaseFLParser()
     elif parser == "tilda":
         return TildaParser(data_path)
     elif parser == "songs":

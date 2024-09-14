@@ -16,3 +16,8 @@ class USADatabaseTXParser(Parser):
 class USADatabaseCAParser(Parser):
     def get_tests(self) -> list[Test]:
         return load_tests_by_state(5)
+
+
+class USADatabaseFLParser(Parser):
+    def get_tests(self) -> list[Test]:
+        return load_tests_by_state(10)

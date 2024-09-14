@@ -12,7 +12,7 @@ from quiz_dataset_tools.server.models.texts import (
 from quiz_dataset_tools.server.service import DatabaseService
 
 service = DatabaseService(
-    "/Users/d.vasilyev/Workspace/quiz-dataset-tools/output/ca/prebuild/data"
+    "/Users/d.vasilyev/Workspace/quiz-dataset-tools/output/fl/prebuild/data"
 )
 app = FastAPI()
 app.add_middleware(
