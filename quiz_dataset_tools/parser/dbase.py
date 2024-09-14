@@ -90,9 +90,7 @@ def load_answer(dbase, answer_id):
 
 def load_text(dbase, text_id):
     # text = dbase.get_text(text_id)
-    text_localizations = TextLocalizations(
-        orig_id=text_id,
-    )
+    text_localizations = TextLocalizations()
     for localization in dbase.get_text_localizations(text_id):
         text_localizations.set(
             Language.from_id(localization.language_id), localization.content
