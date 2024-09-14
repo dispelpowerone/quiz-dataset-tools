@@ -1,6 +1,7 @@
 import copy
 import csv
 import os
+import re
 from typing import Any, Dict
 from quiz_dataset_tools.util.data import Test
 from quiz_dataset_tools.util.language import Language, TextLocalizations
@@ -103,22 +104,43 @@ class TranslationTextTransformer:
 
 
 # Check if word is worth to translate
+StableChars = set(["$", ".", "%", "="])
+StableRe = set([re.compile("\d+ km/h")])
+
+
 def is_stable_text(content) -> bool:
     # For example:
     #   0.08%
     #   A
     #   A, B, C, D
-    if len(content.strip()) == 1:
-        return True
-    count = 0
+    #   X=1; Y=2
+    #   60 km/h
+    global StableChars
+    global StableRe
+    # Normalize
+    content = content.strip()
+    # Check regex
+    for rule in StableRe:
+        if rule.match(content):
+            return True
+    # Check alpha chars
+    alpha_count = 0
+    stable_count = 0
     for ch in content:
-        if ch in ["$", ".", "%"] or ch.isnumeric():
-            count += 1
-    if count / len(content) > 0.8:
+        if ch in StableChars or ch.isnumeric():
+            stable_count += 1
+        elif ch.isalpha():
+            alpha_count += 1
+    if alpha_count <= 1:
         return True
-    if content.find(",") != -1:
+    if stable_count / (stable_count + alpha_count) > 0.8:
+        return True
+    parts = content.split(",")
+    if len(parts) == 1:
+        parts = content.split(";")
+    if len(parts) > 1:
         all_stable = True
-        for part in content.split(","):
+        for part in parts:
             all_stable = all_stable and is_stable_text(part)
         if all_stable:
             return True
