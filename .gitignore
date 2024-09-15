@@ -1,6 +1,7 @@
 # App data
 cache/
 data
+backup
 output
 .DS_Store
 quiz_dataset_tools/config.py
