@@ -46,7 +46,7 @@ option_parser = click.option(
 
 option_data_path = click.option(
     "--data-path",
-    required=True,
+    required=False,
     type=str,
     help="Source data path.",
 )
@@ -160,7 +160,9 @@ def prebuild_doctor(
 @option_fallback_language
 @option_data_path
 def build(domain: str, languages: str, fallback_language: str, data_path: str) -> None:
-    prebuild_data_dir = f"{get_prebuild_dir(domain)}/data"
+    prebuild_data_dir = f"{get_prebuild_dir(domain)}"
+    if not data_path:
+        data_path = prebuild_data_dir
     build_dir = get_build_dir(domain)
 
     prepare_output_dir(build_dir)
@@ -199,11 +201,11 @@ def get_parser(parser: str, data_path: str) -> Parser:
 
 
 def get_prebuild_dir(domain: str):
-    return f"output/{domain}/prebuild"
+    return f"output/domains/{domain}/prebuild"
 
 
 def get_build_dir(domain: str):
-    return f"output/{domain}/build"
+    return f"output/domains/{domain}/build"
 
 
 def get_languages_list(languages: str) -> list[Language]:

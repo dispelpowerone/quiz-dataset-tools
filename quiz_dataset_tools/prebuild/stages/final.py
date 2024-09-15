@@ -8,7 +8,7 @@ from quiz_dataset_tools.prebuild.dbase import PrebuildDBase
 class FinalStage(DataUpdateBaseStage):
     def __init__(self, data_path: str, output_dir: str):
         self.data_images_dir = f"{data_path}/images"
-        self.output_data_dir = f"{output_dir}/data"
+        self.output_data_dir = output_dir
         self.images_dir = f"{self.output_data_dir}/images"
         self.dbase = PrebuildDBase(data_dir=self.output_data_dir)
 
