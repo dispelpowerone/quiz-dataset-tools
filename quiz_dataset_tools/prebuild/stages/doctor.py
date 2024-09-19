@@ -21,21 +21,33 @@ class DoctorStage(DataUpdateBaseStage):
         pass
 
     def update_question(self, question: PrebuildQuestion) -> None:
-        self._check_text(question.text)
+        self._check_text(question.text, question)
         self._check_answers_count(question)
 
     def update_answer(self, question: PrebuildQuestion, answer: PrebuildAnswer) -> None:
-        self._check_text(answer.text)
+        self._check_text(answer.text, question)
 
-    def _check_text(self, text: PrebuildText) -> None:
-        loc = text.localizations
-        canonical_content = loc.get(Language.EN)
+    def _check_text(self, text: PrebuildText, question: PrebuildQuestion) -> None:
+        canonical_content = text.localizations.get(Language.EN)
         if not canonical_content:
             raise Exception(f"No canonical content found, {text=}")
+        # Check for not uniq content
+        original_content: str | None = ""
+        if text.original:
+            original_content = text.original.get(Language.EN)
+            if not original_content:
+                raise Exception(f"Malformed text: {text.original=}")
+        if (
+            not is_stable_text(canonical_content)
+            and canonical_content == original_content
+        ):
+            print(
+                f"Non uniq content: question_id={question.question_id} text_id={text.text_id}, {canonical_content=}"
+            )
         for lang in Language:
             if lang in [Language.EN]:
                 continue
-            content = loc.get(lang)
+            content = text.localizations.get(lang)
             if content is None or content == "":
                 continue
             # Check for mixed-lang content
@@ -66,7 +78,7 @@ class DoctorStage(DataUpdateBaseStage):
                 print(
                     f"Localization may be incorrect: text_id={text.text_id}, lang={lang.value.code}, {content=}, {canonical_content=}"
                 )
-            loc.set(lang, content)
+            text.localizations.set(lang, content)
 
     def _check_mixed_content(self, content) -> bool:
         a_count = 0
