@@ -19,7 +19,7 @@ class TestDatabaseBuilder(unittest.TestCase):
         dbase_file = f"/tmp/test.main.db"
         self.dbase = DriverTestDBase(dbase_file)
         self.dbase.open()
-        self.builder = DatabaseBuilder("./", "./")
+        self.builder = DatabaseBuilder("/tmp/test", "/tmp/test")
         self.builder.set_database(self.dbase)
         os.remove(dbase_file)
 
