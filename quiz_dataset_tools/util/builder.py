@@ -76,7 +76,7 @@ class DatabaseBuilder:
         canonical_content = text.localizations.get(canonical_lang)
         for lang in self.languages:
             text_content = text.localizations.get(lang)
-            if text_content is None:
+            if not text_content:
                 if self.fallback_language:
                     text_content = text.localizations.get(self.fallback_language)
                     if text_content is None:
