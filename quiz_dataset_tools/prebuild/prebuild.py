@@ -118,6 +118,8 @@ class PrebuildBuilder:
         return StageState(tests=prebuild_tests, questions=prebuild_questions)
 
     def _load_stage_state(self, stage_name: str) -> StageState:
+        raise Exception("_load_stage_state is deprecated")
+        """
         return StageState(
             tests=load_list(
                 cls=PrebuildTest,
@@ -128,16 +130,17 @@ class PrebuildBuilder:
                 source_dir=f"{self.output_dir}/{stage_name}/questions",
             ),
         )
+        """
 
     def _load_stage_state_from_dbase(self) -> StageState:
-        dbase = PrebuildDBase(f"{self.output_dir}/data")
+        dbase = PrebuildDBase(f"{self.output_dir}")
         return StageState(
             tests=dbase.get_tests(),
             questions=dbase.get_questions(),
         )
 
     def _save_stage_state_to_dbase(self, state: StageState) -> None:
-        dbase = PrebuildDBase(f"{self.output_dir}/data", backup=True)
+        dbase = PrebuildDBase(f"{self.output_dir}", backup=True)
         for test in state.tests:
             dbase.update_test(test)
         for question in state.questions:
