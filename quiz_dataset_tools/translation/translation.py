@@ -105,7 +105,7 @@ class TranslationTextTransformer:
 
 # Check if word is worth to translate
 StableChars = set(["$", ".", "%", "="])
-StableRe = set([re.compile("\d+ km/h")])
+StableRe = set([re.compile("\d+ km/h"), re.compile("\d+ mph")])
 
 
 def is_stable_text(content) -> bool:
@@ -135,6 +135,7 @@ def is_stable_text(content) -> bool:
         return True
     if stable_count / (stable_count + alpha_count) > 0.8:
         return True
+    # Recursively check parts
     parts = content.split(",")
     if len(parts) == 1:
         parts = content.split(";")
