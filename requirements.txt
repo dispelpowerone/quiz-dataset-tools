@@ -49,3 +49,5 @@ sqlalchemy==2.0.30
 FastAPI==0.110.2
 uvicorn==0.29.0
 python-multipart==0.0.9
+pillow==10.4.0
+types-Pillow==10.2.0
