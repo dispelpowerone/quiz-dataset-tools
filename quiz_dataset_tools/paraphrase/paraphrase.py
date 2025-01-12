@@ -8,6 +8,7 @@ from tenacity import (
 from quiz_dataset_tools.util.transformer import Transformer
 
 
+"""
 class Paraphrase(Transformer):
     REQUEST_TEMPL_1 = 'Reword text: "{text}"'
     REQUEST_TEMPL_2 = 'Reword for non native speaker: "{text}". Make it short and preserve meaning. Don\'t change if it is not possible.'
@@ -32,7 +33,6 @@ class Paraphrase(Transformer):
 
 openai.api_key = "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"
 
-
 @retry(
     retry=retry_if_exception_type(
         (
@@ -48,3 +48,4 @@ openai.api_key = "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"
 )
 def _chat_completion_with_backoff(**kwargs):
     return openai.ChatCompletion.create(**kwargs)
+"""
