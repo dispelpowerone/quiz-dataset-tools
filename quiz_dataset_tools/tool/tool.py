@@ -18,6 +18,7 @@ from quiz_dataset_tools.parser.usa import (
 from quiz_dataset_tools.parser.tilda import TildaParser
 from quiz_dataset_tools.parser.songs import SongsParser
 from quiz_dataset_tools.translation.translation import Translator
+from quiz_dataset_tools.util.consistency_check import check_prebuild_main_consistency
 
 
 @click.group()
@@ -180,6 +181,14 @@ def build(domain: str, languages: str, fallback_language: str, data_path: str) -
     builder.build()
 
     dbase.close()
+
+
+@main.command()
+@option_domain
+def build_doctor(domain: str) -> None:
+    prebuild_data_dir = get_prebuild_dir(domain)
+    build_dir = get_build_dir(domain)
+    check_prebuild_main_consistency(prebuild_data_dir, build_dir)
 
 
 def get_parser(parser: str, data_path: str) -> Parser:
