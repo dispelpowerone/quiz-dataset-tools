@@ -31,7 +31,13 @@ def check_prebuild_main_consistency(prebuild_dir: str, build_dir: str):
                 )
             )
     prebuild_questions_flat = sorted(prebuild_questions_flat)
+    prebuild_questions_flat_size = len(prebuild_questions_flat)
     main_questions_flat = sorted(main_questions_flat)
-    assert len(prebuild_questions_flat) == len(main_questions_flat)
+    main_questions_flat_size = len(main_questions_flat)
+    assert (
+        prebuild_questions_flat_size == main_questions_flat_size
+    ), f"Number of questions doesn't match: {prebuild_questions_flat_size} != {main_questions_flat_size}"
     for i, val in enumerate(prebuild_questions_flat):
-        assert val == main_questions_flat[i]
+        assert (
+            val == main_questions_flat[i]
+        ), f"Question doesn't match: {val} != {main_questions_flat[i]}"

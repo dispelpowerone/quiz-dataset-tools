@@ -189,6 +189,7 @@ def build_doctor(domain: str) -> None:
     prebuild_data_dir = get_prebuild_dir(domain)
     build_dir = get_build_dir(domain)
     check_prebuild_main_consistency(prebuild_data_dir, build_dir)
+    print("All checks were passed. Main DB is good.")
 
 
 def get_parser(parser: str, data_path: str) -> Parser:
