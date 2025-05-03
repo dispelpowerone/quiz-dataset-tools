@@ -1,3 +1,4 @@
+import re
 from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.translation.translation import is_stable_text
 from quiz_dataset_tools.prebuild.stage import DataUpdateBaseStage, StageState
@@ -37,6 +38,12 @@ class DoctorStage(DataUpdateBaseStage):
             original_content = text.original.get(Language.EN)
             if not original_content:
                 raise Exception(f"Malformed text: {text.original=}")
+        # Check cannot
+        if self._check_cannot(canonical_content):
+            print(
+                f"Cannot: test_id={question.test_id}, question_id={question.question_id}, text_id={text.text_id}, {canonical_content=}"
+            )
+        # Check that content is not the same as canonical one
         if (
             not is_stable_text(canonical_content)
             and canonical_content == original_content
@@ -77,6 +84,10 @@ class DoctorStage(DataUpdateBaseStage):
             ) != canonical_content.count("/"):
                 print(
                     f"Localization may be incorrect: text_id={text.text_id}, lang={lang.value.code}, {content=}, {canonical_content=}"
+                )
+            if self._check_broken_numbers(content, canonical_content):
+                print(
+                    f"Broken number: test_id={question.test_id}, question_id={question.question_id}, text_id={text.text_id}, lang={lang.value.code}, {content=}, {canonical_content=}"
                 )
             text.localizations.set(lang, content)
 
@@ -134,3 +145,11 @@ class DoctorStage(DataUpdateBaseStage):
                     is_right_answer=False,
                 )
             )
+
+    def _check_broken_numbers(self, content: str, canonical_content: str) -> bool:
+        def extract_numbers(text: str) -> list[int]:
+            return [int(num) for num in re.findall(r'\d+', text)]
+        return extract_numbers(content) != extract_numbers(canonical_content)
+
+    def _check_cannot(self, content: str) -> bool:
+        content.find("can not ") != -1 or content.find("Can not ") != -1 or content.lower().find("licence") != -1
