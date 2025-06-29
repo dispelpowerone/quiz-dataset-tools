@@ -148,8 +148,13 @@ class DoctorStage(DataUpdateBaseStage):
 
     def _check_broken_numbers(self, content: str, canonical_content: str) -> bool:
         def extract_numbers(text: str) -> list[int]:
-            return [int(num) for num in re.findall(r'\d+', text)]
+            return [int(num) for num in re.findall(r"\d+", text)]
+
         return extract_numbers(content) != extract_numbers(canonical_content)
 
     def _check_cannot(self, content: str) -> bool:
-        content.find("can not ") != -1 or content.find("Can not ") != -1 or content.lower().find("licence") != -1
+        return (
+            content.find("can not ") != -1
+            or content.find("Can not ") != -1
+            or content.lower().find("licence") != -1
+        )

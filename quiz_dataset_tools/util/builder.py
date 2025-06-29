@@ -96,7 +96,9 @@ class DatabaseBuilder:
             try:
                 self._pack_text(dbase, question_dbo.text_id, question.text)
             except Exception as err:
-                raise Exception(f"_pack_questions: test_id={question.test_id} question_id={question.question_id}, {err}")
+                raise Exception(
+                    f"_pack_questions: test_id={question.test_id} question_id={question.question_id}, {err}"
+                )
             self.images.put(str(question_dbo.question_id), question.image)
             self.audio.put(str(question_dbo.question_id), question.audio)
 
