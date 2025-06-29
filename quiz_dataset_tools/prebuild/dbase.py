@@ -6,6 +6,7 @@ from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.util.fs import backup_file
 from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
+    PrebuildTextWarning,
     PrebuildQuestion,
     PrebuildTest,
 )
@@ -13,6 +14,7 @@ from quiz_dataset_tools.prebuild.orm import (
     BaseOrm,
     LanguageOrm,
     TextOrm,
+    TextWarningOrm,
     QuestionOrm,
     TestOrm,
 )
@@ -38,8 +40,12 @@ class PrebuildDBase:
         self.engine.dispose()
 
     def bootstrap(self) -> None:
+        self._drop_tables()
         self._bootstrap_tables()
         self._bootstrap_languages()
+
+    def bootstrap_tables(self) -> None:
+        self._bootstrap_tables()
 
     @_session_decorator
     def add_test(self, session, test: PrebuildTest) -> None:
@@ -99,11 +105,60 @@ class PrebuildDBase:
         text_orm.update(text)
         session.commit()
 
+    @_session_decorator
+    def add_text_warning(self, session, text_warning: PrebuildTextWarning) -> None:
+        assert (
+            text_warning.text_localization_id is not None
+            and text_warning.code is not None
+        ), f"Cant add text warning, {text_warning.text_localization_id=}, {text_warning.code=}"
+        text_warning_orm = (
+            session.query(TextWarningOrm)
+            .where(
+                (
+                    TextWarningOrm.TextLocalizationsId
+                    == text_warning.text_localization_id
+                )
+                & (TextWarningOrm.Code == text_warning.code)
+            )
+            .first()
+        )
+        if text_warning_orm:
+            text_warning_orm.update(text_warning)
+        else:
+            session.add(TextWarningOrm.from_obj(text_warning))
+        session.commit()
+
+    @_session_decorator
+    def update_text_warning(self, session, text_warning: PrebuildTextWarning) -> None:
+        text_warning_orm = (
+            session.query(TextWarningOrm)
+            .where(TextWarningOrm.TextWarningId == text_warning.text_warning_id)
+            .first()
+        )
+        assert (
+            text_warning_orm is not None
+        ), f"Cant find text warning in the dbase, text_warning_id = {text_warning.text_warning_id}"
+        text_warning_orm.update(text_warning)
+        session.commit()
+
+    @_session_decorator
+    def get_text_warnings(
+        self, session, localization_id: int
+    ) -> list[PrebuildTextWarning]:
+        result = session.execute(
+            select(TextWarningOrm).where(
+                TextWarningOrm.TextLocalizationsId == localization_id
+            )
+        )
+        return [orm.to_obj() for orm in result.scalars()]
+
     def _backup_database(self, database_path) -> None:
         backup_file(database_path)
 
-    def _bootstrap_tables(self) -> None:
+    def _drop_tables(self) -> None:
         BaseOrm.metadata.drop_all(self.engine)
+
+    def _bootstrap_tables(self) -> None:
         BaseOrm.metadata.create_all(self.engine)
 
     @_session_decorator
@@ -119,11 +174,8 @@ class PrebuildDBase:
 
 
 """
-dbase = PrebuildDBase("/Users/d.vasilyev/Workspace/quiz-dataset-tools")
-tests = dbase.get_tests()
-print(tests[0])
-tests[0].title.localizations.ES = "fake ES"
-dbase.update_test(tests[0])
-tests = dbase.get_tests()
-print(tests[0])
+dbase = PrebuildDBase(
+    "/Volumes/External/Workspace/quiz-dataset-tools/output/domains/bc/prebuild/"
+)
+# dbase.update()
 """

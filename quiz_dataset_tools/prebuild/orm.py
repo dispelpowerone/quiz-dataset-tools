@@ -1,6 +1,6 @@
 import datetime
 from typing import List, Optional
-from sqlalchemy import Integer, String, ForeignKey, DateTime
+from sqlalchemy import Integer, String, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.sql import func
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -12,6 +12,7 @@ from sqlalchemy.orm import (
 from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
+    PrebuildTextWarning,
     PrebuildAnswer,
     PrebuildQuestion,
     PrebuildTest,
@@ -62,15 +63,12 @@ class TextOrm(BaseOrm):
         if self.Original is not None:
             original = TextLocalizations()
             original.set(Language.EN, self.Original)
-        last_update_timestamp = None
-        if self.LastUpdateTimestamp:
-            last_update_timestamp = int(self.LastUpdateTimestamp.timestamp())
         return PrebuildText(
             text_id=self.TextId,
             localizations=TextLocalizationOrm.to_obj(self.Localizations),
             original=original,
             is_manually_checked=self.IsManuallyChecked,
-            last_update_timestamp=last_update_timestamp,
+            last_update_timestamp=dtime_to_timestamp(self.LastUpdateTimestamp),
         )
 
     def update(self, obj: PrebuildText) -> None:
@@ -129,6 +127,57 @@ class TextLocalizationOrm(BaseOrm):
             if localization.LanguageId == language_id:
                 return localization
         return None
+
+
+class TextWarningOrm(BaseOrm):
+    __tablename__ = "TextWarnings"
+    __table_args__ = (
+        UniqueConstraint("TextLocalizationsId", "Code", name="_uniq_code"),
+    )
+
+    TextWarningId: Mapped[int] = mapped_column(primary_key=True)
+    TextId: Mapped[int] = mapped_column(ForeignKey("Texts.TextId"))
+    TextLocalizationsId: Mapped[int] = mapped_column(
+        ForeignKey("TextLocalizations.TextLocalizationsId")
+    )
+    Code: Mapped[int]
+    Content: Mapped[str]
+    IsManuallyChecked: Mapped[bool]
+    LastUpdateTimestamp: Mapped[datetime.datetime] = mapped_column(
+        DateTime(timezone=True), default=func.now(), onupdate=func.now()
+    )
+
+    @staticmethod
+    def from_obj(obj: PrebuildTextWarning) -> "TextWarningOrm":
+        return TextWarningOrm(
+            TextWarningId=obj.text_warning_id,
+            TextId=obj.text_id,
+            TextLocalizationsId=obj.text_localization_id,
+            Code=obj.code,
+            Content=obj.content,
+            IsManuallyChecked=obj.is_manually_checked,
+        )
+
+    def to_obj(self) -> PrebuildTextWarning:
+        return PrebuildTextWarning(
+            text_warning_id=self.TextWarningId,
+            text_id=self.TextId,
+            text_localization_id=self.TextLocalizationsId,
+            code=self.Code,
+            content=self.Content,
+            is_manually_checked=self.IsManuallyChecked,
+            last_update_timestamp=dtime_to_timestamp(self.LastUpdateTimestamp),
+        )
+
+    def update(self, obj: PrebuildTextWarning) -> None:
+        if obj.content and obj.content != self.Content:
+            assert (
+                obj.is_manually_checked != True
+            ), f"Can't update warning content and set IsManuallyChecked flag at the same time"
+            self.Content = obj.content
+            self.IsManuallyChecked = False
+        elif obj.is_manually_checked:
+            self.IsManuallyChecked = True
 
 
 class AnswerOrm(BaseOrm):
@@ -255,3 +304,9 @@ class TestOrm(BaseOrm):
         assert self.TestId == obj.test_id
         self.Position = obj.position
         self.Title.update(obj.title)
+
+
+def dtime_to_timestamp(dtime: datetime.datetime | None) -> int | None:
+    if dtime:
+        return int(dtime.timestamp())
+    return None
