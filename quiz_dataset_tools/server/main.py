@@ -9,6 +9,10 @@ from quiz_dataset_tools.server.models.texts import (
     UpdateTextRequest,
     UpdateTextResponse,
 )
+from quiz_dataset_tools.server.models.text_warnings import (
+    GetTextWarningsRequest,
+    GetTextWarningsResponse,
+)
 from quiz_dataset_tools.server.service import DatabaseService
 
 service = DatabaseService(
@@ -42,3 +46,8 @@ async def update_text(req: UpdateTextRequest) -> UpdateTextResponse:
 @app.post("/question/image/update")
 async def update_question_image(file: UploadFile):
     service.update_question_image(file)
+
+
+@app.post("/text_warnings/get")
+async def get_text_warnings(req: GetTextWarningsRequest) -> GetTextWarningsResponse:
+    return service.get_text_warnings(req)

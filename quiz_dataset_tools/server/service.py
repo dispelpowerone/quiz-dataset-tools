@@ -9,6 +9,10 @@ from quiz_dataset_tools.server.models.texts import (
     UpdateTextRequest,
     UpdateTextResponse,
 )
+from quiz_dataset_tools.server.models.text_warnings import (
+    GetTextWarningsRequest,
+    GetTextWarningsResponse,
+)
 
 
 class DatabaseService:
@@ -22,6 +26,11 @@ class DatabaseService:
     def get_questions(self, req: GetQuestionsRequest) -> GetQuestionsResponse:
         return GetQuestionsResponse(
             error_code=0, payload=self.dbase.get_questions_by_test(req.test_id)
+        )
+
+    def get_text_warnings(self, req: GetTextWarningsRequest) -> GetTextWarningsResponse:
+        return GetTextWarningsResponse(
+            error_code=0, payload=self.dbase.get_text_warnings(req.text_id)
         )
 
     def update_text(self, req: UpdateTextRequest) -> UpdateTextResponse:
