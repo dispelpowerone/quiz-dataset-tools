@@ -46,7 +46,9 @@ class TestDumpOverridesStage(unittest.TestCase):
         stage = DumpOverridesStage(
             overrides=overrides, languages=[Language.EN, Language.ES]
         )
-        state = stage.process(StageState(tests=tests, questions=questions))
+        state = stage.process(
+            StageState(tests=tests, questions=questions, text_warnings=[])
+        )
 
         self.assertEqual(
             "foo",

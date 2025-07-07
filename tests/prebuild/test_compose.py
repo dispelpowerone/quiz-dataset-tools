@@ -37,7 +37,9 @@ class TestComposeStage(unittest.TestCase):
             ),
         ]
         stage = ComposeStage(ComposeMode.FIX_MISSED, questions_per_test=2)
-        state = stage.process(StageState(tests=tests, questions=questions))
+        state = stage.process(
+            StageState(tests=tests, questions=questions, text_warnings=[])
+        )
         self.assertEqual(3, len(state.tests))
         self.assertEqual(6, len(state.questions))
         self.assertTrue(

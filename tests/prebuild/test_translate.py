@@ -49,7 +49,9 @@ class TestTranslateStage(unittest.TestCase):
         stage = TranslateStage(
             translator=FakeTranslator(), languages=[Language.FR, Language.ES]
         )
-        state = stage.process(StageState(tests=tests, questions=questions))
+        state = stage.process(
+            StageState(tests=tests, questions=questions, text_warnings=[])
+        )
         # Check test title
         test = state.tests[0]
         self.assertEqual("Test 1", test.title.localizations.get(Language.EN))

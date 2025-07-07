@@ -61,7 +61,9 @@ class TestOverrideStage(unittest.TestCase):
             ),
         ]
         stage = OverrideStage(languages=[Language.EN], overrides=self.overrides)
-        state = stage.process(StageState(tests=tests, questions=questions))
+        state = stage.process(
+            StageState(tests=tests, questions=questions, text_warnings=[])
+        )
         # Check test title
         self.assertEqual("Test 1", state.tests[0].title.localizations.get(Language.EN))
         # Check question text

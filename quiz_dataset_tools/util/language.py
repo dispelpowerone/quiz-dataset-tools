@@ -39,6 +39,12 @@ class Language(Enum):
 StringTransformer = Callable[[str], str]
 
 
+class TextLocalization:
+    langauge: Language
+    content: str
+    text_localization_id: int | None
+
+
 @dataclass_json
 @dataclass
 class TextLocalizations:
@@ -51,13 +57,29 @@ class TextLocalizations:
     PA: str | None = field(default=None, metadata=config(exclude=lambda x: x is None))  # type: ignore
     PT: str | None = None
 
-    def set(self, lang: Language, text: str) -> None:
+    # DB ids
+    ENId: int | None = None
+    FRId: int | None = None
+    ZHId: int | None = None
+    ESId: int | None = None
+    RUId: int | None = None
+    FAId: int | None = None
+    PAId: int | None = None
+    PTId: int | None = None
+
+    def set(
+        self, lang: Language, text: str, localization_id: int | None = None
+    ) -> None:
         if not hasattr(self, lang.name):
             raise Exception(f"No field for {lang} in TextLocalizations")
         setattr(self, lang.name, text)
+        setattr(self, lang.name + "Id", localization_id)
 
     def get(self, lang: Language) -> str | None:
         return getattr(self, lang.name)
+
+    def get_id(self, lang: Language) -> int | None:
+        return getattr(self, lang.name + "Id")
 
     def transform(self, transformer: StringTransformer) -> "TextLocalizations":
         result = TextLocalizations()

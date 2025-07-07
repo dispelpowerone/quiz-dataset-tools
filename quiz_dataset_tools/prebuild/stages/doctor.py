@@ -1,9 +1,15 @@
 import re
 from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.translation.translation import is_stable_text
-from quiz_dataset_tools.prebuild.stage import DataUpdateBaseStage, StageState
+from quiz_dataset_tools.prebuild.stage import (
+    DataUpdateBaseStage,
+    VerificationStage,
+    StageState,
+)
+from quiz_dataset_tools.prebuild.doctor.canonical import TextCanonicalDoctor
 from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
+    PrebuildTextWarning,
     PrebuildAnswer,
     PrebuildQuestion,
     PrebuildTest,
@@ -12,6 +18,22 @@ from quiz_dataset_tools.prebuild.types import (
 
 ANSWERS_COUNT = 4
 ANSWERS_AUTO_ADD = False
+
+
+class DoctorStageV2(VerificationStage):
+    def __init__(self):
+        self.canonical_doctor = TextCanonicalDoctor()
+
+    def flush(self):
+        self.canonical_doctor.save_cache()
+
+    def check_question(self, question: PrebuildQuestion) -> list[PrebuildTextWarning]:
+        return self.canonical_doctor.check_question(question)
+
+    def check_answer(
+        self, question: PrebuildQuestion, answer: PrebuildAnswer
+    ) -> list[PrebuildTextWarning]:
+        return []
 
 
 class DoctorStage(DataUpdateBaseStage):

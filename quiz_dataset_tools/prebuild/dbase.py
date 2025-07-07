@@ -142,13 +142,17 @@ class PrebuildDBase:
         session.commit()
 
     @_session_decorator
-    def get_text_warnings(
-        self, session, localization_id: int
-    ) -> list[PrebuildTextWarning]:
+    def delete_text_warning(self, session, text_warning: PrebuildTextWarning) -> None:
+        session.query(TextWarningOrm).filter(
+            (TextWarningOrm.TextLocalizationsId == text_warning.text_localization_id)
+            & (TextWarningOrm.Code == text_warning.code)
+        ).delete(synchronize_session=False)
+        session.commit()
+
+    @_session_decorator
+    def get_text_warnings(self, session, text_id: int) -> list[PrebuildTextWarning]:
         result = session.execute(
-            select(TextWarningOrm).where(
-                TextWarningOrm.TextLocalizationsId == localization_id
-            )
+            select(TextWarningOrm).where(TextWarningOrm.TextId == text_id)
         )
         return [orm.to_obj() for orm in result.scalars()]
 
@@ -175,7 +179,7 @@ class PrebuildDBase:
 
 """
 dbase = PrebuildDBase(
-    "/Volumes/External/Workspace/quiz-dataset-tools/output/domains/bc/prebuild/"
+    "/Volumes/External/Workspace/quiz-dataset-tools/output/domains/on/prebuild/"
 )
-# dbase.update()
+dbase.bootstrap_tables()
 """

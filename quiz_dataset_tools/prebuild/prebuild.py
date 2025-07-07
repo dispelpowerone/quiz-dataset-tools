@@ -23,7 +23,8 @@ from quiz_dataset_tools.prebuild.stages.override import OverrideStage
 from quiz_dataset_tools.prebuild.stages.dump_overrides import DumpOverridesStage
 from quiz_dataset_tools.prebuild.stages.translate import TranslateStage
 from quiz_dataset_tools.prebuild.stages.final import FinalStage
-from quiz_dataset_tools.prebuild.stages.doctor import DoctorStage
+from quiz_dataset_tools.prebuild.stages.doctor import DoctorStage, DoctorStageV2
+from quiz_dataset_tools.prebuild.doctor.canonical import TextCanonicalDoctor
 
 
 class PrebuildBuilder:
@@ -80,7 +81,9 @@ class PrebuildBuilder:
         self._run_stage_on_dbase(DumpOverridesStage(self.languages, self.overrides))
 
     def run_doctor(self) -> None:
-        self._run_stage_on_dbase(DoctorStage())
+        doctor_stage = DoctorStageV2()
+        self._run_stage_on_dbase(doctor_stage)
+        doctor_stage.flush()
 
     @staticmethod
     def load_tests(data_dir: str) -> list[PrebuildTest]:
@@ -115,7 +118,9 @@ class PrebuildBuilder:
                 prebuild_questions.append(
                     self._make_prebuild_question(test_id, question_id, question)
                 )
-        return StageState(tests=prebuild_tests, questions=prebuild_questions)
+        return StageState(
+            tests=prebuild_tests, questions=prebuild_questions, text_warnings=[]
+        )
 
     def _load_stage_state(self, stage_name: str) -> StageState:
         raise Exception("_load_stage_state is deprecated")
@@ -137,6 +142,7 @@ class PrebuildBuilder:
         return StageState(
             tests=dbase.get_tests(),
             questions=dbase.get_questions(),
+            text_warnings=[],
         )
 
     def _save_stage_state_to_dbase(self, state: StageState) -> None:
@@ -145,6 +151,11 @@ class PrebuildBuilder:
             dbase.update_test(test)
         for question in state.questions:
             dbase.update_question(question)
+        for text_warning in state.text_warnings:
+            if text_warning.content:
+                dbase.add_text_warning(text_warning)
+            else:
+                dbase.delete_text_warning(text_warning)
         dbase.close()
 
     def _make_prebuild_test(self, test_id, test: Test) -> PrebuildTest:

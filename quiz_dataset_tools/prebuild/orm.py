@@ -98,7 +98,7 @@ class TextLocalizationOrm(BaseOrm):
         for orm in orms:
             lang = Language.from_id(orm.LanguageId)
             assert lang
-            obj.set(lang, orm.Content)
+            obj.set(lang, orm.Content, orm.TextLocalizationsId)
         return obj
 
     @staticmethod
@@ -111,7 +111,9 @@ class TextLocalizationOrm(BaseOrm):
             elif localization_orm is None:
                 orms.append(
                     TextLocalizationOrm(
-                        LanguageId=lang.value.language_id, Content=localization
+                        TextLocalizationId=obj.get_id(lang),
+                        LanguageId=lang.value.language_id,
+                        Content=localization,
                     )
                 )
             elif localization is None:
@@ -140,7 +142,7 @@ class TextWarningOrm(BaseOrm):
     TextLocalizationsId: Mapped[int] = mapped_column(
         ForeignKey("TextLocalizations.TextLocalizationsId")
     )
-    Code: Mapped[int]
+    Code: Mapped[str]
     Content: Mapped[str]
     IsManuallyChecked: Mapped[bool]
     LastUpdateTimestamp: Mapped[datetime.datetime] = mapped_column(

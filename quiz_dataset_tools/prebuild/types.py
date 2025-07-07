@@ -19,7 +19,7 @@ class PrebuildTextWarning(DataClassJsonMixin):
     text_warning_id: int | None = None
     text_id: int | None = None
     text_localization_id: int | None = None
-    code: int | None = None
+    code: str | None = None
     content: str | None = None
     is_manually_checked: bool = False
     last_update_timestamp: int | None = None
