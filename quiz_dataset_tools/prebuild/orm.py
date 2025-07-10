@@ -45,6 +45,7 @@ class TextOrm(BaseOrm):
     Localizations: Mapped[List["TextLocalizationOrm"]] = relationship(
         back_populates="Text"
     )
+    Warnings: Mapped[List["TextWarningOrm"]] = relationship(back_populates="Text")
 
     @staticmethod
     def from_obj(obj: PrebuildText) -> "TextOrm":
@@ -55,6 +56,7 @@ class TextOrm(BaseOrm):
             TextId=obj.text_id,
             Localizations=TextLocalizationOrm.from_obj(obj.localizations),
             Original=original,
+            Warnings=[TextWarningOrm.from_obj(warning) for warning in obj.warnings],
             IsManuallyChecked=obj.is_manually_checked,
         )
 
@@ -67,12 +69,14 @@ class TextOrm(BaseOrm):
             text_id=self.TextId,
             localizations=TextLocalizationOrm.to_obj(self.Localizations),
             original=original,
+            warnings=[warning_orm.to_obj() for warning_orm in self.Warnings],
             is_manually_checked=self.IsManuallyChecked,
             last_update_timestamp=dtime_to_timestamp(self.LastUpdateTimestamp),
         )
 
     def update(self, obj: PrebuildText) -> None:
         TextLocalizationOrm.update_all(self.Localizations, obj.localizations)
+        TextWarningOrm.update_all(self.Warnings, obj.warnings)
         self.IsManuallyChecked = obj.is_manually_checked
 
 
@@ -109,17 +113,18 @@ class TextLocalizationOrm(BaseOrm):
             if localization is None and localization_orm is None:
                 continue
             elif localization_orm is None:
+                assert localization
                 orms.append(
                     TextLocalizationOrm(
-                        TextLocalizationId=obj.get_id(lang),
+                        TextLocalizationId=localization.text_localization_id,
                         LanguageId=lang.value.language_id,
-                        Content=localization,
+                        Content=localization.content,
                     )
                 )
             elif localization is None:
                 localization_orm.Content = ""
             else:
-                localization_orm.Content = localization
+                localization_orm.Content = localization.content
 
     @staticmethod
     def find(
@@ -148,6 +153,8 @@ class TextWarningOrm(BaseOrm):
     LastUpdateTimestamp: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True), default=func.now(), onupdate=func.now()
     )
+
+    Text: Mapped["TextOrm"] = relationship(back_populates="Warnings")
 
     @staticmethod
     def from_obj(obj: PrebuildTextWarning) -> "TextWarningOrm":
@@ -180,6 +187,37 @@ class TextWarningOrm(BaseOrm):
             self.IsManuallyChecked = False
         elif obj.is_manually_checked:
             self.IsManuallyChecked = True
+
+    @staticmethod
+    def update_all(
+        orms: list["TextWarningOrm"], obj_list: list[PrebuildTextWarning]
+    ) -> None:
+        for obj in obj_list:
+            warning_orm = None
+            if obj.text_warning_id:
+                warning_orm = TextWarningOrm.find(orms, obj.text_warning_id)
+            if warning_orm is None:
+                orms.append(
+                    TextWarningOrm(
+                        TextWarningId=obj.text_warning_id,
+                        TextId=obj.text_id,
+                        TextLocalizationsId=obj.text_localization_id,
+                        Code=obj.code,
+                        Content=obj.content,
+                        IsManuallyChecked=obj.is_manually_checked,
+                    )
+                )
+            else:
+                warning_orm.update(obj)
+
+    @staticmethod
+    def find(
+        orms: list["TextWarningOrm"], text_warning_id: int
+    ) -> Optional["TextWarningOrm"]:
+        for orm in orms:
+            if orm.TextWarningId == text_warning_id:
+                return orm
+        return None
 
 
 class AnswerOrm(BaseOrm):
