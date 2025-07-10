@@ -75,8 +75,8 @@ class TranslationTextTransformer:
         self.languages = languages
 
     def __call__(self, text: TextLocalizations) -> TextLocalizations:
-        canonical_text_content = text.get(self.canonical_language)
-        if canonical_text_content is None:
+        canonical_local = text.get(self.canonical_language)
+        if canonical_local is None:
             raise Exception(
                 f"Expected text content for canonical lang {self.canonical_language.name}, text {text}"
             )
@@ -84,11 +84,11 @@ class TranslationTextTransformer:
         for lang in self.languages:
             if lang == self.canonical_language:
                 continue
-            translated_text_content = translated_text.get(lang)
-            if translated_text_content:
+            translated_local = translated_text.get(lang)
+            if translated_local:
                 continue
             translated_text_content = self.translator.get_one(
-                canonical_text_content, lang
+                canonical_local.content, lang
             )
             # Commented because we don't want to mix localization and
             # canonical text.
@@ -105,7 +105,7 @@ class TranslationTextTransformer:
 
 # Check if word is worth to translate
 StableChars = set(["$", ".", "%", "="])
-StableRe = set([re.compile("\d+ km/h"), re.compile("\d+ mph")])
+StableRe = set([re.compile(r"\d+ km/h"), re.compile(r"\d+ mph")])
 
 
 def is_stable_text(content) -> bool:

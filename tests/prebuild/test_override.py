@@ -65,20 +65,26 @@ class TestOverrideStage(unittest.TestCase):
             StageState(tests=tests, questions=questions, text_warnings=[])
         )
         # Check test title
-        self.assertEqual("Test 1", state.tests[0].title.localizations.get(Language.EN))
+        self.assertEqual(
+            "Test 1", state.tests[0].title.localizations.get(Language.EN).content
+        )
         # Check question text
         question_1 = state.questions[0]
-        self.assertEqual("over-foo", question_1.text.localizations.get(Language.EN))
+        self.assertEqual(
+            "over-foo", question_1.text.localizations.get(Language.EN).content
+        )
         # Check answer
         self.assertEqual(
-            "over-foo-foo", question_1.answers[0].text.localizations.get(Language.EN)
+            "over-foo-foo",
+            question_1.answers[0].text.localizations.get(Language.EN).content,
         )
         self.assertEqual(
-            "over-foo-boo", question_1.answers[1].text.localizations.get(Language.EN)
+            "over-foo-boo",
+            question_1.answers[1].text.localizations.get(Language.EN).content,
         )
         self.assertEqual(
-            "bar", question_1.answers[2].text.localizations.get(Language.EN)
+            "bar", question_1.answers[2].text.localizations.get(Language.EN).content
         )
         self.assertEqual(
-            "zee", question_1.answers[3].text.localizations.get(Language.EN)
+            "zee", question_1.answers[3].text.localizations.get(Language.EN).content
         )

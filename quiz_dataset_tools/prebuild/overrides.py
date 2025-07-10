@@ -13,4 +13,5 @@ def make_answer_context(question: PrebuildQuestion, answer: PrebuildAnswer) -> s
     assert question.text.original
     question_en = question.text.original.get(Language.EN)
     assert question_en
-    return f"question: {question_en}; is_right_answer: {answer.is_right_answer}"
+    assert question_en.content
+    return f"question: {question_en.content}; is_right_answer: {answer.is_right_answer}"

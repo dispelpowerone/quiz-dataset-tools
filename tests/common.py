@@ -1,10 +1,20 @@
-from quiz_dataset_tools.util.language import TextLocalizations
+from quiz_dataset_tools.util.language import (
+    Language,
+    TextLocalization,
+    TextLocalizations,
+)
 from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
 )
 
 
 text_sequence_id = 1000
+
+
+def make_text_localization(content: str | None) -> TextLocalization | None:
+    if content is None:
+        return None
+    return TextLocalization(content)
 
 
 def make_prebuild_text(
@@ -20,7 +30,16 @@ def make_prebuild_text(
     text_sequence_id += 1
     return PrebuildText(
         text_id=text_sequence_id,
-        localizations=TextLocalizations(EN=en, FR=fr, ES=es, RU=ru, FA=fa, PA=pa),
+        localizations=TextLocalizations(
+            EN=make_text_localization(en),
+            FR=make_text_localization(fr),
+            ES=make_text_localization(es),
+            RU=make_text_localization(ru),
+            FA=make_text_localization(fa),
+            PA=make_text_localization(pa),
+        ),
         paraphrase=None,
-        original=None if orig is None else TextLocalizations(EN=orig),
+        original=(
+            None if orig is None else TextLocalizations(EN=TextLocalization(orig))
+        ),
     )

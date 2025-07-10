@@ -41,15 +41,19 @@ class TestFormatStage(unittest.TestCase):
         )
         # Check test title
         test = state.tests[0]
-        self.assertEqual("Test 1", test.title.localizations.get(Language.EN))
-        self.assertEqual("fr-Test 1", test.title.localizations.get(Language.FR))
+        self.assertEqual("Test 1", test.title.localizations.get(Language.EN).content)
+        self.assertEqual("fr-Test 1", test.title.localizations.get(Language.FR).content)
         # Check question text
         question = state.questions[0]
-        self.assertEqual("foo", question.text.localizations.get(Language.EN))
-        self.assertEqual("fr-foo / foo", question.text.localizations.get(Language.FR))
+        self.assertEqual("foo", question.text.localizations.get(Language.EN).content)
+        self.assertEqual(
+            "fr-foo / foo", question.text.localizations.get(Language.FR).content
+        )
         # Check answer
         answers = question.answers
-        self.assertEqual("boo", answers[0].text.localizations.get(Language.EN))
-        self.assertEqual("fr-boo / boo", answers[0].text.localizations.get(Language.FR))
-        self.assertEqual("bar", answers[1].text.localizations.get(Language.EN))
-        self.assertEqual("bar", answers[1].text.localizations.get(Language.FR))
+        self.assertEqual("boo", answers[0].text.localizations.get(Language.EN).content)
+        self.assertEqual(
+            "fr-boo / boo", answers[0].text.localizations.get(Language.FR).content
+        )
+        self.assertEqual("bar", answers[1].text.localizations.get(Language.EN).content)
+        self.assertEqual("bar", answers[1].text.localizations.get(Language.FR).content)

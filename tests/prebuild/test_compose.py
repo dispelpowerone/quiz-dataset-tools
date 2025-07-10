@@ -44,31 +44,31 @@ class TestComposeStage(unittest.TestCase):
         self.assertEqual(6, len(state.questions))
         self.assertTrue(
             state.questions[0].test_id == 1
-            and state.questions[0].text.localizations.get(Language.EN) == "T1Q1"
+            and state.questions[0].text.localizations.get(Language.EN).content == "T1Q1"
         )
         self.assertTrue(
             state.questions[1].test_id == 1
-            and state.questions[1].text.localizations.get(Language.EN) == "T2Q1"
+            and state.questions[1].text.localizations.get(Language.EN).content == "T2Q1"
         )
         self.assertTrue(
             state.questions[2].test_id == 2
-            and state.questions[2].text.localizations.get(Language.EN) == "T2Q1"
+            and state.questions[2].text.localizations.get(Language.EN).content == "T2Q1"
         )
         self.assertTrue(
             state.questions[3].test_id == 2
-            and state.questions[3].text.localizations.get(Language.EN) == "T1Q1"
+            and state.questions[3].text.localizations.get(Language.EN).content == "T1Q1"
         )
         self.assertTrue(
             state.questions[4].test_id == 3
-            and state.questions[4].text.localizations.get(Language.EN)
+            and state.questions[4].text.localizations.get(Language.EN).content
             in ["T1Q1", "T2Q1"]
         )
         self.assertTrue(
             state.questions[5].test_id == 3
-            and state.questions[5].text.localizations.get(Language.EN)
+            and state.questions[5].text.localizations.get(Language.EN).content
             in ["T1Q1", "T2Q1"]
         )
         self.assertTrue(
-            state.questions[4].text.localizations.get(Language.EN)
-            != state.questions[5].text.localizations.get(Language.EN)
+            state.questions[4].text.localizations.get(Language.EN).content
+            != state.questions[5].text.localizations.get(Language.EN).content
         )

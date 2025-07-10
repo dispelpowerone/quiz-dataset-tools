@@ -38,8 +38,8 @@ class DumpOverridesStage(DataUpdateBaseStage):
     def _dump_text(self, context: str, text: PrebuildText) -> None:
         try:
             assert text.original, f"{text=}"
-            orig_text = text.original.get(Language.EN)
-            assert orig_text
+            orig_local = text.original.get(Language.EN)
+            assert orig_local
             for lang in self.languages:
                 override_en = text.localizations.get(Language.EN)
                 override = text.localizations.get(lang)
@@ -49,10 +49,10 @@ class DumpOverridesStage(DataUpdateBaseStage):
                 # assert override_clean
                 self.overrides.put(
                     lang=Language.EN,
-                    text=orig_text,
+                    text=orig_local.content,
                     context=context,
                     override_lang=lang,
-                    override=override,
+                    override=override.content,
                 )
         except Exception as e:
             raise Exception(f"Failed to dump {text=}: {e=}")

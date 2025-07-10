@@ -54,19 +54,19 @@ class TestTranslateStage(unittest.TestCase):
         )
         # Check test title
         test = state.tests[0]
-        self.assertEqual("Test 1", test.title.localizations.get(Language.EN))
-        self.assertEqual("Test 1", test.title.localizations.get(Language.FR))
-        self.assertEqual("Test 1", test.title.localizations.get(Language.ES))
+        self.assertEqual("Test 1", test.title.localizations.get(Language.EN).content)
+        self.assertEqual("Test 1", test.title.localizations.get(Language.FR).content)
+        self.assertEqual("Test 1", test.title.localizations.get(Language.ES).content)
         self.assertIsNone(test.title.localizations.get(Language.ZH))
         # Check question text
         question = state.questions[0]
-        self.assertEqual("foo", question.text.localizations.get(Language.EN))
-        self.assertEqual("fr-foo", question.text.localizations.get(Language.FR))
-        self.assertEqual("un-foo", question.text.localizations.get(Language.ES))
+        self.assertEqual("foo", question.text.localizations.get(Language.EN).content)
+        self.assertEqual("fr-foo", question.text.localizations.get(Language.FR).content)
+        self.assertEqual("un-foo", question.text.localizations.get(Language.ES).content)
         self.assertIsNone(question.text.localizations.get(Language.ZH))
         # Check answer
         answer = question.answers[1]
-        self.assertEqual("bar", answer.text.localizations.get(Language.EN))
-        self.assertEqual("fr-bar", answer.text.localizations.get(Language.FR))
-        self.assertEqual("un-bar", answer.text.localizations.get(Language.ES))
+        self.assertEqual("bar", answer.text.localizations.get(Language.EN).content)
+        self.assertEqual("fr-bar", answer.text.localizations.get(Language.FR).content)
+        self.assertEqual("un-bar", answer.text.localizations.get(Language.ES).content)
         self.assertIsNone(answer.text.localizations.get(Language.ZH))

@@ -25,7 +25,8 @@ class TextCanonicalDoctor:
 
     def check_question(self, question: PrebuildQuestion) -> list[PrebuildTextWarning]:
         assert question.text.text_id
-        assert question.text.localizations.ENId
+        assert question.text.localizations.EN
+        assert question.text.localizations.EN.text_localization_id
         prompt = TextCanonicalDoctor._format_question_prompt(question)
         print("-----")
         print(prompt)
@@ -33,7 +34,9 @@ class TextCanonicalDoctor:
             prompt, lambda prompt: TextCanonicalDoctor._send_request(prompt)
         )
         warning = TextCanonicalDoctor._format_warning(
-            question.text.text_id, question.text.localizations.ENId, response
+            question.text.text_id,
+            question.text.localizations.EN.text_localization_id,
+            response,
         )
         return [warning] if warning else []
 
@@ -60,7 +63,8 @@ class TextCanonicalDoctor:
     def _format_question_prompt(question: PrebuildQuestion) -> str:
         assert question.text.text_id != None
         assert question.text.localizations.EN != None
-        assert question.text.localizations.ENId != None
+        assert question.text.localizations.EN.content
+        assert question.text.localizations.EN.text_localization_id != None
         answers = [
             f"{index + 1}. {answer.text.localizations.EN}"
             for index, answer in enumerate(question.answers)

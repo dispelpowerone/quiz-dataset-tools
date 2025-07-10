@@ -73,18 +73,20 @@ class DatabaseBuilder:
         self, dbase: DriverTestDBase, text_id: int, text: PrebuildText
     ) -> None:
         canonical_lang = Language.EN
-        canonical_content = text.localizations.get(canonical_lang)
+        canonical_local = text.localizations.get(canonical_lang)
+        assert canonical_local
         for lang in self.languages:
-            text_content = text.localizations.get(lang)
-            if not text_content:
+            local = text.localizations.get(lang)
+            if not local:
                 if self.fallback_language:
-                    text_content = text.localizations.get(self.fallback_language)
-                    if text_content is None:
+                    local = text.localizations.get(self.fallback_language)
+                    if local is None:
                         raise Exception("Missed fallback localization")
                 else:
                     raise Exception(f"Missed localization, {text=}, {lang=}")
-            if text_content != canonical_content and lang != Language.FA:
-                text_content = f"{text_content} / {canonical_content}"
+            text_content = local.content
+            if text_content != canonical_local.content and lang != Language.FA:
+                text_content = f"{text_content} / {canonical_local.content}"
             dbase.add_text_localization(text_id, lang.value.language_id, text_content)
 
     def _pack_questions(self, dbase: DriverTestDBase) -> None:

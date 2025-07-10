@@ -20,11 +20,12 @@ class FormatStage(DataUpdateBaseStage):
     def _format_localizations(self, text: TextLocalizations):
         # We expect EN to be a canonical language
         canonical = text.get(Language.EN)
+        assert canonical
         for lang in self.languages:
             if lang == Language.EN or lang == Language.FA:
                 continue
             localization = text.get(lang)
             if localization is None:
                 raise Exception(f"Localization for {lang} is expected")
-            if localization != canonical:
-                text.set(lang, f"{localization} / {canonical}")
+            if localization.content != canonical.content:
+                text.set(lang, f"{localization.content} / {canonical.content}")

@@ -30,11 +30,12 @@ class OverrideStage(DataUpdateBaseStage):
             # We expect english version to be a canonical one
             orig_text = text.original.get(Language.EN)
             assert orig_text
+            assert orig_text.content
             for lang in self.languages:
                 override = self.overrides.get(
                     context=context,
                     lang=Language.EN,
-                    text=orig_text,
+                    text=orig_text.content,
                     override_lang=lang,
                 )
                 if override:
