@@ -1,6 +1,7 @@
 import re
 from quiz_dataset_tools.util.language import Language, TextLocalizations
-from quiz_dataset_tools.translation.translation import is_stable_text
+
+# from quiz_dataset_tools.translation.translation import is_stable_text
 from quiz_dataset_tools.prebuild.stage import (
     DataUpdateBaseStage,
     VerificationStage,
@@ -36,6 +37,7 @@ class DoctorStageV2(VerificationStage):
         return []
 
 
+"""
 class DoctorStage(DataUpdateBaseStage):
     def __init__(self):
         pass
@@ -170,7 +172,7 @@ class DoctorStage(DataUpdateBaseStage):
 
     def _check_broken_numbers(self, content: str, canonical_content: str) -> bool:
         def extract_numbers(text: str) -> list[int]:
-            return [int(num) for num in re.findall(r"\d+", text)]
+            return [int(num) for num in re.findall("\\d+", text)]
 
         return extract_numbers(content) != extract_numbers(canonical_content)
 
@@ -180,3 +182,4 @@ class DoctorStage(DataUpdateBaseStage):
             or content.find("Can not ") != -1
             or content.lower().find("licence") != -1
         )
+"""
