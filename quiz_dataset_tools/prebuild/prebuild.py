@@ -1,10 +1,5 @@
 import copy
 from quiz_dataset_tools.util.text_overrides import TextOverrides
-from quiz_dataset_tools.translation.translation import (
-    Translator,
-    TranslationTextTransformer,
-    PassThroughTranslator,
-)
 from quiz_dataset_tools.parser.parser import Parser
 from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.util.data import Test, Question, Answer, TextTransformer
@@ -16,6 +11,7 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildQuestion,
     PrebuildTest,
 )
+from quiz_dataset_tools.prebuild.translation.translation import Translator
 from quiz_dataset_tools.prebuild.stage import BaseStage, StageState
 from quiz_dataset_tools.prebuild.stages.passthrough import PassthroughStage
 from quiz_dataset_tools.prebuild.stages.compose import ComposeMode, ComposeStage
@@ -23,7 +19,7 @@ from quiz_dataset_tools.prebuild.stages.override import OverrideStage
 from quiz_dataset_tools.prebuild.stages.dump_overrides import DumpOverridesStage
 from quiz_dataset_tools.prebuild.stages.translate import TranslateStage
 from quiz_dataset_tools.prebuild.stages.final import FinalStage
-from quiz_dataset_tools.prebuild.stages.doctor import DoctorStage, DoctorStageV2
+from quiz_dataset_tools.prebuild.stages.doctor import DoctorStageV2
 from quiz_dataset_tools.prebuild.doctor.canonical import TextCanonicalDoctor
 
 
@@ -66,9 +62,8 @@ class PrebuildBuilder:
         create_db_stage.process(state)
 
     def run_translate(self) -> None:
-        assert self.languages
         assert self.translator
-        self._run_stage_on_dbase(TranslateStage(self.translator, self.languages))
+        self._run_stage_on_dbase(TranslateStage(self.translator))
 
     def run_override(self) -> None:
         assert self.languages

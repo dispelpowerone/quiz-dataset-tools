@@ -4,6 +4,7 @@ from openai import OpenAI
 from openai.types.chat import ChatCompletionMessageParam
 from typing import Optional
 from quiz_dataset_tools.config import config
+from quiz_dataset_tools.util.cache import StringCache
 
 
 # Configure logging
@@ -62,3 +63,17 @@ class GPTService:
                     raise
                 time.sleep(self.retry_delay * attempt)  # exponential backoff
         raise Exception(f"Prompt failed: {prompt}, result: {response}")
+
+
+class GPTServiceWithCache:
+    impl: GPTService
+    cache: StringCache
+
+    def __init__(self, domain: str, model: str = "gpt-4"):
+        self.impl = GPTService(model)
+        self.cache = StringCache(domain, model)
+
+    def send_prompt(self, prompt: str) -> str:
+        return self.cache.get_or_retrieve(
+            prompt, lambda prompt: self.impl.send_prompt(prompt)
+        )

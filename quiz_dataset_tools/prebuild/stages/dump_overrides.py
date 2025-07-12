@@ -12,11 +12,6 @@ from quiz_dataset_tools.prebuild.overrides import (
 )
 from quiz_dataset_tools.util.language import Language
 from quiz_dataset_tools.util.text_overrides import TextOverrides
-from quiz_dataset_tools.translation.translation import (
-    Translator,
-    TranslationTextTransformer,
-    PassThroughTranslator,
-)
 
 
 TEXT_ENDING = re.compile("[ ,.?!]*$", re.IGNORECASE)

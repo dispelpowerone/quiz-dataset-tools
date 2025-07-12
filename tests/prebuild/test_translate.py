@@ -1,9 +1,13 @@
 import unittest
 from unittest.mock import MagicMock
+from typing import override
 from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.prebuild.stage import StageState
 from quiz_dataset_tools.prebuild.stages.translate import TranslateStage
-from quiz_dataset_tools.translation.translation import Translator
+from quiz_dataset_tools.prebuild.translation.translation import (
+    BaseTranslator,
+    Translator,
+)
 from quiz_dataset_tools.prebuild.types import (
     PrebuildAnswer,
     PrebuildQuestion,
@@ -13,7 +17,7 @@ from quiz_dataset_tools.prebuild.types import (
 from tests.common import make_prebuild_text
 
 
-class FakeTranslator(Translator):
+class FakeTranslator(BaseTranslator):
     def __init__(self):
         self.data = {
             ("boo", Language.FR): "fr-boo",
@@ -21,8 +25,18 @@ class FakeTranslator(Translator):
             ("bar", Language.FR): "fr-bar",
         }
 
-    def get_one(self, text: str, lang: Language) -> str:
-        return self.data.get((text, lang), f"un-{text}")
+    @override
+    def translate_question(self, question_content: str, lang: Language) -> str:
+        return self.data.get((question_content, lang), f"un-{question_content}")
+
+    @override
+    def translate_answer(
+        self,
+        answer_content: str,
+        question_content: str,
+        lang: Language,
+    ) -> str:
+        return self.data.get((answer_content, lang), f"un-{answer_content}")
 
 
 class TestTranslateStage(unittest.TestCase):
@@ -46,9 +60,10 @@ class TestTranslateStage(unittest.TestCase):
                 ],
             ),
         ]
-        stage = TranslateStage(
-            translator=FakeTranslator(), languages=[Language.FR, Language.ES]
+        translator = Translator(
+            impl=FakeTranslator(), languages=[Language.FR, Language.ES]
         )
+        stage = TranslateStage(translator=translator)
         state = stage.process(
             StageState(tests=tests, questions=questions, text_warnings=[])
         )

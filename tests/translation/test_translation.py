@@ -1,5 +1,5 @@
 import unittest
-from quiz_dataset_tools.translation.translation import (
+from quiz_dataset_tools.prebuild.translation.translation import (
     is_stable_text,
 )
 

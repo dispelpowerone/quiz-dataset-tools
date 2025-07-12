@@ -17,7 +17,10 @@ from quiz_dataset_tools.parser.usa import (
 )
 from quiz_dataset_tools.parser.tilda import TildaParser
 from quiz_dataset_tools.parser.songs import SongsParser
-from quiz_dataset_tools.translation.translation import Translator
+from quiz_dataset_tools.prebuild.translation.translation import (
+    BaseTranslator,
+    Translator,
+)
 from quiz_dataset_tools.util.consistency_check import check_prebuild_main_consistency
 
 
@@ -93,12 +96,16 @@ def prebuild_translate(
     domain: str,
     languages: str,
 ) -> None:
-    translator = Translator(domain=domain)
+    languages_list = get_languages_list(languages)
+    translator = Translator(
+        impl=BaseTranslator(),
+        languages=languages_list,
+    )
     translator.load_cache()
 
     builder = PrebuildBuilder()
     builder.set_output_dir(get_prebuild_dir(domain))
-    builder.set_languages(get_languages_list(languages))
+    builder.set_languages(languages_list)
     builder.set_translator(translator)
     builder.run_translate()
 
