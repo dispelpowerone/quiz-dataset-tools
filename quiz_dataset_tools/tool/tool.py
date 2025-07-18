@@ -18,7 +18,7 @@ from quiz_dataset_tools.parser.usa import (
 from quiz_dataset_tools.parser.tilda import TildaParser
 from quiz_dataset_tools.parser.songs import SongsParser
 from quiz_dataset_tools.prebuild.translation.translation import (
-    BaseTranslator,
+    GPTTranslator,
     Translator,
 )
 from quiz_dataset_tools.util.consistency_check import check_prebuild_main_consistency
@@ -98,7 +98,7 @@ def prebuild_translate(
 ) -> None:
     languages_list = get_languages_list(languages)
     translator = Translator(
-        impl=BaseTranslator(),
+        impl=GPTTranslator(domain=domain),
         languages=languages_list,
     )
     translator.load_cache()

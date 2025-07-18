@@ -15,9 +15,7 @@ client = OpenAI(api_key=config["openai"]["api_key"])
 
 
 class GPTService:
-    def __init__(
-        self, model: str = "gpt-4", max_retries: int = 3, retry_delay: float = 100.0
-    ):
+    def __init__(self, model: str, max_retries: int = 3, retry_delay: float = 100.0):
         self.model = model
         self.max_retries = max_retries
         self.retry_delay = retry_delay
@@ -69,7 +67,7 @@ class GPTServiceWithCache:
     impl: GPTService
     cache: StringCache
 
-    def __init__(self, domain: str, model: str = "gpt-4"):
+    def __init__(self, domain: str, model: str):
         self.impl = GPTService(model)
         self.cache = StringCache(domain, model)
 
@@ -77,3 +75,9 @@ class GPTServiceWithCache:
         return self.cache.get_or_retrieve(
             prompt, lambda prompt: self.impl.send_prompt(prompt)
         )
+
+    def save_cache(self) -> None:
+        self.cache.save()
+
+    def load_cache(self) -> None:
+        self.cache.load()

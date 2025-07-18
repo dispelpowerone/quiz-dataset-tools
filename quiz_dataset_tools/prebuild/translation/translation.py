@@ -39,10 +39,10 @@ class Translator:
         return self._translate_text(answer_text, translate_fn)
 
     def save_cache(self):
-        pass
+        self.impl.save_cache()
 
     def load_cache(self):
-        pass
+        self.impl.load_cache()
 
     def _get_canonical_content(self, text: PrebuildText) -> str:
         canonical_local = text.localizations.get(self.canonical_lang)
