@@ -8,6 +8,7 @@ from quiz_dataset_tools.prebuild.stage import (
     StageState,
 )
 from quiz_dataset_tools.prebuild.doctor.canonical import TextCanonicalDoctor
+from quiz_dataset_tools.prebuild.doctor.sanity import TextSanityDoctor
 from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
     PrebuildTextWarning,
@@ -24,17 +25,23 @@ ANSWERS_AUTO_ADD = False
 class DoctorStageV2(VerificationStage):
     def __init__(self):
         self.canonical_doctor = TextCanonicalDoctor()
+        self.sanity_doctor = TextSanityDoctor()
 
     def flush(self):
         self.canonical_doctor.save_cache()
 
     def check_question(self, question: PrebuildQuestion) -> list[PrebuildTextWarning]:
-        return self.canonical_doctor.check_question(question)
+        result = []
+        result.extend(self.canonical_doctor.check_question(question))
+        result.extend(self.sanity_doctor.check_question(question))
+        return result
 
     def check_answer(
         self, question: PrebuildQuestion, answer: PrebuildAnswer
     ) -> list[PrebuildTextWarning]:
-        return []
+        result = []
+        result.extend(self.sanity_doctor.check_answer(answer))
+        return result
 
 
 """
