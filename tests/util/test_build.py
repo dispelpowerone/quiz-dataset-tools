@@ -17,11 +17,14 @@ from tests.common import make_prebuild_text
 class TestDatabaseBuilder(unittest.TestCase):
     def setUp(self):
         dbase_file = f"/tmp/test.main.db"
+        os.remove(dbase_file)
         self.dbase = DriverTestDBase(dbase_file)
         self.dbase.open()
         self.builder = DatabaseBuilder("/tmp/test", "/tmp/test")
         self.builder.set_database(self.dbase)
-        os.remove(dbase_file)
+
+    def tearDown(self):
+        self.dbase.close()
 
     def test_build_end_to_end(self):
         self.builder.set_prebuild_tests(
