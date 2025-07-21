@@ -56,16 +56,21 @@ class Translator:
         self, text: PrebuildText, translate_fn: Callable[[str, Language], str]
     ) -> PrebuildText:
         canonical_local_content = self._get_canonical_content(text)
-        if is_stable_text(canonical_local_content):
-            return text
+        is_stable_content = is_stable_text(canonical_local_content)
         translated_text = copy.copy(text)
         for lang in self.languages:
             if lang == self.canonical_lang:
                 continue
             translated_local = translated_text.localizations.get(lang)
-            if translated_local and translated_local.content:
+            if translated_local and translated_local.content and not is_stable_content:
                 continue
-            translated_local_content = translate_fn(canonical_local_content, lang)
+            # Overwrite translation in case if stability
+            # condition was updated
+            translated_local_content = (
+                canonical_local_content
+                if is_stable_content
+                else translate_fn(canonical_local_content, lang)
+            )
             translated_local_id = (
                 translated_local.text_localization_id if translated_local else None
             )
