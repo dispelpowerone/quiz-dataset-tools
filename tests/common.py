@@ -9,12 +9,15 @@ from quiz_dataset_tools.prebuild.types import (
 
 
 text_sequence_id = 1000
+text_local_sequence_id = 1000
 
 
 def make_text_localization(content: str | None) -> TextLocalization | None:
     if content is None:
         return None
-    return TextLocalization(content)
+    global text_local_sequence_id
+    text_local_sequence_id += 1
+    return TextLocalization(content, text_local_sequence_id)
 
 
 def make_prebuild_text(

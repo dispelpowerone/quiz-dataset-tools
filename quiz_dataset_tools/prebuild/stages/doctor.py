@@ -40,6 +40,7 @@ class DoctorStageV2(VerificationStage):
         self, question: PrebuildQuestion, answer: PrebuildAnswer
     ) -> list[PrebuildTextWarning]:
         result = []
+        result.extend(self.canonical_doctor.check_answer(question, answer))
         result.extend(self.sanity_doctor.check_answer(answer))
         return result
 
