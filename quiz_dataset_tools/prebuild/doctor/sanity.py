@@ -13,7 +13,7 @@ WC_SANITY_BROKEN_NUMBERS = "SBN"
 
 FORBIDDEN_SYMBOL_QUESTION_RE = re.compile("[\n\t`«»]")
 FORBIDDEN_SYMBOL_ANSWER_RE = re.compile("[\n\t`«»\\?]")
-NUMBER_RE = re.compile("\\d+")
+NUMBER_RE = re.compile(r"\b\d{1,3}(?:,\d{3})+\b|\b\d+\b")
 
 
 class TextSanityDoctor:
@@ -70,7 +70,9 @@ class TextSanityDoctor:
         assert canonical_local
 
         def extract_numbers(local: TextLocalization) -> list[int]:
-            return [int(num) for num in NUMBER_RE.findall(local.content)]
+            matches = NUMBER_RE.findall(local.content)
+            cleaned = [int(m.replace(",", "")) for m in matches]
+            return sorted(cleaned)
 
         canonical_numbers = extract_numbers(canonical_local)
 
@@ -84,7 +86,7 @@ class TextSanityDoctor:
                     text_id=text.text_id,
                     text_localization_id=local.text_localization_id,
                     code=WC_SANITY_BROKEN_NUMBERS,
-                    content=f"Numbers in EN ({canonical_numbers}) aren't the same as in the translation ({local_numbers})",
+                    content=f"Numbers in EN: {canonical_numbers}, aren't the same as in the translation: {local_numbers}",
                 )
             return None
 
