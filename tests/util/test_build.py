@@ -17,7 +17,8 @@ from tests.common import make_prebuild_text
 class TestDatabaseBuilder(unittest.TestCase):
     def setUp(self):
         dbase_file = f"/tmp/test.main.db"
-        os.remove(dbase_file)
+        if os.path.exists(dbase_file):
+            os.remove(dbase_file)
         self.dbase = DriverTestDBase(dbase_file)
         self.dbase.open()
         self.builder = DatabaseBuilder("/tmp/test", "/tmp/test")
