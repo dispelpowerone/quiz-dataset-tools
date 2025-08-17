@@ -33,6 +33,20 @@ Then, review the translation as a native language speaker and revise any phrasin
         """
         return self._call_gpt(prompt)
 
+    def translate_question_comment(
+        self, question_comment_content: str, dest_lang: Language
+    ) -> str:
+        prompt = f"""
+Translate the following {self.test_type} question comment into {dest_lang.value.name}, using a formal tone appropriate for a driving exam and targeting an average-level audience.
+Maintain consistency with standard driving terminology.
+Stay as literal as possible without interpreting the meaning.
+```
+{question_comment_content}
+```
+Then, review the translation as a native language speaker and revise any phrasing that may sound unnatural. Print only the final version without comments.
+        """
+        return self._call_gpt(prompt)
+
     @override
     def translate_answer(
         self,

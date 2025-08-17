@@ -116,7 +116,7 @@ class TextLocalizationOrm(BaseOrm):
                 assert localization
                 orms.append(
                     TextLocalizationOrm(
-                        TextLocalizationId=localization.text_localization_id,
+                        TextLocalizationsId=localization.text_localization_id,
                         LanguageId=lang.value.language_id,
                         Content=localization.content,
                     )
@@ -281,10 +281,14 @@ class QuestionOrm(BaseOrm):
     QuestionId: Mapped[int] = mapped_column(primary_key=True)
     TestId: Mapped[int] = mapped_column(ForeignKey("Tests.TestId"))
     TextId: Mapped[int] = mapped_column(ForeignKey("Texts.TextId"))
+    CommentTextId: Mapped[int] = mapped_column(ForeignKey("Texts.TextId"))
     Image: Mapped[str | None]
     Audio: Mapped[str | None]
 
-    Text: Mapped["TextOrm"] = relationship()
+    Text: Mapped["TextOrm"] = relationship(foreign_keys=[TextId])
+    CommentText: Mapped[Optional["TextOrm"]] = relationship(
+        foreign_keys=[CommentTextId]
+    )
     Answers: Mapped[List["AnswerOrm"]] = relationship()
 
     @staticmethod
@@ -296,6 +300,9 @@ class QuestionOrm(BaseOrm):
             Answers=[AnswerOrm.from_obj(a) for a in obj.answers],
             Image=obj.image,
             Audio=obj.audio,
+            CommentText=(
+                TextOrm.from_obj(obj.comment_text) if obj.comment_text else None
+            ),
         )
 
     def to_obj(self) -> PrebuildQuestion:
@@ -305,6 +312,7 @@ class QuestionOrm(BaseOrm):
             text=self.Text.to_obj(),
             image=self.Image,
             answers=[a.to_obj() for a in self.Answers],
+            comment_text=(self.CommentText.to_obj() if self.CommentText else None),
         )
 
     def update(self, obj: PrebuildQuestion) -> None:
@@ -314,6 +322,13 @@ class QuestionOrm(BaseOrm):
         self.Audio = obj.audio
         self.Text.update(obj.text)
         AnswerOrm.update_all(self.Answers, obj.answers)
+        if self.CommentText:
+            if obj.comment_text:
+                self.CommentText.update(obj.comment_text)
+            else:
+                self.CommentText = None
+        elif obj.comment_text:
+            self.CommentText = TextOrm.from_obj(obj.comment_text)
 
 
 class TestOrm(BaseOrm):

@@ -65,6 +65,9 @@ class TextLocalizations:
     def get(self, lang: Language) -> TextLocalization | None:
         return getattr(self, lang.name)
 
+    def get_canonical(self) -> TextLocalization | None:
+        return self.get(Language.EN)
+
     def transform(self, transformer: StringTransformer) -> "TextLocalizations":
         result = TextLocalizations()
         for lang in Language:

@@ -114,6 +114,16 @@ def prebuild_translate(
 
 @main.command()
 @option_domain
+def prebuild_question_comments(
+    domain: str,
+) -> None:
+    builder = PrebuildBuilder()
+    builder.set_output_dir(get_prebuild_dir(domain))
+    builder.run_question_comment(domain)
+
+
+@main.command()
+@option_domain
 @option_data_path
 def prebuild_override(
     domain: str,

@@ -28,6 +28,14 @@ class Translator:
 
         return self._translate_text(question_text, translate_fn)
 
+    def translate_question_comment(
+        self, question_comment_text: PrebuildText
+    ) -> PrebuildText:
+        def translate_fn(content: str, lang: Language) -> str:
+            return self.impl.translate_question_comment(content, lang)
+
+        return self._translate_text(question_comment_text, translate_fn)
+
     def translate_answer(
         self, question_text: PrebuildText, answer_text: PrebuildText
     ) -> PrebuildText:

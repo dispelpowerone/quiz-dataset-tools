@@ -20,7 +20,9 @@ from quiz_dataset_tools.prebuild.stages.dump_overrides import DumpOverridesStage
 from quiz_dataset_tools.prebuild.stages.translate import TranslateStage
 from quiz_dataset_tools.prebuild.stages.final import FinalStage
 from quiz_dataset_tools.prebuild.stages.doctor import DoctorStageV2
-from quiz_dataset_tools.prebuild.doctor.canonical import TextCanonicalDoctor
+from quiz_dataset_tools.prebuild.stages.question_comment import (
+    QuestionCommentStage,
+)
 
 
 class PrebuildBuilder:
@@ -79,6 +81,11 @@ class PrebuildBuilder:
         doctor_stage = DoctorStageV2()
         self._run_stage_on_dbase(doctor_stage)
         doctor_stage.flush()
+
+    def run_question_comment(self, domain: str) -> None:
+        question_comment_stage = QuestionCommentStage(domain)
+        self._run_stage_on_dbase(question_comment_stage)
+        question_comment_stage.flush()
 
     @staticmethod
     def load_tests(data_dir: str) -> list[PrebuildTest]:

@@ -5,6 +5,11 @@ class BaseTranslator:
     def translate_question(self, question_content: str, lang: Language) -> str:
         return question_content
 
+    def translate_question_comment(
+        self, question_comment_content: str, lang: Language
+    ) -> str:
+        return question_comment_content
+
     def translate_answer(
         self,
         answer_content: str,

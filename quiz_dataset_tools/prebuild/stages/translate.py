@@ -21,6 +21,10 @@ class TranslateStage(DataUpdateBaseStage):
 
     def update_question(self, question: PrebuildQuestion) -> None:
         question.text = self.translator.translate_question(question.text)
+        if question.comment_text:
+            question.comment_text = self.translator.translate_question_comment(
+                question.comment_text
+            )
 
     def update_answer(self, question: PrebuildQuestion, answer: PrebuildAnswer) -> None:
         answer.text = self.translator.translate_answer(question.text, answer.text)

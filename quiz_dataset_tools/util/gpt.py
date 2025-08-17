@@ -81,3 +81,30 @@ class GPTServiceWithCache:
 
     def load_cache(self) -> None:
         self.cache.load()
+
+
+'''
+service = GPTService("gpt-4o")
+prompt = """
+You are a G1 Driving Test Ontario examiner. You work on a list of questions to assess knowledge of driving rules.
+Give a concise explanation why for the question
+```
+A driver is convicted of fleeing a police officer who signaled them to pull over. For how long will their licence be suspended?
+```
+among the following answers
+```
+1. 5 years.
+2. 5 weeks.
+3. 5 months.
+4. 3 days.
+```
+the right answer is
+```
+1. 5 years.
+```
+Use a formal tone targeting an average-level audience.
+Keep the answer as short as possible.
+Do not include the answer in the response.
+"""
+print(service.send_prompt(prompt))
+'''

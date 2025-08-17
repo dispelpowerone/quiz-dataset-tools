@@ -99,16 +99,18 @@ class QuestionDBO(BaseDBO):
     test_id: int
     text_id: int
     image: str | None
+    comment_text_id: int | None
 
     __table__ = "Questions"
     __key__ = "QuestionId"
-    __fields__ = ["QuestionId", "TestId", "TextId", "Image"]
+    __fields__ = ["QuestionId", "TestId", "TextId", "Image", "CommentTextId"]
     __create_table__ = """
 CREATE TABLE "Questions" (
     "QuestionId"    INTEGER NOT NULL UNIQUE,
-    "TestId"    INTEGER,
-    "TextId"    INTEGER,
-    "Image"    TEXT,
+    "TestId"        INTEGER,
+    "TextId"        INTEGER,
+    "Image"         TEXT,
+    "CommentTextId" INTEGER,
     PRIMARY KEY("QuestionId" AUTOINCREMENT)
 )
     """
@@ -120,13 +122,20 @@ CREATE TABLE "Questions" (
             test_id=row.get_int(1),
             text_id=row.get_int(2),
             image=row.get_nullable(3),
+            comment_text_id=row.get_nullable_int(4),
         )
 
     def get_key_values(self) -> tuple[int]:
         return (self.question_id,)
 
-    def get_field_values(self) -> tuple[int, int, int, str | None]:
-        return (self.question_id, self.test_id, self.text_id, self.image)
+    def get_field_values(self) -> tuple[int, int, int, str | None, int | None]:
+        return (
+            self.question_id,
+            self.test_id,
+            self.text_id,
+            self.image,
+            self.comment_text_id,
+        )
 
 
 @dataclass
@@ -316,6 +325,7 @@ class DBase:
 
 class DriverTestDBase:
     TextIdOffset = 1000
+    CommentTextIdOffset = 10000
 
     def __init__(self, dbase_path="DriveTest.db"):
         self.dbase = DBase(dbase_path)
@@ -345,13 +355,17 @@ class DriverTestDBase:
         if not test:
             test = TestDBO(
                 test_id=test_id,
-                text_id=self.add_text(text_id, f"Test {test_id} title"),
+                text_id=self.add_text(
+                    text_id, f"Test {test_id} title", self.TextIdOffset
+                ),
                 position=position,
             )
             self.dbase.add(test)
         return test
 
-    def add_question_if_not_exists(self, test_id, question_id, text_id, image):
+    def add_question_if_not_exists(
+        self, test_id, question_id, text_id, image, comment_text_id
+    ):
         assert test_id
         assert question_id
         question_legacy_offset = 100 * test_id
@@ -359,11 +373,20 @@ class DriverTestDBase:
             question_id += question_legacy_offset
         question = self.dbase.get(QuestionDBO, question_id)
         if not question:
+            if comment_text_id:
+                comment_text_id = self.add_text(
+                    comment_text_id,
+                    f"Question {question_id} comment",
+                    self.CommentTextIdOffset,
+                )
             question = QuestionDBO(
                 question_id=question_id,
                 test_id=test_id,
-                text_id=self.add_text(text_id, f"Question {question_id} content"),
+                text_id=self.add_text(
+                    text_id, f"Question {question_id} content", self.TextIdOffset
+                ),
                 image=image,
+                comment_text_id=comment_text_id,
             )
             self.dbase.add(question)
         return question
@@ -376,14 +399,16 @@ class DriverTestDBase:
             answer = AnswerDBO(
                 answer_id=answer_id,
                 question_id=question_id,
-                text_id=self.add_text(text_id, f"Answer {answer_id} content"),
+                text_id=self.add_text(
+                    text_id, f"Answer {answer_id} content", self.TextIdOffset
+                ),
                 is_correct=is_correct,
             )
             self.dbase.add(answer)
         return answer
 
-    def add_text(self, text_id, description):
-        final_text_id = text_id + DriverTestDBase.TextIdOffset
+    def add_text(self, text_id, description, text_id_offset):
+        final_text_id = text_id + text_id_offset
         text = TextDBO(text_id=final_text_id, description=description)
         return self.dbase.add(text)
 

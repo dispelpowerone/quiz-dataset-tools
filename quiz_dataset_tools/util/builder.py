@@ -70,7 +70,11 @@ class DatabaseBuilder:
                 )
 
     def _pack_text(
-        self, dbase: DriverTestDBase, text_id: int, text: PrebuildText
+        self,
+        dbase: DriverTestDBase,
+        text_id: int,
+        text: PrebuildText,
+        multi: bool = True,
     ) -> None:
         canonical_lang = Language.EN
         canonical_local = text.localizations.get(canonical_lang)
@@ -85,18 +89,36 @@ class DatabaseBuilder:
                 else:
                     raise Exception(f"Missed localization, {text=}, {lang=}")
             text_content = local.content
-            if text_content != canonical_local.content and lang != Language.FA:
+            if (
+                multi
+                and text_content != canonical_local.content
+                and lang != Language.FA
+            ):
                 text_content = f"{text_content} / {canonical_local.content}"
             dbase.add_text_localization(text_id, lang.value.language_id, text_content)
 
     def _pack_questions(self, dbase: DriverTestDBase) -> None:
         assert self.questions
         for question_index, question in enumerate(self.questions):
+            comment_text_id = (
+                question.comment_text.text_id if question.comment_text else None
+            )
             question_dbo = dbase.add_question_if_not_exists(
-                question.test_id, question.question_id, question.text.text_id, None
+                question.test_id,
+                question.question_id,
+                question.text.text_id,
+                None,
+                comment_text_id,
             )
             try:
                 self._pack_text(dbase, question_dbo.text_id, question.text)
+                if question.comment_text:
+                    self._pack_text(
+                        dbase,
+                        question_dbo.comment_text_id,
+                        question.comment_text,
+                        multi=False,
+                    )
             except Exception as err:
                 raise Exception(
                     f"_pack_questions: test_id={question.test_id} question_id={question.question_id}, {err}"
