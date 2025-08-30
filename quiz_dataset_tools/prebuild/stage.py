@@ -1,4 +1,7 @@
 import copy
+import tqdm
+import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from quiz_dataset_tools.prebuild.types import (
     PrebuildTextWarning,
@@ -26,9 +29,9 @@ class BaseStage:
 class DataUpdateBaseStage(BaseStage):
     def process(self, state: StageState) -> StageState:
         result_state = copy.deepcopy(state)
-        for test in result_state.tests:
+        for test in tqdm.tqdm(result_state.tests):
             self.update_test(test)
-        for question in result_state.questions:
+        for question in tqdm.tqdm(result_state.questions):
             question_copy = copy.deepcopy(question)
             for answer in question.answers:
                 self.update_answer(question_copy, answer)
@@ -48,13 +51,12 @@ class DataUpdateBaseStage(BaseStage):
 class VerificationStage(BaseStage):
     def process(self, state: StageState) -> StageState:
         result_state = copy.deepcopy(state)
-        for question in result_state.questions:
-            question_copy = copy.deepcopy(question)
-            for answer in question.answers:
-                result_state.text_warnings.extend(
-                    self.check_answer(question_copy, answer)
-                )
-            result_state.text_warnings.extend(self.check_question(question))
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            for result in tqdm.tqdm(
+                executor.map(self._process_question, result_state.questions),
+                total=len(result_state.questions),
+            ):
+                result_state.text_warnings.extend(result)
         return result_state
 
     def check_question(self, question: PrebuildQuestion) -> list[PrebuildTextWarning]:
@@ -64,3 +66,11 @@ class VerificationStage(BaseStage):
         self, question: PrebuildQuestion, answer: PrebuildAnswer
     ) -> list[PrebuildTextWarning]:
         return []
+
+    def _process_question(self, question: PrebuildQuestion):
+        question_copy = copy.deepcopy(question)
+        warnings = []
+        for answer in question.answers:
+            warnings.extend(self.check_answer(question_copy, answer))
+        warnings.extend(self.check_question(question))
+        return warnings

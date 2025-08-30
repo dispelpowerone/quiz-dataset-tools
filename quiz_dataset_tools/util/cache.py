@@ -1,6 +1,10 @@
 import csv
 import os
+import threading
 from typing import Dict, Callable
+
+
+_lock = threading.Lock()
 
 
 class StringCache:
@@ -21,15 +25,24 @@ class StringCache:
         if cached_result:
             return cached_result
         result = retriever(src_text)
-        self.cache[src_text] = result
-        self.cache_updates += 1
-        if self.cache_updates >= StringCache.CACHE_UPDATES_TO_FLUSH:
-            self.save()
-            self.cache_updates = 0
+        with _lock:
+            self.cache[src_text] = result
+            self.cache_updates += 1
+            if self.cache_updates >= StringCache.CACHE_UPDATES_TO_FLUSH:
+                self._save()
+                self.cache_updates = 0
         return result
 
     def save(self):
-        print(f"{self.name}::save_cache: size = {len(self.cache)}")
+        with _lock:
+            self._save()
+
+    def load(self):
+        with _lock:
+            self._load()
+
+    def _save(self):
+        # print(f"{self.name}::save_cache: size = {len(self.cache)}")
         cache_file_temp = StringCache.CACHE_FILE_TEMP_TEMPL.format(
             self.domain, self.name
         )
@@ -44,7 +57,7 @@ class StringCache:
                 writer.writerow([key, value])
         os.rename(cache_file_temp, cache_file)
 
-    def load(self):
+    def _load(self):
         cache_file = StringCache.CACHE_FILE_TEMPL.format(self.domain, self.name)
         cache = {}
         if not os.path.exists(cache_file):

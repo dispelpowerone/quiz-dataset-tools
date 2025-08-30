@@ -10,7 +10,7 @@ install:
 	python3 -m pip install .
 
 test:
-	python3 -m unittest discover tests/
+	TQDM_DISABLE=1 python3 -m unittest discover tests/
 
 doctor:
 	python3 -m pip check
