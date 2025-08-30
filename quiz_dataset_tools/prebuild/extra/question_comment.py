@@ -1,12 +1,9 @@
+from quiz_dataset_tools.constants import (
+    DOMAIN_TEST_TYPE,
+    GPT_MODEL,
+)
 from quiz_dataset_tools.util.gpt import GPTServiceWithCache
 from quiz_dataset_tools.prebuild.types import PrebuildQuestion, PrebuildText
-
-
-GPT_MODEL = "gpt-4o"
-
-DOMAIN_TEST_TYPE = {
-    "on": "G1 Driving Test Ontario",
-}
 
 
 class QuestionCommentService:

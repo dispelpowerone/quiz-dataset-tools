@@ -1,22 +1,22 @@
 from typing import override
+from quiz_dataset_tools.constants import (
+    DOMAIN_TEST_TYPE,
+    DOMAIN_UNITS_SYSTEM,
+    GPT_MODEL,
+)
 from quiz_dataset_tools.util.language import Language
 from quiz_dataset_tools.util.gpt import GPTServiceWithCache
 from quiz_dataset_tools.prebuild.translation.base import BaseTranslator
 
 
-GPT_MODEL = "gpt-4o"
-
-DOMAIN_TEST_TYPE = {
-    "on": "G1 Driving Test Ontario",
-}
-
-
 class GPTTranslator(BaseTranslator):
     test_type: str
+    units_system: str
     gpt_service: GPTServiceWithCache
 
     def __init__(self, domain: str):
         self.test_type = DOMAIN_TEST_TYPE[domain]
+        self.units_system = DOMAIN_UNITS_SYSTEM[domain]
         self.gpt_service = GPTServiceWithCache("translation", GPT_MODEL)
 
     @override
@@ -26,6 +26,7 @@ Translate the following {self.test_type} question into {dest_lang.value.name}, u
 Maintain consistency with standard driving terminology.
 Stay as literal as possible without interpreting the meaning.
 Assume that there are multiple answers provided to chose from.
+Keep units in {self.units_system} and do not convert.
 ```
 {question_content}
 ```
@@ -40,6 +41,7 @@ Then, review the translation as a native language speaker and revise any phrasin
 Translate the following {self.test_type} question comment into {dest_lang.value.name}, using a formal tone appropriate for a driving exam and targeting an average-level audience.
 Maintain consistency with standard driving terminology.
 Stay as literal as possible without interpreting the meaning.
+Keep units in {self.units_system} and do not convert.
 ```
 {question_comment_content}
 ```
@@ -62,6 +64,7 @@ Translate the following {self.test_type} question answer
 into {dest_lang.value.name}, using a formal tone appropriate for a driving exam and targeting an average-level audience.
 Maintain consistency with standard driving terminology.
 Stay as literal as possible without interpreting the meaning.
+Keep units in {self.units_system} and do not convert.
 Assume that the question is
 ```
 {question_content}

@@ -1,3 +1,7 @@
+from quiz_dataset_tools.constants import (
+    DOMAIN_TEST_TYPE,
+    GPT_MODEL,
+)
 from quiz_dataset_tools.util.gpt import GPTServiceWithCache
 from quiz_dataset_tools.util.language import Language, TextLocalizations
 from quiz_dataset_tools.prebuild.types import (
@@ -6,16 +10,18 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildQuestion,
     PrebuildAnswer,
 )
+from .common import is_ok_response
 
-GPT_MODEL = "gpt-4o"
 WC_CANONICAL_NO_ORIG = "CNO"
 
 
 class TextCanonicalDoctor:
 
+    test_type: str
     gpt: GPTServiceWithCache
 
-    def __init__(self, gpt_service: GPTServiceWithCache | None = None):
+    def __init__(self, domain: str, gpt_service: GPTServiceWithCache | None = None):
+        self.test_type = DOMAIN_TEST_TYPE[domain]
         if gpt_service:
             self.gpt = gpt_service
         else:
@@ -53,8 +59,7 @@ class TextCanonicalDoctor:
     def _format_warning(
         self, text_id: int, text_localization_id: int, response: str
     ) -> PrebuildTextWarning | None:
-        clean_respone = response.strip().upper().strip("\n\t '`\"«»")
-        if clean_respone == "OK":
+        if is_ok_response(response):
             return None
         return PrebuildTextWarning(
             text_id=text_id,
@@ -70,7 +75,7 @@ class TextCanonicalDoctor:
             for index, answer in enumerate(question.answers)
         ]
         return f"""
-Check the following G1 driving test question. Assume that {"there is an image attached." if question.image else "no image attached."}
+Check the following {self.test_type} question. Assume that {"there is an image attached." if question.image else "no image attached."}
 ```
 {question_content}
 ```
@@ -88,8 +93,8 @@ Otherwise answer with one word: OK
         question_content = self._get_text_content(question.text)
         answer_content = self._get_text_content(answer.text)
         return f"""
-You are a G1 driving test examiner. You create a list of questions to assess knowledge of driving rules.
-For the following G1 driving test question:
+You are a {self.test_type} examiner. You create a list of questions to assess knowledge of driving rules.
+For the following {self.test_type} question:
 ```
 {question_content}
 ```

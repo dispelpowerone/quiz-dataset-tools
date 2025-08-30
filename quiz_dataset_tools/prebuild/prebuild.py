@@ -19,7 +19,7 @@ from quiz_dataset_tools.prebuild.stages.override import OverrideStage
 from quiz_dataset_tools.prebuild.stages.dump_overrides import DumpOverridesStage
 from quiz_dataset_tools.prebuild.stages.translate import TranslateStage
 from quiz_dataset_tools.prebuild.stages.final import FinalStage
-from quiz_dataset_tools.prebuild.stages.doctor import DoctorStageV2
+from quiz_dataset_tools.prebuild.stages.doctor import DoctorStage
 from quiz_dataset_tools.prebuild.stages.question_comment import (
     QuestionCommentStage,
 )
@@ -77,8 +77,8 @@ class PrebuildBuilder:
         assert self.overrides
         self._run_stage_on_dbase(DumpOverridesStage(self.languages, self.overrides))
 
-    def run_doctor(self) -> None:
-        doctor_stage = DoctorStageV2()
+    def run_doctor(self, domain: str) -> None:
+        doctor_stage = DoctorStage(domain)
         self._run_stage_on_dbase(doctor_stage)
         doctor_stage.flush()
 

@@ -169,7 +169,7 @@ def prebuild_doctor(
 ) -> None:
     builder = PrebuildBuilder()
     builder.set_output_dir(get_prebuild_dir(domain))
-    builder.run_doctor()
+    builder.run_doctor(domain)
 
 
 @main.command()

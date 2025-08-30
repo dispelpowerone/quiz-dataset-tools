@@ -21,9 +21,11 @@ class TestTextCanonicalDoctor(unittest.TestCase):
         ],
     )
 
+    domain = "on"
+
     def test_check_question_prompt(self):
         gpt_mock = MagicMock()
-        doctor = TextCanonicalDoctor(gpt_service=gpt_mock)
+        doctor = TextCanonicalDoctor(self.domain, gpt_service=gpt_mock)
         doctor.check_question(self.question)
         prompt = gpt_mock.send_prompt.call_args.args[0]
         self.assertIn("```\nfoo\n```", prompt)
@@ -32,7 +34,7 @@ class TestTextCanonicalDoctor(unittest.TestCase):
 
     def test_check_question_ok(self):
         gpt_mock = MagicMock()
-        doctor = TextCanonicalDoctor(gpt_service=gpt_mock)
+        doctor = TextCanonicalDoctor(self.domain, gpt_service=gpt_mock)
 
         gpt_mock.send_prompt.return_value = "OK"
         warnings = doctor.check_question(self.question)
@@ -40,7 +42,7 @@ class TestTextCanonicalDoctor(unittest.TestCase):
 
     def test_check_question_warning(self):
         gpt_mock = MagicMock()
-        doctor = TextCanonicalDoctor(gpt_service=gpt_mock)
+        doctor = TextCanonicalDoctor(self.domain, gpt_service=gpt_mock)
 
         gpt_mock.send_prompt.return_value = "Some warning"
         warnings = doctor.check_question(self.question)
@@ -56,7 +58,7 @@ class TestTextCanonicalDoctor(unittest.TestCase):
 
     def test_check_answer_prompt(self):
         gpt_mock = MagicMock()
-        doctor = TextCanonicalDoctor(gpt_service=gpt_mock)
+        doctor = TextCanonicalDoctor(self.domain, gpt_service=gpt_mock)
         doctor.check_answer(self.question, self.question.answers[0])
         prompt = gpt_mock.send_prompt.call_args.args[0]
         self.assertIn("```\nfoo\n```", prompt)
@@ -64,7 +66,7 @@ class TestTextCanonicalDoctor(unittest.TestCase):
 
     def test_check_answer_ok(self):
         gpt_mock = MagicMock()
-        doctor = TextCanonicalDoctor(gpt_service=gpt_mock)
+        doctor = TextCanonicalDoctor(self.domain, gpt_service=gpt_mock)
 
         gpt_mock.send_prompt.return_value = "OK"
         warnings = doctor.check_answer(self.question, self.question.answers[0])
@@ -74,7 +76,7 @@ class TestTextCanonicalDoctor(unittest.TestCase):
         answer = self.question.answers[0]
 
         gpt_mock = MagicMock()
-        doctor = TextCanonicalDoctor(gpt_service=gpt_mock)
+        doctor = TextCanonicalDoctor(self.domain, gpt_service=gpt_mock)
 
         gpt_mock.send_prompt.return_value = "Some warning"
         warnings = doctor.check_answer(self.question, answer)
