@@ -9,6 +9,8 @@ from quiz_dataset_tools.util.cache import StringCache
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("openai").setLevel(logging.ERROR)
+logging.getLogger("httpx").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 
 client = OpenAI(api_key=config["openai"]["api_key"])
@@ -86,25 +88,18 @@ class GPTServiceWithCache:
 '''
 service = GPTService("gpt-4o")
 prompt = """
-You are a G1 Driving Test Ontario examiner. You work on a list of questions to assess knowledge of driving rules.
-Give a concise explanation why for the question
+You are a professional translator and bilingual reviewer.
+You work with New York DMV written test questions and answers.
+Check if text
 ```
-A driver is convicted of fleeing a police officer who signaled them to pull over. For how long will their licence be suspended?
+如果驾驶员不靠近弯道。
 ```
-among the following answers
+is the correct Chinese translation of text:
 ```
-1. 5 years.
-2. 5 weeks.
-3. 5 months.
-4. 3 days.
+if a driver is not close to a curve.
 ```
-the right answer is
-```
-1. 5 years.
-```
-Use a formal tone targeting an average-level audience.
-Keep the answer as short as possible.
-Do not include the answer in the response.
+If the translation is not correct, fix it and explain why.
+Otherwise answer with one word: OK
 """
 print(service.send_prompt(prompt))
 '''
