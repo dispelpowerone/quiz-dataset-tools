@@ -25,6 +25,11 @@ class PrebuildText(DataClassJsonMixin):
     is_manually_checked: bool = False
     last_update_timestamp: int | None = None
 
+    def get_canonical(self) -> str:
+        canonical_local = self.localizations.get_canonical()
+        assert canonical_local is not None
+        return canonical_local.content
+
 
 @dataclass
 class PrebuildAnswer(DataClassJsonMixin):
