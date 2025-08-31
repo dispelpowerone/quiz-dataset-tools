@@ -1,7 +1,11 @@
 from dataclasses import dataclass, field
 from dataclasses_json import DataClassJsonMixin
 from quiz_dataset_tools.paraphrase.types import ParaphrasedText
-from quiz_dataset_tools.util.language import Language, TextLocalizations
+from quiz_dataset_tools.util.language import (
+    Language,
+    TextLocalizations,
+    TextLocalization,
+)
 
 
 @dataclass
@@ -25,10 +29,10 @@ class PrebuildText(DataClassJsonMixin):
     is_manually_checked: bool = False
     last_update_timestamp: int | None = None
 
-    def get_canonical(self) -> str:
+    def get_canonical(self) -> TextLocalization:
         canonical_local = self.localizations.get_canonical()
         assert canonical_local is not None
-        return canonical_local.content
+        return canonical_local
 
 
 @dataclass

@@ -32,28 +32,33 @@ class TextTranslationDoctor:
         self.gpt.save_cache()
 
     def check_question(self, question: PrebuildQuestion) -> list[PrebuildTextWarning]:
-        return self._check_text("question", "", question.text)
+        return self._check_text(question.text, self._format_prompt)
 
     def check_answer(
         self, question: PrebuildQuestion, answer: PrebuildAnswer
     ) -> list[PrebuildTextWarning]:
         question_caonical = question.text.get_canonical()
-        context = f"""For question
-```
-{question_caonical}
-```
-        """
-        return self._check_text("answer to the question", context, answer.text)
+
+        def format_prompt(
+            canonical: TextLocalization,
+            lang: Language,
+            translation: TextLocalization,
+        ):
+            return self._format_answer_prompt(
+                question_caonical, canonical, lang, translation
+            )
+
+        return self._check_text(answer.text, format_prompt)
 
     def check_question_comment(
         self, question: PrebuildQuestion
     ) -> list[PrebuildTextWarning]:
         if not question.comment_text:
             return []
-        return self._check_text("text", "", question.comment_text)
+        return self._check_text(question.comment_text, self._format_prompt)
 
     def _check_text(
-        self, text_type: str, context: str, text: PrebuildText
+        self, text: PrebuildText, format_prompt_fn
     ) -> list[PrebuildTextWarning]:
         warnings: list[PrebuildTextWarning] = []
         canonical = text.localizations.get_canonical()
@@ -66,9 +71,7 @@ class TextTranslationDoctor:
                 or translation.content == canonical.content
             ):
                 continue
-            prompt = self._format_prompt(
-                text_type, context, canonical, lang, translation
-            )
+            prompt = format_prompt_fn(canonical, lang, translation)
             warning = self._get_warning(text, translation, prompt)
             if warning:
                 warnings.append(warning)
@@ -100,8 +103,6 @@ class TextTranslationDoctor:
 
     def _format_prompt(
         self,
-        text_type: str,
-        context: str,
         canonical: TextLocalization,
         lang: Language,
         translation: TextLocalization,
@@ -109,12 +110,12 @@ class TextTranslationDoctor:
         return f"""
 You are a professional translator and bilingual reviewer.
 You work with {self.test_type} questions and answers.
-{context}
-Check if text
+
+Check if the following {lang.value.name} text:
 ```
 {translation.content}
 ```
-is the correct {lang.value.name} translation of {text_type}:
+is a correct translation of the English text:
 ```
 {canonical.content}
 ```
@@ -126,6 +127,47 @@ Follow these rules when checking:
  - important parts of the text are missing,
  - elements are added that are not present in the original,
  - terminology is significantly distorted.
+
+If the translation is not correct, fix it and explain why.
+Otherwise answer with one word: OK
+        """
+
+    def _format_answer_prompt(
+        self,
+        canonical_context: TextLocalization,
+        canonical: TextLocalization,
+        lang: Language,
+        translation: TextLocalization,
+    ) -> str:
+        return f"""
+You are a professional translator and bilingual reviewer.
+You work with Florida Learner's Permit Test questions and answers.
+
+Context (for background only, not for translation check) that can be a question or a begining of some
+statement:
+```
+{canonical_context.content}
+```
+
+Check if the following {lang.value.name} text:
+```
+{translation.content}
+```
+is a correct translation of the English text:
+```
+{canonical.content}
+```
+Follow these rules when checking:
+1. Meaning over form. The most important thing is that the translation accurately conveys the meaning
+of the original.
+2. Do not be overly strict. Ignore minor stylistic differences, choice of synonyms, or variations in p
+hrasing if they do not distort the meaning.
+3. Focus only on errors. Point out issues only if:
+ - the translation conveys the wrong meaning,
+ - important parts of the text are missing,
+ - elements are added that are not present in the original,
+ - terminology is significantly distorted.
+4. Do not check whether the answer itself is factually correct or appropriate for the test. Your task is only to verify if the {lang.value.name} translation accurately matches the given English text.
 
 If the translation is not correct, fix it and explain why.
 Otherwise answer with one word: OK
