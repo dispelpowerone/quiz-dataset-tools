@@ -270,16 +270,20 @@ CREATE TABLE "Languages" (
 class DBase:
     def __init__(self, dbase_path: str):
         self.dbase_path = dbase_path
+        self.cursor = None
 
     def drop(self):
         if os.path.exists(self.dbase_path):
             os.remove(self.dbase_path)
 
     def open(self):
+        if self.cursor:
+            self.cursor.close()
         self.cursor = sqlite3.connect(self.dbase_path)
         self.cursor.execute("pragma encoding=UTF8")
 
     def create_table(self, dbo_type: BaseDBO):
+        assert self.cursor
         self.cursor.execute(f"{dbo_type.get_create_table()}")
 
     def import_csv(self, dbo_type: BaseDBO, file_name: str):
@@ -291,6 +295,7 @@ class DBase:
                 self.add(dbo_type.make(Row(nullable_row)))
 
     def get(self, dbo_type: BaseDBO, key: Any) -> BaseDBO | None:
+        assert self.cursor
         res = self.cursor.execute(
             f"SELECT {dbo_type.get_fields()} from {dbo_type.get_table()} where {dbo_type.get_key()} = ?",
             (key,),
@@ -301,6 +306,7 @@ class DBase:
         return dbo_type.make(Row(row))
 
     def add(self, dbo: BaseDBO) -> int:
+        assert self.cursor
         res = self.cursor.execute(
             f"INSERT INTO {dbo.get_table()}({dbo.get_fields()}) VALUES ({dbo.get_field_placeholders()})",
             dbo.get_field_values(),
@@ -308,6 +314,7 @@ class DBase:
         return res.lastrowid
 
     def select(self, dbo_type: BaseDBO, condition: str = "1") -> list[BaseDBO]:
+        assert self.cursor
         res = self.cursor.execute(
             f"SELECT {dbo_type.get_fields()} from {dbo_type.get_table()} where {condition}"
         )
@@ -317,10 +324,13 @@ class DBase:
         return results
 
     def commit(self):
+        assert self.cursor
         self.cursor.commit()
 
     def close(self):
+        assert self.cursor
         self.cursor.close()
+        self.cursor = None
 
 
 class DriverTestDBase:
