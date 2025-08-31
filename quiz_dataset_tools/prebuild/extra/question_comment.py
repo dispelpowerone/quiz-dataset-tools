@@ -12,7 +12,7 @@ class QuestionCommentService:
 
     def __init__(self, domain: str):
         self.test_type = DOMAIN_TEST_TYPE[domain]
-        self.gpt_service = GPTServiceWithCache("question_comment", GPT_MODEL)
+        self.gpt_service = GPTServiceWithCache("question-comment", GPT_MODEL)
 
     def get_comment(self, question: PrebuildQuestion) -> str | None:
         if question.image:
