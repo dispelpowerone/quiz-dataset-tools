@@ -11,6 +11,9 @@ from quiz_dataset_tools.prebuild.types import (
 )
 
 
+WORKERS_COUNT = 10
+
+
 @dataclass
 class StageState:
     tests: list[PrebuildTest]
@@ -51,7 +54,7 @@ class DataUpdateBaseStage(BaseStage):
 class VerificationStage(BaseStage):
     def process(self, state: StageState) -> StageState:
         result_state = copy.deepcopy(state)
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        with ThreadPoolExecutor(max_workers=WORKERS_COUNT) as executor:
             for result in tqdm.tqdm(
                 executor.map(self._process_question, result_state.questions),
                 total=len(result_state.questions),
