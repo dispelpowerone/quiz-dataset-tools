@@ -8,16 +8,25 @@ from quiz_dataset_tools.server.models.questions import (
 from quiz_dataset_tools.server.models.texts import (
     UpdateTextRequest,
     UpdateTextResponse,
+    SearchTestMimicTextsRequest,
+    SearchTestMimicTextsResponse,
 )
 from quiz_dataset_tools.server.models.text_warnings import (
     GetTextWarningsRequest,
     GetTextWarningsResponse,
 )
-from quiz_dataset_tools.server.service import DatabaseService
+from quiz_dataset_tools.server.services.database import DatabaseService
+from quiz_dataset_tools.server.services.mimic import MimicService
 
-service = DatabaseService(
-    "/Volumes/External/Workspace/quiz-dataset-tools/output/domains/on/prebuild"
+database_service = DatabaseService(
+    "/Volumes/External/Workspace/quiz-dataset-tools/output/domains/ny/prebuild"
 )
+
+mimic_service = MimicService(
+    database_service.get_dbase(),
+    ["/Volumes/External/Workspace/quiz-dataset-tools/output/domains/fl/prebuild"],
+)
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -30,24 +39,31 @@ app.add_middleware(
 
 @app.post("/tests/get")
 async def get_tests(req: GetTestsRequest) -> GetTestsResponse:
-    return service.get_tests(req)
+    return database_service.get_tests(req)
 
 
 @app.post("/questions/get")
 async def get_questions(req: GetQuestionsRequest) -> GetQuestionsResponse:
-    return service.get_questions(req)
+    return database_service.get_questions(req)
 
 
 @app.post("/text/update")
 async def update_text(req: UpdateTextRequest) -> UpdateTextResponse:
-    return service.update_text(req)
+    return database_service.update_text(req)
 
 
 @app.post("/question/image/update")
 async def update_question_image(file: UploadFile):
-    service.update_question_image(file)
+    database_service.update_question_image(file)
 
 
 @app.post("/text_warnings/get")
 async def get_text_warnings(req: GetTextWarningsRequest) -> GetTextWarningsResponse:
-    return service.get_text_warnings(req)
+    return database_service.get_text_warnings(req)
+
+
+@app.post("/mimic_text/search")
+async def search_mimic_text(
+    req: SearchTestMimicTextsRequest,
+) -> SearchTestMimicTextsResponse:
+    return mimic_service.search_test_texts(req)

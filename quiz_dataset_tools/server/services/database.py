@@ -16,9 +16,12 @@ from quiz_dataset_tools.server.models.text_warnings import (
 
 
 class DatabaseService:
-    def __init__(self, data_dir="./"):
+    def __init__(self, data_dir: str = "./"):
         self.dbase = PrebuildDBase(data_dir, backup=True)
         self.images_dir = f"{data_dir}/images"
+
+    def get_dbase(self):
+        return self.dbase
 
     def get_tests(self, req: GetTestsRequest) -> GetTestsResponse:
         return GetTestsResponse(error_code=0, payload=self.dbase.get_tests())
