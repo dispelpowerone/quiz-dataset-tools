@@ -128,7 +128,7 @@ Follow these rules when checking:
  - elements are added that are not present in the original,
  - terminology is significantly distorted.
 
-If the translation is not correct, fix it and explain why.
+If the translation is not correct, fix it and explain why in Russian.
 Otherwise answer with one word: OK
         """
 
@@ -169,6 +169,6 @@ hrasing if they do not distort the meaning.
  - terminology is significantly distorted.
 4. Do not check whether the answer itself is factually correct or appropriate for the test. Your task is only to verify if the {lang.value.name} translation accurately matches the given English text.
 
-If the translation is not correct, fix it and explain why.
+If the translation is not correct, fix it and explain why in Russian.
 Otherwise answer with one word: OK
         """

@@ -30,9 +30,15 @@ class PrebuildText(DataClassJsonMixin):
     last_update_timestamp: int | None = None
 
     def get_canonical(self) -> TextLocalization:
-        canonical_local = self.localizations.get_canonical()
-        assert canonical_local is not None
-        return canonical_local
+        local_canonical = self.localizations.get_canonical()
+        assert local_canonical is not None
+        return local_canonical
+
+    def get_original_canonical(self) -> TextLocalization:
+        assert self.original
+        original_canonical = self.original.get_canonical()
+        assert original_canonical is not None
+        return original_canonical
 
 
 @dataclass

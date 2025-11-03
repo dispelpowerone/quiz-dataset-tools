@@ -7,6 +7,7 @@ from quiz_dataset_tools.util.fs import backup_file
 from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
     PrebuildTextWarning,
+    PrebuildAnswer,
     PrebuildQuestion,
     PrebuildTest,
 )
@@ -15,6 +16,7 @@ from quiz_dataset_tools.prebuild.orm import (
     LanguageOrm,
     TextOrm,
     TextWarningOrm,
+    AnswerOrm,
     QuestionOrm,
     TestOrm,
 )
@@ -85,6 +87,15 @@ class PrebuildDBase:
         return [orm.to_obj() for orm in result.scalars()]
 
     @_session_decorator
+    def get_question(self, session, question_id: int) -> PrebuildQuestion | None:
+        question_orm = session.execute(
+            select(QuestionOrm).where(QuestionOrm.QuestionId == question_id)
+        ).scalar_one_or_none()
+        if not question_orm:
+            return None
+        return question_orm.to_obj()
+
+    @_session_decorator
     def get_questions(self, session) -> list[PrebuildQuestion]:
         result = session.execute(select(QuestionOrm))
         return [orm.to_obj() for orm in result.scalars()]
@@ -95,6 +106,15 @@ class PrebuildDBase:
             select(QuestionOrm).where(QuestionOrm.TestId == test_id)
         )
         return [orm.to_obj() for orm in result.scalars()]
+
+    @_session_decorator
+    def get_answer(self, session, answer_id: int) -> PrebuildAnswer | None:
+        answer_orm = session.execute(
+            select(AnswerOrm).where(AnswerOrm.AnswerId == answer_id)
+        ).scalar_one_or_none()
+        if not answer_orm:
+            return None
+        return answer_orm.to_obj()
 
     @_session_decorator
     def update_text(self, session, text: PrebuildText) -> None:
@@ -178,8 +198,10 @@ class PrebuildDBase:
 
 
 """
+from pprint import pprint
 dbase = PrebuildDBase(
-    "/Volumes/External/Workspace/quiz-dataset-tools/output/domains/on/prebuild/"
+    "/Volumes/External/Workspace/quiz-dataset-tools/output/domains/ny/prebuild/"
 )
-dbase.bootstrap_tables()
+q = dbase.get_question(101)
+pprint(q.text)
 """
