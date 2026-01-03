@@ -1,22 +1,20 @@
-python = python3.12
-
-all: mypy fmt install test
+all: mypy fmt test
 
 mypy:
-	${python} -m mypy quiz_dataset_tools
+	uv run mypy quiz_dataset_tools
 
 fmt:
-	${python} -m black quiz_dataset_tools tests
+	uv run black quiz_dataset_tools tests
 
 install:
-	${python} -m pip install .
+	uv run pip install .
 
 test:
-	TQDM_DISABLE=1 ${python} -m unittest discover tests/
+	TQDM_DISABLE=1 uv run python -m unittest discover tests/
 
 doctor:
-	${python} -m pip check
-	${python} -m pip list --outdated
+	uv run pip check
+	uv run pip list --outdated
 
 server:
-	uvicorn quiz_dataset_tools.server.main:app --host 0.0.0.0
+	uv run uvicorn quiz_dataset_tools.server.main:app --host 0.0.0.0
