@@ -1,4 +1,4 @@
-from google.cloud import translate
+from google.cloud import translate  # type: ignore[import-untyped]
 from quiz_dataset_tools.util.language import Language
 from quiz_dataset_tools.config import config
 
