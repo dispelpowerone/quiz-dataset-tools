@@ -1,5 +1,7 @@
+import base64
 import os
 from PIL import Image
+from io import BytesIO
 
 
 def convert_png_to_webp(input_file: str, output_file: str, quality: int = 90) -> None:
@@ -26,3 +28,24 @@ def convert_png_to_webp(input_file: str, output_file: str, quality: int = 90) ->
             img = img.convert("RGB")
         # Save the image as WEBP
         img.save(output_file, "webp", quality=quality)
+
+
+def load_image_as_base64(image_path: str) -> str:
+    with Image.open(image_path) as img:
+        return _pil_to_base64_jpeg(img)
+
+
+def _pil_to_base64_jpeg(pil_image) -> str:
+    """
+    Converts a PIL Image object to a Base64 encoded string.
+    Args:
+        pil_image (PIL.Image.Image): The PIL Image object to convert.
+    Returns:
+        str: The Base64 encoded string of the image.
+    """
+    buffered = BytesIO()
+    rgb_image = pil_image.convert("RGB")
+    rgb_image.save(buffered, format="JPEG")
+    img_bytes = buffered.getvalue()
+    base64_string = base64.b64encode(img_bytes).decode("utf-8")
+    return base64_string

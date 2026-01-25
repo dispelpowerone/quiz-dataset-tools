@@ -12,8 +12,8 @@ from quiz_dataset_tools.prebuild.extra.question_comment import (
 class QuestionCommentStage(DataUpdateBaseStage):
     service: QuestionCommentService
 
-    def __init__(self, domain: str):
-        self.service = QuestionCommentService(domain)
+    def __init__(self, domain: str, images_dir: str):
+        self.service = QuestionCommentService(domain, images_dir)
         self.service.load_cache()
 
     def update_question(self, question: PrebuildQuestion) -> None:

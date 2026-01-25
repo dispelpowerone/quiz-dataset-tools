@@ -83,7 +83,8 @@ class PrebuildBuilder:
         doctor_stage.flush()
 
     def run_question_comment(self, domain: str) -> None:
-        question_comment_stage = QuestionCommentStage(domain)
+        images_dir = self.output_dir + "/images"
+        question_comment_stage = QuestionCommentStage(domain, images_dir)
         self._run_stage_on_dbase(question_comment_stage)
         question_comment_stage.flush()
 
