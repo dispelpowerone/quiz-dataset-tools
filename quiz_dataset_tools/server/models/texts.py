@@ -1,46 +1,34 @@
-from pydantic.dataclasses import dataclass
 from quiz_dataset_tools.prebuild.types import PrebuildText, PrebuildQuestion
+from quiz_dataset_tools.server.models.base import DomainRequest, DomainResponse
 
 
-@dataclass
-class UpdateTextRequest:
+class UpdateTextRequest(DomainRequest):
     text: PrebuildText
 
 
-@dataclass
-class UpdateTextResponse:
-    error_code: int
+class UpdateTextResponse(DomainResponse):
     payload: None
 
 
-@dataclass
-class SearchTestMimicTextsRequest:
+class SearchTestMimicTextsRequest(DomainRequest):
     test_id: int
 
 
-@dataclass
-class SearchTestMimicTextsResponse:
-    error_code: int
+class SearchTestMimicTextsResponse(DomainResponse):
     payload: dict[int, PrebuildText]
 
 
-@dataclass
-class SearchQuestionMimicTextRequest:
+class SearchQuestionMimicTextRequest(DomainRequest):
     question_id: int
 
 
-@dataclass
-class SearchQuestionMimicTextResponse:
-    error_code: int
+class SearchQuestionMimicTextResponse(DomainResponse):
     payload: PrebuildText | None
 
 
-@dataclass
-class SearchAnswerMimicTextRequest:
+class SearchAnswerMimicTextRequest(DomainRequest):
     answer_id: int
 
 
-@dataclass
-class SearchAnswerMimicTextResponse:
-    error_code: int
+class SearchAnswerMimicTextResponse(DomainResponse):
     payload: PrebuildText | None

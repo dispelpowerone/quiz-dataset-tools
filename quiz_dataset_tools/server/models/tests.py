@@ -1,13 +1,10 @@
-from pydantic.dataclasses import dataclass
 from quiz_dataset_tools.prebuild.types import PrebuildTest
+from quiz_dataset_tools.server.models.base import DomainRequest, DomainResponse
 
 
-@dataclass
-class GetTestsRequest:
+class GetTestsRequest(DomainRequest):
     pass
 
 
-@dataclass
-class GetTestsResponse:
-    error_code: int
+class GetTestsResponse(DomainResponse):
     payload: list[PrebuildTest]
