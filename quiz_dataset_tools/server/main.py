@@ -37,6 +37,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+for domain in database_service.get_domains():
+    domain_data_dir = database_service.get_data_dir(domain)
+    domain_images_dir = f"{domain_data_dir}/images"
+    app.mount(f"/images/{domain}", StaticFiles(directory=domain_images_dir))
 
 @app.post("/tests/get")
 async def get_tests(req: GetTestsRequest) -> GetTestsResponse:
