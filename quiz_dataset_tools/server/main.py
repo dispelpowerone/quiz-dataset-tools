@@ -19,9 +19,7 @@ from quiz_dataset_tools.server.models.text_warnings import (
 from quiz_dataset_tools.server.services.database import DatabaseService
 from quiz_dataset_tools.server.services.mimic import MimicService
 
-database_service = DatabaseService(
-    "/Users/gz/Workspace/quiz-dataset-tools/output/domains"
-)
+database_service = DatabaseService("./output/domains")
 
 mimic_service = MimicService(
     database_service,
@@ -41,6 +39,7 @@ for domain in database_service.get_domains():
     domain_data_dir = database_service.get_data_dir(domain)
     domain_images_dir = f"{domain_data_dir}/images"
     app.mount(f"/images/{domain}", StaticFiles(directory=domain_images_dir))
+
 
 @app.post("/tests/get")
 async def get_tests(req: GetTestsRequest) -> GetTestsResponse:
