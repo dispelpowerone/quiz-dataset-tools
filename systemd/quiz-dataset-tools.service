@@ -1,0 +1,18 @@
+[Unit]
+Description=Quiz Dataset Tools FastAPI App
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/Workspace/quiz-dataset-tools
+
+# ExecStart points to gunicorn inside your venv
+# main:app refers to main.py and the FastAPI() instance named 'app'
+ExecStart=/home/pi/.local/bin/uv run uvicorn quiz_dataset_tools.server.main:app --host 0.0.0.0
+
+# Restart the service if it crashes
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
