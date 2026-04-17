@@ -30,7 +30,11 @@ class Translator:
 
     def translate_question_comment(
         self, question_comment_text: PrebuildText
-    ) -> PrebuildText:
+    ) -> PrebuildText | None:
+        # Comment may be empty
+        if not self._has_canonical_content(question_comment_text):
+            return None
+
         def translate_fn(content: str, lang: Language) -> str:
             return self.impl.translate_question_comment(content, lang)
 
@@ -51,6 +55,10 @@ class Translator:
 
     def load_cache(self):
         self.impl.load_cache()
+
+    def _has_canonical_content(self, text: PrebuildText) -> bool:
+        canonical_local = text.localizations.get(self.canonical_lang)
+        return True if canonical_local and canonical_local.content else False
 
     def _get_canonical_content(self, text: PrebuildText) -> str:
         canonical_local = text.localizations.get(self.canonical_lang)
