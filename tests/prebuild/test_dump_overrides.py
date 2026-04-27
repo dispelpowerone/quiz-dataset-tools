@@ -14,7 +14,7 @@ from quiz_dataset_tools.prebuild.overrides import (
     make_question_context,
     make_answer_context,
 )
-from tests.common import make_prebuild_text
+from tests.common import make_text
 
 
 class TestDumpOverridesStage(unittest.TestCase):
@@ -23,20 +23,20 @@ class TestDumpOverridesStage(unittest.TestCase):
 
     def test_end_to_end(self):
         tests = [
-            PrebuildTest(test_id=1, title=make_prebuild_text("Test 1")),
+            PrebuildTest(test_id=1, title=make_text("Test 1")),
         ]
         questions = [
             PrebuildQuestion(
                 test_id=1,
                 question_id=1,
-                text=make_prebuild_text("foo", es="foo-es", orig="orig-foo"),
+                text=make_text("foo", es="foo-es", orig="orig-foo"),
                 answers=[
                     PrebuildAnswer(
-                        make_prebuild_text("boo", es="boo-es", orig="orig-boo"),
+                        make_text("boo", es="boo-es", orig="orig-boo"),
                         is_right_answer=True,
                     ),
                     PrebuildAnswer(
-                        make_prebuild_text("bar mph", es="bar-es", orig="orig-bar"),
+                        make_text("bar mph", es="bar-es", orig="orig-bar"),
                         is_right_answer=False,
                     ),
                 ],

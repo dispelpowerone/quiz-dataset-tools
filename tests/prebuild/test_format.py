@@ -9,7 +9,7 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildTest,
     PrebuildText,
 )
-from tests.common import make_prebuild_text
+from tests.common import make_text
 
 
 class TestFormatStage(unittest.TestCase):
@@ -18,19 +18,19 @@ class TestFormatStage(unittest.TestCase):
 
     def test_end_to_end(self):
         tests = [
-            PrebuildTest(test_id=1, title=make_prebuild_text("Test 1", fr="fr-Test 1")),
+            PrebuildTest(test_id=1, title=make_text("Test 1", fr="fr-Test 1")),
         ]
         questions = [
             PrebuildQuestion(
                 test_id=1,
                 question_id=1,
-                text=make_prebuild_text("foo", fr="fr-foo"),
+                text=make_text("foo", fr="fr-foo"),
                 answers=[
                     PrebuildAnswer(
-                        make_prebuild_text("boo", fr="fr-boo"), is_right_answer=False
+                        make_text("boo", fr="fr-boo"), is_right_answer=False
                     ),
                     PrebuildAnswer(
-                        make_prebuild_text("bar", fr="bar"), is_right_answer=False
+                        make_text("bar", fr="bar"), is_right_answer=False
                     ),
                 ],
             ),

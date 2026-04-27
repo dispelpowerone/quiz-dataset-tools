@@ -24,7 +24,7 @@ class TestPrebuildDBase(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
 
     def test_add_and_get_test(self):
-        test = PrebuildTest(test_id=1, title=make_text(100, "Test 1"), position=1)
+        test = PrebuildTest(test_id=1, title=make_text("Test 1", text_id=100), position=1)
         self.dbase.add_test(test)
         tests = self.dbase.get_tests()
         self.assertEqual(len(tests), 1)
@@ -33,13 +33,13 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertEqual(tests[0].position, 1)
 
     def test_add_and_get_question(self):
-        test = PrebuildTest(test_id=1, title=make_text(100, "Test 1"))
+        test = PrebuildTest(test_id=1, title=make_text("Test 1", text_id=100))
         self.dbase.add_test(test)
 
         answer = PrebuildAnswer(
             answer_id=10,
             question_id=1,
-            text=make_text(200, "Answer 1"),
+            text=make_text("Answer 1", text_id=200),
             is_right_answer=True,
         )
         question = make_question(
@@ -68,7 +68,7 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_get_questions(self):
-        test = PrebuildTest(test_id=1, title=make_text(100, "Test 1"))
+        test = PrebuildTest(test_id=1, title=make_text("Test 1", text_id=100))
         self.dbase.add_test(test)
 
         for i in range(1, 4):
@@ -80,8 +80,8 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertEqual(len(questions), 3)
 
     def test_get_questions_by_test(self):
-        test1 = PrebuildTest(test_id=1, title=make_text(100, "Test 1"))
-        test2 = PrebuildTest(test_id=2, title=make_text(101, "Test 2"))
+        test1 = PrebuildTest(test_id=1, title=make_text("Test 1", text_id=100))
+        test2 = PrebuildTest(test_id=2, title=make_text("Test 2", text_id=101))
         self.dbase.add_test(test1)
         self.dbase.add_test(test2)
 
@@ -101,11 +101,11 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertEqual(len(test2_questions), 1)
 
     def test_update_test(self):
-        test = PrebuildTest(test_id=1, title=make_text(100, "Original"), position=1)
+        test = PrebuildTest(test_id=1, title=make_text("Original", text_id=100), position=1)
         self.dbase.add_test(test)
 
         updated = PrebuildTest(
-            test_id=1, title=make_text(100, "Updated"), position=2
+            test_id=1, title=make_text("Updated", text_id=100), position=2
         )
         self.dbase.update_test(updated)
 
@@ -113,7 +113,7 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertEqual(tests[0].position, 2)
 
     def test_update_question(self):
-        test = PrebuildTest(test_id=1, title=make_text(100, "Test"))
+        test = PrebuildTest(test_id=1, title=make_text("Test", text_id=100))
         self.dbase.add_test(test)
 
         question = make_question(
@@ -125,7 +125,7 @@ class TestPrebuildDBase(unittest.TestCase):
                 PrebuildAnswer(
                     answer_id=10,
                     question_id=1,
-                    text=make_text(300, "A1"),
+                    text=make_text("A1", text_id=300),
                     is_right_answer=False,
                 )
             ],
@@ -135,12 +135,12 @@ class TestPrebuildDBase(unittest.TestCase):
         updated = PrebuildQuestion(
             test_id=1,
             question_id=1,
-            text=make_text(200, "Updated"),
+            text=make_text("Updated", text_id=200),
             answers=[
                 PrebuildAnswer(
                     answer_id=10,
                     question_id=1,
-                    text=make_text(300, "A1 Updated"),
+                    text=make_text("A1 Updated", text_id=300),
                     is_right_answer=True,
                 )
             ],
@@ -154,7 +154,7 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertTrue(result.answers[0].is_right_answer)
 
     def test_text_warnings_crud(self):
-        test = PrebuildTest(test_id=1, title=make_text(100, "Test"))
+        test = PrebuildTest(test_id=1, title=make_text("Test", text_id=100))
         self.dbase.add_test(test)
 
         question = make_question(
@@ -181,7 +181,7 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertEqual(warnings[0].content, "Typo found")
 
     def test_get_question_image(self):
-        test = PrebuildTest(test_id=1, title=make_text(100, "Test"))
+        test = PrebuildTest(test_id=1, title=make_text("Test", text_id=100))
         self.dbase.add_test(test)
 
         self.dbase.add_question(

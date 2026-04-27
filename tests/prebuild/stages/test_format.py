@@ -8,16 +8,7 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildQuestion,
     PrebuildTest,
 )
-
-
-def make_text(en: str, fr: str = None, es: str = None) -> PrebuildText:
-    locs = TextLocalizations()
-    locs.set(Language.EN, en)
-    if fr:
-        locs.set(Language.FR, fr)
-    if es:
-        locs.set(Language.ES, es)
-    return PrebuildText(localizations=locs)
+from tests.common import make_text
 
 
 class TestFormatStage(unittest.TestCase):

@@ -27,8 +27,8 @@ class TestDatabaseService(unittest.TestCase):
         # Bootstrap a database with seed data
         dbase = PrebuildDBase(domain_dir)
         dbase.bootstrap()
-        dbase.add_test(PrebuildTest(test_id=1, title=make_text(100, "Test 1"), position=1))
-        dbase.add_test(PrebuildTest(test_id=2, title=make_text(101, "Test 2"), position=2))
+        dbase.add_test(PrebuildTest(test_id=1, title=make_text("Test 1", text_id=100), position=1))
+        dbase.add_test(PrebuildTest(test_id=2, title=make_text("Test 2", text_id=101), position=2))
         dbase.add_question(make_question(1, 1, 200, "Q1", image="img.png"))
         dbase.add_question(make_question(1, 2, 202, "Q2", image="img.png"))
         dbase.add_question(make_question(2, 3, 204, "Q3"))

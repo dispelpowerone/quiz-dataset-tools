@@ -9,7 +9,7 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildTest,
     PrebuildText,
 )
-from tests.common import make_prebuild_text
+from tests.common import make_text
 
 
 class TestComposeStage(unittest.TestCase):
@@ -18,21 +18,21 @@ class TestComposeStage(unittest.TestCase):
 
     def test_fix_missed(self):
         tests = [
-            PrebuildTest(test_id=1, title=make_prebuild_text("Test 1")),
-            PrebuildTest(test_id=2, title=make_prebuild_text("Test 2")),
-            PrebuildTest(test_id=3, title=make_prebuild_text("Test 3")),
+            PrebuildTest(test_id=1, title=make_text("Test 1")),
+            PrebuildTest(test_id=2, title=make_text("Test 2")),
+            PrebuildTest(test_id=3, title=make_text("Test 3")),
         ]
         questions = [
             PrebuildQuestion(
                 test_id=1,
                 question_id=1,
-                text=make_prebuild_text("T1Q1"),
+                text=make_text("T1Q1"),
                 answers=[],
             ),
             PrebuildQuestion(
                 test_id=2,
                 question_id=1,
-                text=make_prebuild_text("T2Q1"),
+                text=make_text("T2Q1"),
                 answers=[],
             ),
         ]

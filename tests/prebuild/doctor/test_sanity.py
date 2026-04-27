@@ -5,7 +5,7 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildAnswer,
     PrebuildQuestion,
 )
-from tests.common import make_prebuild_text
+from tests.common import make_text
 
 
 class TestTextSanityDoctor(unittest.TestCase):
@@ -16,12 +16,12 @@ class TestTextSanityDoctor(unittest.TestCase):
         question = PrebuildQuestion(
             test_id=1,
             question_id=1,
-            text=make_prebuild_text("foo"),
+            text=make_text("foo"),
             answers=[
                 PrebuildAnswer(
-                    make_prebuild_text("boo", fr="fr-boo"), is_right_answer=True
+                    make_text("boo", fr="fr-boo"), is_right_answer=True
                 ),
-                PrebuildAnswer(make_prebuild_text("b a r"), is_right_answer=False),
+                PrebuildAnswer(make_text("b a r"), is_right_answer=False),
             ],
         )
         doctor = TextSanityDoctor()
@@ -36,10 +36,10 @@ class TestTextSanityDoctor(unittest.TestCase):
         question = PrebuildQuestion(
             test_id=1,
             question_id=1,
-            text=make_prebuild_text("foo", es="es-`foo"),
+            text=make_text("foo", es="es-`foo"),
             answers=[
                 PrebuildAnswer(
-                    make_prebuild_text("bo\no", fr="fr	-boo"), is_right_answer=True
+                    make_text("bo\no", fr="fr	-boo"), is_right_answer=True
                 ),
             ],
         )
@@ -81,7 +81,7 @@ class TestTextSanityDoctor(unittest.TestCase):
 
         # Simple valid case
         answer1 = PrebuildAnswer(
-            make_prebuild_text("foo 1 boo 32", es="es-foo 1 es-boo 32"),
+            make_text("foo 1 boo 32", es="es-foo 1 es-boo 32"),
             is_right_answer=True,
         )
         answer1_warnings = doctor.check_question(answer1)
@@ -89,7 +89,7 @@ class TestTextSanityDoctor(unittest.TestCase):
 
         # Complex valid number
         answer2 = PrebuildAnswer(
-            make_prebuild_text("$1,000", es="$1000", fr="1000"),
+            make_text("$1,000", es="$1000", fr="1000"),
             is_right_answer=True,
         )
         answer2_warnings = doctor.check_question(answer2)
@@ -97,7 +97,7 @@ class TestTextSanityDoctor(unittest.TestCase):
 
         # Missed number
         answer3 = PrebuildAnswer(
-            make_prebuild_text("foo 1 boo 2", es="es-foo 1 es-boo err"),
+            make_text("foo 1 boo 2", es="es-foo 1 es-boo err"),
             is_right_answer=True,
         )
         answer3_warnings = doctor.check_question(answer3)

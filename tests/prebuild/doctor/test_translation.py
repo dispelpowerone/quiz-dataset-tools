@@ -7,7 +7,7 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildAnswer,
     PrebuildQuestion,
 )
-from tests.common import make_prebuild_text
+from tests.common import make_text
 
 
 class TestTextCanonicalDoctor(unittest.TestCase):
@@ -15,13 +15,13 @@ class TestTextCanonicalDoctor(unittest.TestCase):
     question = PrebuildQuestion(
         test_id=1,
         question_id=1,
-        text=make_prebuild_text("foo", fr="foo-fr"),
+        text=make_text("foo", fr="foo-fr"),
         answers=[
             PrebuildAnswer(
-                make_prebuild_text("boo", es="boo-es"), is_right_answer=True
+                make_text("boo", es="boo-es"), is_right_answer=True
             ),
             PrebuildAnswer(
-                make_prebuild_text("bar", ru="bar-ru"), is_right_answer=False
+                make_text("bar", ru="bar-ru"), is_right_answer=False
             ),
         ],
     )
@@ -66,7 +66,7 @@ class TestTextCanonicalDoctor(unittest.TestCase):
         question = PrebuildQuestion(
             test_id=1,
             question_id=1,
-            text=make_prebuild_text("foo", fr="foo-fr", es="foo-es", ru="foo-ru"),
+            text=make_text("foo", fr="foo-fr", es="foo-es", ru="foo-ru"),
             answers=[],
         )
         warnings = doctor.check_question(question)
