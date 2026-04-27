@@ -10,38 +10,7 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildQuestion,
     PrebuildTest,
 )
-
-
-_text_id_seq = 1000
-
-
-def make_text(text_id: int, en: str, fr: str = None) -> PrebuildText:
-    locs = TextLocalizations()
-    locs.set(Language.EN, en)
-    if fr:
-        locs.set(Language.FR, fr)
-    return PrebuildText(text_id=text_id, localizations=locs)
-
-
-def make_question(
-    test_id: int,
-    question_id: int,
-    text_id: int,
-    en: str,
-    answers: list[PrebuildAnswer] = None,
-    image: str = None,
-) -> PrebuildQuestion:
-    global _text_id_seq
-    _text_id_seq += 1
-    comment = make_text(_text_id_seq, "")
-    return PrebuildQuestion(
-        test_id=test_id,
-        question_id=question_id,
-        text=make_text(text_id, en),
-        answers=answers or [],
-        image=image,
-        comment_text=comment,
-    )
+from tests.common import make_text, make_question
 
 
 class TestPrebuildDBase(unittest.TestCase):

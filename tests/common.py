@@ -5,6 +5,7 @@ from quiz_dataset_tools.util.language import (
 )
 from quiz_dataset_tools.prebuild.types import (
     PrebuildText,
+    PrebuildQuestion,
 )
 
 
@@ -45,4 +46,33 @@ def make_prebuild_text(
         original=(
             None if orig is None else TextLocalizations(EN=TextLocalization(orig))
         ),
+    )
+
+
+def make_text(text_id: int, en: str, fr: str = None) -> PrebuildText:
+    locs = TextLocalizations()
+    locs.set(Language.EN, en)
+    if fr:
+        locs.set(Language.FR, fr)
+    return PrebuildText(text_id=text_id, localizations=locs)
+
+
+def make_question(
+    test_id: int,
+    question_id: int,
+    text_id: int,
+    en: str,
+    answers: list = None,
+    image: str = None,
+) -> PrebuildQuestion:
+    global text_sequence_id
+    text_sequence_id += 1
+    comment = make_text(text_sequence_id, "")
+    return PrebuildQuestion(
+        test_id=test_id,
+        question_id=question_id,
+        text=make_text(text_id, en),
+        answers=answers or [],
+        image=image,
+        comment_text=comment,
     )
