@@ -45,18 +45,10 @@ class TestOverrideStage(unittest.TestCase):
                 question_id=1,
                 text=make_text("foo", orig="foo"),
                 answers=[
-                    PrebuildAnswer(
-                        make_text("foo", orig="foo"), is_right_answer=False
-                    ),
-                    PrebuildAnswer(
-                        make_text("boo", orig="boo"), is_right_answer=True
-                    ),
-                    PrebuildAnswer(
-                        make_text("bar", orig="bar"), is_right_answer=False
-                    ),
-                    PrebuildAnswer(
-                        make_text("zee", orig="zee"), is_right_answer=False
-                    ),
+                    PrebuildAnswer(make_text("foo", orig="foo"), is_right_answer=False),
+                    PrebuildAnswer(make_text("boo", orig="boo"), is_right_answer=True),
+                    PrebuildAnswer(make_text("bar", orig="bar"), is_right_answer=False),
+                    PrebuildAnswer(make_text("zee", orig="zee"), is_right_answer=False),
                 ],
             ),
         ]

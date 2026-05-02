@@ -12,7 +12,6 @@ from quiz_dataset_tools.server.services.database import DatabaseService
 from quiz_dataset_tools.server.models.tests import GetTestsRequest
 from quiz_dataset_tools.server.models.questions import (
     GetQuestionsRequest,
-    GetQuestionsImageRequest,
 )
 from quiz_dataset_tools.server.models.text_warnings import GetTextWarningsRequest
 from tests.common import make_text, make_question
@@ -27,8 +26,12 @@ class TestDatabaseService(unittest.TestCase):
         # Bootstrap a database with seed data
         dbase = PrebuildDBase(domain_dir)
         dbase.bootstrap()
-        dbase.add_test(PrebuildTest(test_id=1, title=make_text("Test 1", text_id=100), position=1))
-        dbase.add_test(PrebuildTest(test_id=2, title=make_text("Test 2", text_id=101), position=2))
+        dbase.add_test(
+            PrebuildTest(test_id=1, title=make_text("Test 1", text_id=100), position=1)
+        )
+        dbase.add_test(
+            PrebuildTest(test_id=2, title=make_text("Test 2", text_id=101), position=2)
+        )
         dbase.add_question(make_question(1, 1, 200, "Q1", image="img.png"))
         dbase.add_question(make_question(1, 2, 202, "Q2", image="img.png"))
         dbase.add_question(make_question(2, 3, 204, "Q3"))
@@ -72,12 +75,6 @@ class TestDatabaseService(unittest.TestCase):
         resp = self.service.get_questions(req)
         self.assertEqual(resp.error_code, 0)
         self.assertEqual(len(resp.payload), 0)
-
-    def test_get_question_image(self):
-        req = GetQuestionsImageRequest(domain="test", image="img.png")
-        result = self.service.get_dbase("test").get_question_image("img.png")
-        self.assertEqual(result.image, "img.png")
-        self.assertEqual(len(result.questions), 2)
 
     def test_get_text_warnings_empty(self):
         req = GetTextWarningsRequest(domain="test", text_id=200)

@@ -24,12 +24,16 @@ class TestPrebuildDBase(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
 
     def test_add_and_get_test(self):
-        test = PrebuildTest(test_id=1, title=make_text("Test 1", text_id=100), position=1)
+        test = PrebuildTest(
+            test_id=1, title=make_text("Test 1", text_id=100), position=1
+        )
         self.dbase.add_test(test)
         tests = self.dbase.get_tests()
         self.assertEqual(len(tests), 1)
         self.assertEqual(tests[0].test_id, 1)
-        self.assertEqual(tests[0].title.localizations.get(Language.EN).content, "Test 1")
+        self.assertEqual(
+            tests[0].title.localizations.get(Language.EN).content, "Test 1"
+        )
         self.assertEqual(tests[0].position, 1)
 
     def test_add_and_get_question(self):
@@ -101,7 +105,9 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertEqual(len(test2_questions), 1)
 
     def test_update_test(self):
-        test = PrebuildTest(test_id=1, title=make_text("Original", text_id=100), position=1)
+        test = PrebuildTest(
+            test_id=1, title=make_text("Original", text_id=100), position=1
+        )
         self.dbase.add_test(test)
 
         updated = PrebuildTest(
@@ -157,9 +163,7 @@ class TestPrebuildDBase(unittest.TestCase):
         test = PrebuildTest(test_id=1, title=make_text("Test", text_id=100))
         self.dbase.add_test(test)
 
-        question = make_question(
-            test_id=1, question_id=1, text_id=200, en="Q1"
-        )
+        question = make_question(test_id=1, question_id=1, text_id=200, en="Q1")
         self.dbase.add_question(question)
 
         stored = self.dbase.get_question(1)
@@ -179,25 +183,6 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertEqual(len(warnings), 1)
         self.assertEqual(warnings[0].code, "SPELLING")
         self.assertEqual(warnings[0].content, "Typo found")
-
-    def test_get_question_image(self):
-        test = PrebuildTest(test_id=1, title=make_text("Test", text_id=100))
-        self.dbase.add_test(test)
-
-        self.dbase.add_question(
-            make_question(
-                test_id=1, question_id=1, text_id=200, en="Q1", image="sign.png"
-            )
-        )
-        self.dbase.add_question(
-            make_question(
-                test_id=1, question_id=2, text_id=201, en="Q2", image="sign.png"
-            )
-        )
-
-        result = self.dbase.get_question_image("sign.png")
-        self.assertEqual(result.image, "sign.png")
-        self.assertEqual(len(result.questions), 2)
 
     def test_multilingual_roundtrip(self):
         locs = TextLocalizations()

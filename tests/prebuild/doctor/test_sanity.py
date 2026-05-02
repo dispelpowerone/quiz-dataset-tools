@@ -18,9 +18,7 @@ class TestTextSanityDoctor(unittest.TestCase):
             question_id=1,
             text=make_text("foo"),
             answers=[
-                PrebuildAnswer(
-                    make_text("boo", fr="fr-boo"), is_right_answer=True
-                ),
+                PrebuildAnswer(make_text("boo", fr="fr-boo"), is_right_answer=True),
                 PrebuildAnswer(make_text("b a r"), is_right_answer=False),
             ],
         )
@@ -38,9 +36,7 @@ class TestTextSanityDoctor(unittest.TestCase):
             question_id=1,
             text=make_text("foo", es="es-`foo"),
             answers=[
-                PrebuildAnswer(
-                    make_text("bo\no", fr="fr	-boo"), is_right_answer=True
-                ),
+                PrebuildAnswer(make_text("bo\no", fr="fr	-boo"), is_right_answer=True),
             ],
         )
         doctor = TextSanityDoctor()

@@ -69,4 +69,4 @@ class StringCache:
                     raise Exception(f"Invalid cache format: {row}")
                 cache[row[0]] = row[1]
         self.cache = cache
-        print(f"{self.name}::load_cache: {len(self.cache)} records loaded")
+        # print(f"{self.name}::load_cache: {len(self.cache)} records loaded")

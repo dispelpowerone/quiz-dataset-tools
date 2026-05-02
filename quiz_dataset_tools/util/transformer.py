@@ -34,7 +34,7 @@ class Transformer:
         return result
 
     def save_cache(self):
-        print(f"{self.name}::save_cache: size = {len(self.cache)}")
+        # print(f"{self.name}::save_cache: size = {len(self.cache)}")
         cache_file_temp = Transformer.CACHE_FILE_TEMP_TEMPL.format(
             self.domain, self.name
         )
@@ -61,7 +61,7 @@ class Transformer:
                     raise Exception(f"Invalid cache format: {row}")
                 cache[row[0]] = row[1]
         self.cache = cache
-        print(f"{self.name}::load_cache: {len(self.cache)} records loaded")
+        # print(f"{self.name}::load_cache: {len(self.cache)} records loaded")
 
     def load_overrides(self):
         overrides_file = Transformer.OVERRIDES_FILE_TEMPL.format(self.domain, self.name)
@@ -75,7 +75,7 @@ class Transformer:
                     raise Exception(f"Invalid cache format: {row}")
                 overrides[row[0]] = row[1]
         self.overrides = overrides
-        print(f"{self.name}::load_overrides: {len(self.overrides)} records loaded")
+        # print(f"{self.name}::load_overrides: {len(self.overrides)} records loaded")
 
     def _get(self, src_text: str):
         raise Exception(f"{self.name}::_get: isnt implemented")

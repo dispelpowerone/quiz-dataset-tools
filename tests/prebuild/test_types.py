@@ -9,7 +9,10 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildAnswer,
     PrebuildQuestion,
 )
-from quiz_dataset_tools.prebuild.overrides import make_question_context, make_answer_context
+from quiz_dataset_tools.prebuild.overrides import (
+    make_question_context,
+    make_answer_context,
+)
 
 
 class TestMakeQuestionContext(unittest.TestCase):

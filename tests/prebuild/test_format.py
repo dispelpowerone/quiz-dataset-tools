@@ -29,9 +29,7 @@ class TestFormatStage(unittest.TestCase):
                     PrebuildAnswer(
                         make_text("boo", fr="fr-boo"), is_right_answer=False
                     ),
-                    PrebuildAnswer(
-                        make_text("bar", fr="bar"), is_right_answer=False
-                    ),
+                    PrebuildAnswer(make_text("bar", fr="bar"), is_right_answer=False),
                 ],
             ),
         ]

@@ -30,14 +30,17 @@ class TestStringCache(unittest.TestCase):
     def test_save_and_load(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             cache_file = os.path.join(tmpdir, "test.cache")
-            with patch.object(
-                StringCache,
-                "CACHE_FILE_TEMPL",
-                os.path.join(tmpdir, "{}/{}.cache"),
-            ), patch.object(
-                StringCache,
-                "CACHE_FILE_TEMP_TEMPL",
-                os.path.join(tmpdir, "{}/{}.cache.tmp"),
+            with (
+                patch.object(
+                    StringCache,
+                    "CACHE_FILE_TEMPL",
+                    os.path.join(tmpdir, "{}/{}.cache"),
+                ),
+                patch.object(
+                    StringCache,
+                    "CACHE_FILE_TEMP_TEMPL",
+                    os.path.join(tmpdir, "{}/{}.cache.tmp"),
+                ),
             ):
                 cache1 = StringCache(domain="d", name="n")
                 cache1.cache = {"key1": "val1", "key2": "val2"}

@@ -53,9 +53,7 @@ class TestQuestionTransform(unittest.TestCase):
         self.assertEqual(result.audio, "audio.mp3")
 
     def test_transform_question_text_only(self):
-        result = self.question.transform_question_text(
-            lambda t: t.transform(str.strip)
-        )
+        result = self.question.transform_question_text(lambda t: t.transform(str.strip))
         self.assertEqual(result.text.get(Language.EN).content, "question")
         # answers remain unchanged (same object)
         self.assertEqual(result.answers[0].text.get(Language.EN).content, "  answer  ")

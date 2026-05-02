@@ -10,9 +10,7 @@ from quiz_dataset_tools.util.language import TextLocalizations
 class TestQuestionHash(unittest.TestCase):
     def test_hash_formula(self):
         text = PrebuildText(localizations=TextLocalizations())
-        question = PrebuildQuestion(
-            test_id=3, question_id=7, text=text, answers=[]
-        )
+        question = PrebuildQuestion(test_id=3, question_id=7, text=text, answers=[])
         self.assertEqual(_question_hash(question), 3 * 100 + 7)
 
     def test_different_questions_different_hashes(self):

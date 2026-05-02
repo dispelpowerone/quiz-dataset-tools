@@ -30,7 +30,7 @@ class TextOverrides:
         self.overrides[(context, lang.name, text, override_lang.name)] = override
 
     def save(self) -> None:
-        print(f"TextOverrides::save: size = {len(self.overrides)}")
+        # print(f"TextOverrides::save: size = {len(self.overrides)}")
         overrides_file_temp = TextOverrides.OVERRIDES_FILE_TEMP_TEMPL.format(
             self.data_path
         )
@@ -61,4 +61,4 @@ class TextOverrides:
                     raise Exception(f"TextOverrides::load: Invalid format: {row}")
                 overrides[(row[0], row[1], row[2], row[3])] = row[4]
         self.overrides = overrides
-        print(f"TextOverrides::load: {len(self.overrides)} records loaded")
+        # print(f"TextOverrides::load: {len(self.overrides)} records loaded")

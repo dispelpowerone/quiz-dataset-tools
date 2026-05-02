@@ -17,12 +17,8 @@ class TestTextCanonicalDoctor(unittest.TestCase):
         question_id=1,
         text=make_text("foo", fr="foo-fr"),
         answers=[
-            PrebuildAnswer(
-                make_text("boo", es="boo-es"), is_right_answer=True
-            ),
-            PrebuildAnswer(
-                make_text("bar", ru="bar-ru"), is_right_answer=False
-            ),
+            PrebuildAnswer(make_text("boo", es="boo-es"), is_right_answer=True),
+            PrebuildAnswer(make_text("bar", ru="bar-ru"), is_right_answer=False),
         ],
     )
 
