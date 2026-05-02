@@ -4,6 +4,8 @@ from quiz_dataset_tools.server.models.tests import GetTestsRequest, GetTestsResp
 from quiz_dataset_tools.server.models.questions import (
     GetQuestionsRequest,
     GetQuestionsResponse,
+    SetQuestionsImageRequest,
+    SetQuestionsImageResponse,
 )
 from quiz_dataset_tools.server.models.texts import (
     UpdateTextRequest,
@@ -45,6 +47,12 @@ class DatabaseService:
             error_code=0,
             payload=self.get_dbase(req.domain).get_questions_by_test(req.test_id),
         )
+
+    def set_question_image(
+        self, req: SetQuestionsImageRequest
+    ) -> SetQuestionsImageResponse:
+        self.get_dbase(req.domain).set_question_image(req.question_id, req.image)
+        return SetQuestionsImageResponse(error_code=0, payload=None)
 
     def get_text_warnings(self, req: GetTextWarningsRequest) -> GetTextWarningsResponse:
         return GetTextWarningsResponse(

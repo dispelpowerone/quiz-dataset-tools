@@ -1,10 +1,15 @@
-from fastapi import FastAPI, UploadFile
+import os
+import shutil
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from quiz_dataset_tools.server.models.tests import GetTestsRequest, GetTestsResponse
 from quiz_dataset_tools.server.models.questions import (
     GetQuestionsRequest,
     GetQuestionsResponse,
+    SetQuestionsImageRequest,
+    SetQuestionsImageResponse,
+    UploadQuestionsImageResponse,
 )
 from quiz_dataset_tools.server.models.texts import (
     UpdateTextRequest,
@@ -18,6 +23,7 @@ from quiz_dataset_tools.server.models.text_warnings import (
 )
 from quiz_dataset_tools.server.services.database import DatabaseService
 from quiz_dataset_tools.server.services.mimic import MimicService
+from quiz_dataset_tools.server.services.images import ImagesService
 
 database_service = DatabaseService("./output/domains")
 
@@ -25,6 +31,8 @@ mimic_service = MimicService(
     database_service,
     [database_service.get_data_dir("fl"), database_service.get_data_dir("ny")],
 )
+
+images_service = ImagesService(database_service)
 
 app = FastAPI()
 app.add_middleware(
@@ -66,3 +74,29 @@ async def search_mimic_text(
     req: SearchTestMimicTextsRequest,
 ) -> SearchTestMimicTextsResponse:
     return mimic_service.search_test_texts(req)
+
+
+@app.post("/question/image/set")
+async def set_question_image(
+    req: SetQuestionsImageRequest,
+) -> SetQuestionsImageResponse:
+    return database_service.set_question_image(req)
+
+
+@app.post("/question/image/upload")
+async def upload_question_image(
+    file: UploadFile = File(...), domain: str = Form(...), question_id: int = Form(...)
+) -> UploadQuestionsImageResponse:
+    file_path = "/tmp/question_image.tmp"
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    image, error = images_service.upload_question_image(domain, question_id, file_path)
+    return UploadQuestionsImageResponse(
+        error_code=0,  # ignore for now
+        payload=UploadQuestionsImageResponse.Status(
+            image=image,
+            error_message=error,
+        ),
+    )

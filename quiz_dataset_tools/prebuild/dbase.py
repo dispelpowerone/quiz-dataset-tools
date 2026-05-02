@@ -9,6 +9,7 @@ from quiz_dataset_tools.prebuild.types import (
     PrebuildTextWarning,
     PrebuildAnswer,
     PrebuildQuestion,
+    PrebuildQuestionImage,
     PrebuildTest,
 )
 from quiz_dataset_tools.prebuild.orm import (
@@ -106,6 +107,12 @@ class PrebuildDBase:
             select(QuestionOrm).where(QuestionOrm.TestId == test_id)
         )
         return [orm.to_obj() for orm in result.scalars()]
+
+    @_session_decorator
+    def set_question_image(self, session, question_id: int, image: str | None) -> None:
+        question = session.get(QuestionOrm, question_id)
+        question.Image = image if image else None
+        session.commit()
 
     @_session_decorator
     def get_answer(self, session, answer_id: int) -> PrebuildAnswer | None:

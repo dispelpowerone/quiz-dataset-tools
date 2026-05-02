@@ -61,6 +61,12 @@ class PrebuildQuestion(DataClassJsonMixin):
 
 
 @dataclass
+class PrebuildQuestionImage(DataClassJsonMixin):
+    image: str
+    questions: list[int]
+
+
+@dataclass
 class PrebuildTest(DataClassJsonMixin):
     test_id: int
     title: PrebuildText
