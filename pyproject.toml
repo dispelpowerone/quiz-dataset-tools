@@ -33,3 +33,4 @@ dependencies = [
 
 [project.scripts]
 tools = "quiz_dataset_tools.tool.tool:main"
+debug = "quiz_dataset_tools.prebuild.dbase:main"

@@ -204,11 +204,8 @@ class PrebuildDBase:
         session.commit()
 
 
-"""
-from pprint import pprint
-dbase = PrebuildDBase(
-    "/Volumes/External/Workspace/quiz-dataset-tools/output/domains/ny/prebuild/"
-)
-q = dbase.get_question(101)
-pprint(q.text)
-"""
+def main():
+    from pprint import pprint
+    dbase = PrebuildDBase("./")
+    q = dbase.get_question(107)
+    pprint(q.comment_text)

@@ -71,7 +71,7 @@ class GPTService:
                     model=self.model,
                     messages=messages,
                 )
-                print(completion)
+                # print(completion)
                 if not completion.choices:
                     break
                 result = completion.choices[0].message.content
