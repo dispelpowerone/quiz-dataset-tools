@@ -19,14 +19,14 @@
 # Default server configuration
 #
 server {
-	listen 80 default_server;
-	listen [::]:80 default_server;
-
 	# SSL configuration
 	#
-	# listen 443 ssl default_server;
-	# listen [::]:443 ssl default_server;
-	#
+	listen 443 ssl default_server;
+	listen [::]:443 ssl default_server;
+
+	ssl_certificate /home/pi/.local/share/mkcert/pi.local.pem;
+	ssl_certificate_key /home/pi/.local/share/mkcert/pi.local-key.pem;
+
 	# Note: You should disable gzip for SSL traffic.
 	# See: https://bugs.debian.org/773332
 	#
@@ -63,8 +63,6 @@ server {
 		proxy_set_header X-Real-IP $remote_addr;
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 		proxy_set_header X-Forwarded-Proto $scheme;
-		# IMPORTANT: Add the PNA header here if you still use HTTP
-		add_header 'Access-Control-Allow-Private-Network' 'true';
 
 		location = /api/mimic_text/search {
 			proxy_pass http://localhost:8000/mimic_text/search;
