@@ -89,9 +89,13 @@ class TextMimicService:
                 return original
             return self.answer_local_index.get((content, is_right))
 
-        original_content = self._normalize_content(
-            answer.text.get_original_canonical().content
-        )
+        try:
+            original_content = self._normalize_content(
+                answer.text.get_original_canonical().content
+            )
+        except Exception as e:
+            print(f"An answer with a broken text: {answer}")
+            raise e
         local_content = self._normalize_content(answer.text.get_canonical().content)
         # By original content we can search
         # only across records for right answers
