@@ -90,9 +90,11 @@ class TextMimicService:
             return self.answer_local_index.get((content, is_right))
 
         try:
-            original_content = self._normalize_content(
-                answer.text.get_original_canonical().content
-            )
+            original_content = ""
+            if answer.text.original:
+                original_content = self._normalize_content(
+                    answer.text.get_original_canonical().content
+                )
         except Exception as e:
             print(f"An answer with a broken text: {answer}")
             raise e
