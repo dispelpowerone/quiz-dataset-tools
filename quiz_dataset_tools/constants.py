@@ -3,6 +3,7 @@ DOMAIN_TEST_TYPE = {
     "ny": "New York DMV written test",
     "fl": "Florida Learner's Permit Test",
     "tx": "Texas Learner's Permit Test",
+    "ca": "California DMV Written Test",
 }
 
 DOMAIN_UNITS_SYSTEM = {
@@ -10,7 +11,9 @@ DOMAIN_UNITS_SYSTEM = {
     "ny": "imperial system",
     "fl": "imperial system",
     "tx": "imperial system",
+    "ca": "imperial system",
 }
 
 # GPT_MODEL = "gpt-4o"
-GPT_MODEL = "gpt-5.6-terra"
+# GPT_MODEL = "gpt-5.6-terra"
+GPT_MODEL = "gpt-5.6-sol"
