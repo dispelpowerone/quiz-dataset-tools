@@ -1,9 +1,8 @@
-import time
 import logging
-from openai import OpenAI
-from openai.types.chat import ChatCompletionMessageParam
-from typing import Any, Optional
-from quiz_dataset_tools.config import config
+import time
+from functools import cache
+from typing import Any
+
 from quiz_dataset_tools.util.cache import StringCache
 from quiz_dataset_tools.util.image import load_image_as_base64
 
@@ -14,7 +13,13 @@ logging.getLogger("openai").setLevel(logging.ERROR)
 logging.getLogger("httpx").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 
-client = OpenAI(api_key=config["openai"]["api_key"])
+
+@cache
+def _get_client() -> Any:
+    from openai import OpenAI
+    from quiz_dataset_tools.config import config
+
+    return OpenAI(api_key=config["openai"]["api_key"])
 
 
 class GPTService:
@@ -65,6 +70,7 @@ class GPTService:
                 }
             )
 
+        client = _get_client()
         for attempt in range(1, self.max_retries + 1):
             try:
                 completion = client.chat.completions.create(
