@@ -41,7 +41,7 @@ class QuestionCommentService:
         ]
         right_answer = self._find_right_answer(question)
         prompt = f"""
-Write a focused learning comment that teaches the governing rule or visible cue behind the answer key for this {self.test_type} multiple-choice driving question.
+Write a focused learning comment that helps an adult learner understand and remember the governing rule or visible cue behind the answer key for this {self.test_type} multiple-choice driving question.
 <question>
 {question_content}
 </question>
@@ -62,7 +62,7 @@ Do not repeat three or more consecutive words from an answer option, even when e
 Do not say 'correct answer' or discuss distractors.
 Do not add unrelated rules, legal thresholds, penalties, statistics, examples, warnings, headings, lists, Markdown, or extra emoji.
 Use clear, neutral English for an adult learner.
-Include one concrete memory cue beginning with `💡 `. Write the cue as a natural phrase, not a label.
+When it gives a distinct memory aid, you may end with `💡 ` followed by a brief recall cue. Reserve cues for a concrete visual pattern, paired condition, exact-number contrast, or physical cause-and-effect. Do not add a cue merely to summarize a generic legal or safety consequence, or to write a generic reminder. A useful explanation without a cue is better than a weak cue.
 Keep all item-specific details needed to understand the rule; omit secondary detail and repetition.
         """
         return self._call_gpt(prompt, prompt_image_path)
