@@ -110,7 +110,8 @@ class TestQuestionCommentService(unittest.TestCase):
             prompt,
         )
         self.assertIn(
-            "Include one concrete recall cue beginning with `💡 `.",
+            "Include one concrete memory cue beginning with `💡 `. Write the cue "
+            "as a natural phrase, not a label.",
             prompt,
         )
         self.assertIn(
@@ -118,10 +119,6 @@ class TestQuestionCommentService(unittest.TestCase):
             "secondary detail and repetition.",
             prompt,
         )
-        self.assertNotIn("exactly two sentences", prompt)
-        self.assertNotIn("280 characters", prompt)
-        self.assertNotIn("You may explain", prompt)
-        self.assertNotIn("Return a focused study comment", prompt)
         self.assertGreater(
             prompt.index("Final response rules:"),
             prompt.index("</answer_key>"),

@@ -62,7 +62,7 @@ Do not repeat three or more consecutive words from an answer option, even when e
 Do not say 'correct answer' or discuss distractors.
 Do not add unrelated rules, legal thresholds, penalties, statistics, examples, warnings, headings, lists, Markdown, or extra emoji.
 Use clear, neutral English for an adult learner.
-Include one concrete recall cue beginning with `💡 `.
+Include one concrete memory cue beginning with `💡 `. Write the cue as a natural phrase, not a label.
 Keep all item-specific details needed to understand the rule; omit secondary detail and repetition.
         """
         return self._call_gpt(prompt, prompt_image_path)
