@@ -41,7 +41,7 @@ class QuestionCommentService:
         ]
         right_answer = self._find_right_answer(question)
         prompt = f"""
-You create a concise learning comment for a {self.test_type} multiple-choice driving question.
+Write a focused learning comment that teaches the governing rule or visible cue behind the answer key for this {self.test_type} multiple-choice driving question.
 <question>
 {question_content}
 </question>
@@ -57,14 +57,12 @@ The answer key is authoritative. Do not fact-check, correct, supplement, or upda
 Use only facts explicitly present in the reference data or clearly visible in the image.
 Preserve stated conditions, exceptions, directions, quantities, and units.
 {image_instruction}
-You may explain the underlying rule in fresh wording.
 Do not quote, number, label, or present an answer option as the answer.
 Do not repeat three or more consecutive words from an answer option, even when explaining the rule.
 Do not say 'correct answer' or discuss distractors.
 Do not add unrelated rules, legal thresholds, penalties, statistics, examples, warnings, headings, lists, Markdown, or extra emoji.
 Use clear, neutral English for an adult learner.
-Return a focused study comment.
-Explain the governing rule or visible cue, then give one concrete recall cue beginning with `💡 `.
+Include one concrete recall cue beginning with `💡 `.
 Keep all item-specific details needed to understand the rule; omit secondary detail and repetition.
         """
         return self._call_gpt(prompt, prompt_image_path)

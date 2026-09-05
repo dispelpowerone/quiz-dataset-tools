@@ -67,7 +67,8 @@ class TestQuestionCommentService(unittest.TestCase):
         )
         self.assertIsNone(image_path)
         self.assertIn(
-            "You create a concise learning comment for a California DMV Written Test "
+            "Write a focused learning comment that teaches the governing rule or "
+            "visible cue behind the answer key for this California DMV Written Test "
             "multiple-choice driving question.",
             prompt,
         )
@@ -92,7 +93,6 @@ class TestQuestionCommentService(unittest.TestCase):
             "supplement, or update it using outside knowledge.",
             prompt,
         )
-        self.assertIn("You may explain the underlying rule in fresh wording.", prompt)
         self.assertIn(
             "Do not quote, number, label, or present an answer option as the "
             "answer.",
@@ -109,10 +109,8 @@ class TestQuestionCommentService(unittest.TestCase):
             "units.",
             prompt,
         )
-        self.assertIn("Return a focused study comment.", prompt)
         self.assertIn(
-            "Explain the governing rule or visible cue, then give one concrete "
-            "recall cue beginning with `💡 `.",
+            "Include one concrete recall cue beginning with `💡 `.",
             prompt,
         )
         self.assertIn(
@@ -122,6 +120,8 @@ class TestQuestionCommentService(unittest.TestCase):
         )
         self.assertNotIn("exactly two sentences", prompt)
         self.assertNotIn("280 characters", prompt)
+        self.assertNotIn("You may explain", prompt)
+        self.assertNotIn("Return a focused study comment", prompt)
         self.assertGreater(
             prompt.index("Final response rules:"),
             prompt.index("</answer_key>"),
