@@ -11,12 +11,18 @@ from quiz_dataset_tools.prebuild.extra.question_comment import (
 
 class QuestionCommentStage(DataUpdateBaseStage):
     service: QuestionCommentService
+    replace: bool
 
-    def __init__(self, domain: str, images_dir: str):
+    def __init__(self, domain: str, images_dir: str, replace: bool = False):
         self.service = QuestionCommentService(domain, images_dir)
+        self.replace = replace
         self.service.load_cache()
 
     def update_question(self, question: PrebuildQuestion) -> None:
+        if not self.replace and question.comment_text:
+            canonical = question.comment_text.localizations.get_canonical()
+            if canonical and canonical.content.strip():
+                return
         content = self.service.get_comment(question)
         if not content:
             return

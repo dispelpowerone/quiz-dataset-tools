@@ -72,6 +72,13 @@ option_fallback_language = click.option(
 )
 
 
+option_replace = click.option(
+    "--replace",
+    is_flag=True,
+    help="Regenerate existing comments; successful replacements clear translations.",
+)
+
+
 @main.command()
 @option_domain
 @option_parser
@@ -114,12 +121,14 @@ def prebuild_translate(
 
 @main.command()
 @option_domain
+@option_replace
 def prebuild_question_comments(
     domain: str,
+    replace: bool,
 ) -> None:
     builder = PrebuildBuilder()
     builder.set_output_dir(get_prebuild_dir(domain))
-    builder.run_question_comment(domain)
+    builder.run_question_comment(domain, replace=replace)
 
 
 @main.command()

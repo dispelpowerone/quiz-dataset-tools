@@ -159,6 +159,24 @@ class TestPrebuildDBase(unittest.TestCase):
         self.assertEqual(result.image, "new.png")
         self.assertTrue(result.answers[0].is_right_answer)
 
+    def test_replacing_question_comment_clears_translations(self):
+        test = PrebuildTest(test_id=1, title=make_text("Test"))
+        self.dbase.add_test(test)
+        question = make_question(test_id=1, question_id=1, text_id=200, en="Q1")
+        question.comment_text = make_text("Original comment", fr="Commentaire original")
+        self.dbase.add_question(question)
+
+        stored_question = self.dbase.get_question(1)
+        stored_question.comment_text = make_text("Replacement comment")
+        self.dbase.update_question(stored_question)
+
+        result = self.dbase.get_question(1)
+        self.assertEqual(
+            result.comment_text.localizations.get(Language.EN).content,
+            "Replacement comment",
+        )
+        self.assertEqual(result.comment_text.localizations.get(Language.FR).content, "")
+
     def test_text_warnings_crud(self):
         test = PrebuildTest(test_id=1, title=make_text("Test", text_id=100))
         self.dbase.add_test(test)
