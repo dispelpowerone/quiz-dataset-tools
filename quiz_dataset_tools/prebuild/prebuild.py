@@ -63,9 +63,9 @@ class PrebuildBuilder:
         create_db_stage.setup()
         create_db_stage.process(state)
 
-    def run_translate(self) -> None:
+    def run_translate(self, test_id: int | None = None) -> None:
         assert self.translator
-        self._run_stage_on_dbase(TranslateStage(self.translator))
+        self._run_stage_on_dbase(TranslateStage(self.translator), test_id=test_id)
 
     def run_override(self) -> None:
         assert self.languages
@@ -77,15 +77,17 @@ class PrebuildBuilder:
         assert self.overrides
         self._run_stage_on_dbase(DumpOverridesStage(self.languages, self.overrides))
 
-    def run_doctor(self, domain: str) -> None:
+    def run_doctor(self, domain: str, test_id: int | None = None) -> None:
         doctor_stage = DoctorStage(domain)
-        self._run_stage_on_dbase(doctor_stage)
+        self._run_stage_on_dbase(doctor_stage, test_id=test_id)
         doctor_stage.flush()
 
-    def run_question_comment(self, domain: str, replace: bool = False) -> None:
+    def run_question_comment(
+        self, domain: str, replace: bool = False, test_id: int | None = None
+    ) -> None:
         images_dir = self.output_dir + "/images"
         question_comment_stage = QuestionCommentStage(domain, images_dir, replace)
-        self._run_stage_on_dbase(question_comment_stage)
+        self._run_stage_on_dbase(question_comment_stage, test_id=test_id)
         question_comment_stage.flush()
 
     @staticmethod
@@ -96,9 +98,9 @@ class PrebuildBuilder:
     def load_questions(data_dir: str) -> list[PrebuildQuestion]:
         return PrebuildDBase(data_dir).get_questions()
 
-    def _run_stage_on_dbase(self, stage: BaseStage) -> None:
+    def _run_stage_on_dbase(self, stage: BaseStage, test_id: int | None = None) -> None:
         stage.setup()
-        state = self._load_stage_state_from_dbase()
+        state = self._load_stage_state_from_dbase(test_id=test_id)
         state = stage.process(state)
         self._save_stage_state_to_dbase(state)
 
@@ -140,11 +142,21 @@ class PrebuildBuilder:
         )
         """
 
-    def _load_stage_state_from_dbase(self) -> StageState:
+    def _load_stage_state_from_dbase(self, test_id: int | None = None) -> StageState:
         dbase = PrebuildDBase(f"{self.output_dir}")
+        tests = dbase.get_tests()
+        if test_id is None:
+            questions = dbase.get_questions()
+        else:
+            tests = [test for test in tests if test.test_id == test_id]
+            if not tests:
+                raise ValueError(
+                    f"No test found with test_id={test_id}. Use an existing test ID."
+                )
+            questions = dbase.get_questions_by_test(test_id)
         return StageState(
-            tests=dbase.get_tests(),
-            questions=dbase.get_questions(),
+            tests=tests,
+            questions=questions,
             text_warnings=[],
         )
 

@@ -78,6 +78,13 @@ option_replace = click.option(
     help="Regenerate existing comments; successful replacements clear translations.",
 )
 
+option_test = click.option(
+    "--test",
+    "test_id",
+    type=click.IntRange(min=1),
+    help="Only process the test with this ID.",
+)
+
 
 @main.command()
 @option_domain
@@ -99,9 +106,11 @@ def prebuild_init(
 @main.command()
 @option_domain
 @option_languages
+@option_test
 def prebuild_translate(
     domain: str,
     languages: str,
+    test_id: int | None,
 ) -> None:
     languages_list = get_languages_list(languages)
     translator = Translator(
@@ -114,7 +123,7 @@ def prebuild_translate(
     builder.set_output_dir(get_prebuild_dir(domain))
     builder.set_languages(languages_list)
     builder.set_translator(translator)
-    builder.run_translate()
+    builder.run_translate(test_id=test_id)
 
     translator.save_cache()
 
@@ -122,13 +131,15 @@ def prebuild_translate(
 @main.command()
 @option_domain
 @option_replace
+@option_test
 def prebuild_question_comments(
     domain: str,
     replace: bool,
+    test_id: int | None,
 ) -> None:
     builder = PrebuildBuilder()
     builder.set_output_dir(get_prebuild_dir(domain))
-    builder.run_question_comment(domain, replace=replace)
+    builder.run_question_comment(domain, replace=replace, test_id=test_id)
 
 
 @main.command()
@@ -173,12 +184,14 @@ def prebuild_dump_overrides(
 
 @main.command()
 @option_domain
+@option_test
 def prebuild_doctor(
     domain: str,
+    test_id: int | None,
 ) -> None:
     builder = PrebuildBuilder()
     builder.set_output_dir(get_prebuild_dir(domain))
-    builder.run_doctor(domain)
+    builder.run_doctor(domain, test_id=test_id)
 
 
 @main.command()
