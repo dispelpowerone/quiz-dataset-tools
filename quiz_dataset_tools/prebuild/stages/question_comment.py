@@ -5,6 +5,7 @@ from quiz_dataset_tools.prebuild.types import (
 )
 from quiz_dataset_tools.util.language import TextLocalization, TextLocalizations
 from quiz_dataset_tools.prebuild.extra.question_comment import (
+    NO_COMMENT,
     QuestionCommentService,
 )
 
@@ -24,6 +25,11 @@ class QuestionCommentStage(DataUpdateBaseStage):
             if canonical and canonical.content.strip():
                 return
         content = self.service.get_comment(question)
+        if content == NO_COMMENT:
+            question.comment_text = PrebuildText(
+                localizations=TextLocalizations(EN=TextLocalization(""))
+            )
+            return
         if not content:
             return
         question.comment_text = PrebuildText(

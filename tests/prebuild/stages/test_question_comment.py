@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from quiz_dataset_tools.prebuild.extra.question_comment import (
+    NO_COMMENT,
     QuestionCommentService,
 )
 from quiz_dataset_tools.prebuild.stages.question_comment import (
@@ -69,6 +70,19 @@ class TestQuestionCommentStage(unittest.TestCase):
         self.assertEqual(
             question.comment_text.localizations.EN.content, "Replacement comment"
         )
+        self.assertIsNone(question.comment_text.localizations.FR)
+
+    def test_replace_clears_existing_comment_when_generation_returns_no_comment(
+        self,
+    ) -> None:
+        comment_text = make_text("Existing comment", fr="Commentaire existant")
+        question = self._question(comment_text)
+        self.service.get_comment.return_value = NO_COMMENT
+
+        self._stage(replace=True).update_question(question)
+
+        self.service.get_comment.assert_called_once_with(question)
+        self.assertEqual(question.comment_text.localizations.EN.content, "")
         self.assertIsNone(question.comment_text.localizations.FR)
 
     def test_keeps_existing_comment_when_generation_is_empty(self) -> None:
