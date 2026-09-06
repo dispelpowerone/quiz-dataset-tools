@@ -62,6 +62,7 @@ You may explain a directly implied physical cause-and-effect relationship, but d
 Preserve stated conditions, exceptions, directions, quantities, and units.
 {image_instruction}
 The comment should teach a mechanism, condition, visual feature, consequence, or useful contrast. If none of those can be stated from the reference data without merely restating the keyed answer, return exactly `NO_COMMENT`.
+For a direct sign-label or recall question, return exactly `NO_COMMENT` unless the reference data or image supports a non-obvious visual distinction, rule boundary, practical purpose, or causal explanation beyond naming the sign or restating the fact.
 Do not quote, number, label, or present an answer option as the answer.
 Do not turn the comment into a paraphrase of an answer option. Preserve exact legal terms and quantities when needed to explain the rule.
 For a keyed procedural answer, explain the directly implied practical purpose of the rule rather than walking through its steps. Mention a required action only when needed to make that purpose clear. You may infer a purpose such as allowing an affected person to identify and contact the responsible person or creating a record of an incident, but do not invent legal intent, additional duties, or consequences.
@@ -70,7 +71,7 @@ For a question asking what is false, not permitted, an exception, or a prohibite
 When the key is an all-of-the-above or both-of-the-above answer, synthesize the underlying facts without telling the learner which choice to select.
 Do not add unrelated rules, legal thresholds, penalties, statistics, examples, warnings, headings, lists, Markdown, or extra emoji.
 Use clear, neutral English for an adult learner.
-Add a `💡` recall cue only when it gives a distinct memory aid beyond the explanation; otherwise omit it. Append it directly to the same paragraph as a natural phrase, not a label such as `Recall cue:`. Reserve cues for a concrete visual pattern, paired condition, exact-number contrast, or physical cause-and-effect. Do not add a cue merely to summarize a generic legal or safety consequence, or to write a generic reminder. A useful explanation without a cue is better than a weak cue.
+Do not add a `💡` cue by default. Add one only when it gives a distinct memory aid based on a concrete visual pattern, paired condition, exact-number contrast, or physical cause-and-effect; otherwise omit it.
 Keep all item-specific details needed to understand the rule; omit secondary detail and repetition.
 Return one plain-text paragraph.
         """

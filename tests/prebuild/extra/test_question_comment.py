@@ -106,6 +106,13 @@ class TestQuestionCommentService(unittest.TestCase):
             prompt,
         )
         self.assertIn(
+            "For a direct sign-label or recall question, return exactly "
+            "`NO_COMMENT` unless the reference data or image supports a non-obvious "
+            "visual distinction, rule boundary, practical purpose, or causal "
+            "explanation beyond naming the sign or restating the fact.",
+            prompt,
+        )
+        self.assertIn(
             "You may explain a directly implied physical cause-and-effect "
             "relationship, but do not introduce new legal requirements, "
             "thresholds, penalties, or exceptions.",
@@ -142,9 +149,9 @@ class TestQuestionCommentService(unittest.TestCase):
             prompt,
         )
         self.assertIn(
-            "Add a `💡` recall cue only when it gives a distinct memory aid beyond "
-            "the explanation; otherwise omit it. Append it directly to the same "
-            "paragraph as a natural phrase, not a label such as `Recall cue:`.",
+            "Do not add a `💡` cue by default. Add one only when it gives a distinct "
+            "memory aid based on a concrete visual pattern, paired condition, "
+            "exact-number contrast, or physical cause-and-effect; otherwise omit it.",
             prompt,
         )
         self.assertIn(
